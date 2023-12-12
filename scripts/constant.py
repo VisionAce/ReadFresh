@@ -1,4 +1,17 @@
 week_htmls = {
+    'w1': [
+        'https://churchintamsui.wixsite.com/index/morning-revival',
+        'https://classic-blog.udn.com/ymch130/180145388',
+        'https://classic-blog.udn.com/ymch130/180145416',
+        'https://classic-blog.udn.com/ymch130/180145432',
+        'https://classic-blog.udn.com/ymch130/180149204',
+        'https://classic-blog.udn.com/ymch130/180151321',
+        'https://classic-blog.udn.com/ymch130/180151358',
+        'https://classic-blog.udn.com/ymch130/180151379'
+    ]
+}
+
+week_htmls_2023_fall = {
     'w8': [
         'https://churchintamsui.wixsite.com/index/morning-revival',
         'https://classic-blog.udn.com/ymch130/180049577',
