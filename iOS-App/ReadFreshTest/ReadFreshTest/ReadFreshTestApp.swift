@@ -28,7 +28,7 @@ struct ReadFreshTestApp: App {
     var body: some Scene {
         
         WindowGroup {
-            HomeVIew()
+            ContentView()
         }
         .modelContainer(for: ReadData_v2.self)
         

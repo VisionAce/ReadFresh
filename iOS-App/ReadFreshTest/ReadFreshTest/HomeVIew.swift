@@ -83,10 +83,11 @@ struct HomeVIew: View {
                 MessageView(reads: reads)
                 
                     .toolbar {
-                        ToolbarItem(placement: .navigationBarLeading) {
+                        ToolbarItem(placement: .navigationBarTrailing) {
                             Toggle(isOn: $showTitle) {
                                 Text(showTitle ? "關閉標題" : "顯示標題")
                             }
+                            .padding(.horizontal)
                         }
                     }
             }

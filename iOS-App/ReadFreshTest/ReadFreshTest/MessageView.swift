@@ -17,8 +17,6 @@ struct MessageView: View {
     
     @AppStorage(UserDefaultsDataKeys.fontSize) private var fontSize: Double = 18.0
     
-    @State private var showingSetting = false
-    
     @AppStorage(UserDefaultsDataKeys.lineSpacingSize) private var lineSpacingSize: Double = 8.0
     
     @AppStorage(UserDefaultsDataKeys.showTitle) private var showTitle = true
@@ -120,49 +118,6 @@ struct MessageView: View {
                     }
                 }
         )
-        .toolbar {
-            ToolbarItem {
-                Button {
-                    showingSetting = true
-                } label: {
-                    Image(systemName: "gear")
-                }
-                
-            }
-        }
-        .sheet(isPresented: $showingSetting) {
-            Form {
-                
-                Toggle("是否顯示標題?", isOn: $showTitle)
-                
-                    .padding(.horizontal)
-                HStack {
-                    Text("字體大小：\(fontSize, specifier: "%.2f")")
-                    Slider(value: $fontSize,
-                           in: 18.0...50.0)
-                }
-                .padding(.horizontal)
-                
-                HStack {
-                    Text("行距：\(lineSpacingSize, specifier: "%.2f")")
-                    Slider(value: $lineSpacingSize,
-                           in: 8.0...20.0)
-                }
-                .padding(.horizontal)
-                
-                Text("""
-哥林多前書 10:23-24 RCUV
-
-「凡事都可行」，但不都有益處。「凡事都可行」，但不都造就人。 無論甚麼人，不要求自己的益處，而要求別人的益處。
-""")
-                .font(.system(size: fontSize))
-                .lineSpacing(lineSpacingSize)
-                .padding(.horizontal)
-                
-                
-            }
-        }
-  
     }
 }
 
