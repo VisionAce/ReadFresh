@@ -7,26 +7,9 @@
 
 import Foundation
 
-class localVersionUserDefaultsData: ObservableObject {
-    let defaults = UserDefaults.standard
-    var value: Int = 0
-    private let saveKey = UserDefaultsDataKeys.localVersion
-    
-    
-    init() {
-        if UserDefaults.standard.object(forKey: saveKey) != nil {
-            value = UserDefaults.standard.integer(forKey: saveKey)
-        }
-        
-    }
-    
-    func save(saveValue: Int) {
-        defaults.set(saveValue, forKey: saveKey)
-    }
-    
-}
-
-
 enum UserDefaultsDataKeys {
     static let localVersion = "localVersion"
+    static let fontSize = "fontSize"
+    static let lineSpacingSize = "lineSpacingSize"
+    static let showTitle = "showTitle"
 }

@@ -77,36 +77,10 @@ struct ContentView: View {
         
     }
     
-//    func getSectionNumber() {
-//       
-//        
-//        let db = Firestore.firestore()
-//        db.collection("stg-data").getDocuments { snapshot, error in
-//            guard let snapshot else { return }
-//            
-//            let words = snapshot.documents.compactMap { snapshot in
-//                try? snapshot.data(as: Stgdata.self)
-//            }
-//            for word in words {
-//                
-//                let a = word.section_number
-//                readSet.insert(a)
-//                readArray.append(a)
-//                
-//            }
-//            print(readSet)
-//            
-//        }
-//        print(readArray)
-//    
-//    }
     
 }
     
-
-
-
-    
+ 
 
 #Preview {
     ContentView()
