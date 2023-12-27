@@ -10,10 +10,18 @@ import SwiftData
 
 struct MessageView: View {
     @State private var dayPicker = "綱要"
-
-    let reads : [ReadData_v2]
+    @State private var weekPicker = ""
+    @State private var weeks = [String]()
     
-    let days:[String] = ["綱要", "週一", "週二", "週三", "週四", "週五", "週六"]
+    static let currentDate = Date()
+    @Query(filter: #Predicate<ReadData_v2> { read in
+        if read.ended_day > currentDate && read.started_day < currentDate {
+            return true
+        } else {
+            return false
+        }
+    }
+    ) var reads: [ReadData_v2]
     
     @AppStorage(UserDefaultsDataKeys.fontSize) private var fontSize: Double = 18.0
     
@@ -24,84 +32,56 @@ struct MessageView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                Picker("Day", selection: $dayPicker) {
+                ForEach(reads) { read in
+                    if weekPicker == read.section_number {
+                        if showTitle {
+                            TitleIView(reads: reads)
+                                .padding(.horizontal)
+                        }
+                    }
+                }
+
+                Picker("Week", selection: $weekPicker) {
                     
-                    ForEach(days, id: \.self) {
+                    ForEach(weeks, id: \.self) {
                         Text($0)
                     }
                 }
                 .pickerStyle(.palette)
                 .padding(.horizontal)
+                
                 Spacer()
-                ScrollView(.vertical) {
+                
+                if reads.isEmpty {
+                    ContentUnavailableView(
+                        "沒有資料",
+                        systemImage: "swiftdata",
+                        description: Text("請開啟網路後重啟App")
+                    )
+                } else {
                     
-                    VStack(alignment: .leading) {
-                        if reads.isEmpty {
-                            ContentUnavailableView(
-                                "沒有資料",
-                                systemImage: "swiftdata",
-                                description: Text("請開啟網路後重啟App")
-                            )
-                        } else {
+                    ForEach(reads) { read in
+                        if weekPicker == read.section_number {
                             
-                            if dayPicker == "綱要" {
-                                ForEach(reads) { read in
-                                    ForEach(read.outline, id: \.self) { data in
-                                        ForEach(data.context, id: \.self) { context in
-                                            Text("\(context)\n")
-                                        }
-                                    }
-                                }
-                            } else if dayPicker == "週一" {
-                                ForEach(reads) { read in
-                                    ForEach(read.day_messages[0].data[0].context, id: \.self) { context in
-                                        Text("\(context)\n")
-                                    }
-                                }
-                            } else if dayPicker == "週二" {
-                                ForEach(reads) { read in
-                                    ForEach(read.day_messages[1].data[0].context, id: \.self) { context in
-                                        Text("\(context)\n")
-                                    }
-                                }
-                            } else if dayPicker == "週三" {
-                                ForEach(reads) { read in
-                                    ForEach(read.day_messages[2].data[0].context, id: \.self) { context in
-                                        Text("\(context)\n")
-                                    }
-                                }
-                            } else if dayPicker == "週四" {
-                                ForEach(reads) { read in
-                                    ForEach(read.day_messages[3].data[0].context, id: \.self) { context in
-                                        Text("\(context)\n")
-                                    }
-                                }
-                                
-                            } else if dayPicker == "週五" {
-                                ForEach(reads) { read in
-                                    ForEach(read.day_messages[4].data[0].context, id: \.self) { context in
-                                        Text("\(context)\n")
-                                    }
-                                }
-                                
-                            } else if dayPicker == "週六" {
-                                ForEach(reads) { read in
-                                    ForEach(read.day_messages[5].data[0].context, id: \.self) { context in
-                                        Text("\(context)\n")
-                                    }
-                                }
-                                
-                            }
-                            
+                            dayMessageView(reads: reads)
+                                .lineSpacing(lineSpacingSize)
                         }
-                        
                     }
                 }
-                .lineSpacing(lineSpacingSize)
-                
                 
             }
             .padding(.horizontal)
+            .onAppear {
+                weekPicker = reads.first?.section_number ?? ""
+                
+                for read in reads {
+                    if !weeks.contains(read.section_number) {
+                        weeks.append(read.section_number)
+                    }
+                }
+                
+                
+            }
             
             Spacer()
         }
@@ -113,12 +93,14 @@ struct MessageView: View {
                     // 根據手勢缩放的比例調整字體大小
                     let newFontSize = 18.0 * value
                     // 將字體大小限制在18.0到50.0之間
-                    if (18.0...50.0).contains(newFontSize) {
+                    let rang = 18...50
+                    if (rang).contains(Int(newFontSize)) {
                         self.fontSize = newFontSize
                     }
                 }
         )
     }
+    
 }
 
 
@@ -128,5 +110,5 @@ struct MessageView: View {
 
 #Preview {
     
-    MessageView(reads: [])
+    MessageView()
 }
