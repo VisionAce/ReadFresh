@@ -9,9 +9,8 @@ import SwiftUI
 import SwiftData
 
 struct MessageView: View {
-    @State private var dayPicker = "綱要"
-    @State private var weekPicker = ""
-    @State private var weeks = [String]()
+    
+    
     
     static let currentDate = Date()
     @Query(filter: #Predicate<ReadData_v2> { read in
@@ -23,6 +22,17 @@ struct MessageView: View {
     }
     ) var reads: [ReadData_v2]
     
+    @State private var weekPickerIndex = 0
+    
+    var weeks: [String] {
+        var res = [String]()
+        for read in reads {
+            res.append(read.section_number)
+        }
+        return res
+    }
+    
+    
     @AppStorage(UserDefaultsDataKeys.fontSize) private var fontSize: Double = 18.0
     
     @AppStorage(UserDefaultsDataKeys.lineSpacingSize) private var lineSpacingSize: Double = 8.0
@@ -32,19 +42,15 @@ struct MessageView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                ForEach(reads) { read in
-                    if weekPicker == read.section_number {
-                        if showTitle {
-                            TitleIView(reads: reads)
-                                .padding(.horizontal)
-                        }
-                    }
+                if showTitle {
+                    TitleIView(read: reads[weekPickerIndex])
+                        .padding(.horizontal)
                 }
-
-                Picker("Week", selection: $weekPicker) {
+                
+                Picker("Week", selection: $weekPickerIndex) {
                     
-                    ForEach(weeks, id: \.self) {
-                        Text($0)
+                    ForEach(0..<weeks.count, id: \.self) {
+                        Text(weeks[$0])
                     }
                 }
                 .pickerStyle(.palette)
@@ -60,28 +66,17 @@ struct MessageView: View {
                     )
                 } else {
                     
-                    ForEach(reads) { read in
-                        if weekPicker == read.section_number {
-                            
-                            dayMessageView(reads: reads)
-                                .lineSpacing(lineSpacingSize)
-                        }
-                    }
+                    //                    ForEach(reads) { read in
+                    //                        if weekPicker == read.section_number {
+                    
+                    dayMessageView(read: reads[weekPickerIndex])
+                        .lineSpacing(lineSpacingSize)
+                    //                        }
+                    //                    }
                 }
                 
             }
             .padding(.horizontal)
-            .onAppear {
-                weekPicker = reads.first?.section_number ?? ""
-                
-                for read in reads {
-                    if !weeks.contains(read.section_number) {
-                        weeks.append(read.section_number)
-                    }
-                }
-                
-                
-            }
             
             Spacer()
         }
