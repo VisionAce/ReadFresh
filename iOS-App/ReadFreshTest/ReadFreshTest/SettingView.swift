@@ -26,18 +26,20 @@ struct SettingView: View {
                 HStack {
                     Image(systemName: "character.bubble.fill.zh")
                         .foregroundStyle(.indigo)
-                    Text("字級 \(fontSize, specifier: "%.2f")")
+                    Text("字級 \(fontSize, specifier: "%.0f")")
                     Slider(value: $fontSize,
-                           in: 18.0...50.0)
+                           in: 18...50,
+                           step: 1)
                 }
                 .padding(.horizontal)
                 
                 HStack {
                     Image(systemName: "line.horizontal.star.fill.line.horizontal")
                         .foregroundStyle(.indigo)
-                    Text("行距：\(lineSpacingSize, specifier: "%.2f")")
+                    Text("行距 \(lineSpacingSize, specifier: "%.0f")")
                     Slider(value: $lineSpacingSize,
-                           in: 8.0...20.0)
+                           in: 8...20,
+                           step: 1)
                 }
                 .padding(.horizontal)
             }

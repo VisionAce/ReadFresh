@@ -47,13 +47,15 @@ struct Stgdata_v1: Codable, Identifiable {
 
 
 
-struct DayMessage: Codable, Hashable {
+struct DayMessage: Codable, Hashable, Identifiable {
    
     let data: [ContextString]
     let day: String
     let type: String
     let week: String
-   
+    
+    
+    var id: String { day }
 }
 
 

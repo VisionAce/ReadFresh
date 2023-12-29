@@ -14,22 +14,15 @@ import FirebaseFirestoreSwift
 
 struct HomeVIew: View {
     @Environment(\.modelContext) var modelContext
-    static let currentDate = Date()
-    @Query(filter: #Predicate<ReadData_v2> { read in
-        if read.ended_day > currentDate && read.started_day < currentDate {
-            return true
-        } else {
-            return false
-        }
-    }
-    ) var reads: [ReadData_v2]
-    @State private var showdata = false
+    @Query var reads: [ReadData_v2]
     @State private var remoteVersion = -1
     @State private var checkRemoteVersionTaskCompleted = false
+    
     @State private var showingloadingView = true
     @GestureState private var longPressTap = false
     @State private var isPressed = false
-    
+    @State private var showdata = false
+
     @AppStorage(UserDefaultsDataKeys.localVersion) private var localVersion = 0
     @AppStorage(UserDefaultsDataKeys.showTitle) private var showTitle = true
     
@@ -45,43 +38,16 @@ struct HomeVIew: View {
                 .font(.largeTitle)
                 
             } else {
-                
-                if reads.isEmpty {
-                    ContentUnavailableView(
-                        "沒有資料",
-                        systemImage: "swiftdata",
-                        description: Text("請開啟網路後重啟App")
+                MessageView()
+                    .gesture(
+                        LongPressGesture(minimumDuration: 5.0)
+                            .updating($longPressTap, body: {(currentState, state, transaction) in
+                                state = currentState
+                            })
+                            .onEnded({ _ in
+                                isPressed.toggle()
+                            })
                     )
-                } else {
-                    VStack {
-                        Group {
-                            if showTitle {
-                                HStack {
-                                    Text("\(reads[0].training_topic)")
-                                        .font(.title)
-                                    Text("\(reads[0].training_year)")
-                                        .foregroundStyle(.secondary)
-                                }
-                                .padding(.vertical)
-                                Text("\(reads[0].section_name)")
-                                    .font(.title3.bold())
-                            }
-                        }
-                        .padding(.horizontal)
-                        .gesture(
-                            LongPressGesture(minimumDuration: 10.0)
-                                .updating($longPressTap, body: {(currentState, state, transaction) in
-                                    state = currentState
-                                })
-                                .onEnded({ _ in
-                                    isPressed.toggle()
-                                })
-                        )
-                    }
-                }
-                
-                MessageView(reads: reads)
-                
                     .toolbar {
                         ToolbarItem(placement: .navigationBarTrailing) {
                             Toggle(isOn: $showTitle) {
@@ -90,7 +56,42 @@ struct HomeVIew: View {
                             .padding(.horizontal)
                         }
                     }
+                    .sheet(isPresented: $isPressed) {
+                        Text("local版本：\(localVersion)")
+                        Text("Firebase版本：\(remoteVersion)")
+                        Text("模型資料數\(reads.count)")
+                        Button("Delete") {
+                            do {
+                                try modelContext.delete(model: ReadData_v2.self)
+                                
+                            } catch {
+                                print("Failed to delete Read data.")
+                            }
+                            
+                            localVersion = 0
+                            remoteVersion = -1
+                        }
+                        
+                        Button("Read") {
+                            showdata.toggle()
+                        }
+                        if showdata {
+                            if reads.isEmpty {
+                                Text("No Data")
+                            } else {
+                                
+                                Text("\(reads[0].section_name)\n")
+                                Text("\(reads[0].outline[0].context[7])\n")
+                                Text("\(reads[0].day_messages[0].data[0].context[0])")
+                            }
+                            
+                        }
+                    }
+                
+                   
             }
+            
+                
         }
         .onAppear {
             
@@ -107,37 +108,7 @@ struct HomeVIew: View {
             }
         }
         
-        .sheet(isPresented: $isPressed) {
-            Text("local版本：\(localVersion)")
-            Text("Firebase版本：\(remoteVersion)")
-            Text("模型資料數\(reads.count)")
-            Button("Delete") {
-                do {
-                    try modelContext.delete(model: ReadData_v2.self)
-                    
-                } catch {
-                    print("Failed to delete Read data.")
-                }
-                
-                localVersion = 0
-                remoteVersion = -1
-            }
-            
-            Button("Read") {
-                showdata.toggle()
-            }
-            if showdata {
-                if reads.isEmpty {
-                    Text("No Data")
-                } else {
-                    
-                    Text("\(reads[0].section_name)\n")
-                    Text("\(reads[0].outline[0].context[7])\n")
-                    Text("\(reads[0].day_messages[0].data[0].context[0])")
-                }
-                
-            }
-        }
+      
         
     }
     
