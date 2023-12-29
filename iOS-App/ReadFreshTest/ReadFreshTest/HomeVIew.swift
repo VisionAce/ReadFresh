@@ -38,16 +38,20 @@ struct HomeVIew: View {
                 .font(.largeTitle)
                 
             } else {
-                MessageView()
-                    .gesture(
-                        LongPressGesture(minimumDuration: 5.0)
-                            .updating($longPressTap, body: {(currentState, state, transaction) in
-                                state = currentState
-                            })
-                            .onEnded({ _ in
-                                isPressed.toggle()
-                            })
-                    )
+              
+                    MessageView()
+                    
+                        .gesture(
+                            LongPressGesture(minimumDuration: 5.0)
+                                .updating($longPressTap, body: {(currentState, state, transaction) in
+                                    state = currentState
+                                })
+                                .onEnded({ _ in
+                                    isPressed.toggle()
+                                })
+                        )
+                
+                
                     .toolbar {
                         ToolbarItem(placement: .navigationBarTrailing) {
                             Toggle(isOn: $showTitle) {
@@ -88,7 +92,7 @@ struct HomeVIew: View {
                         }
                     }
                 
-                   
+            
             }
             
                 

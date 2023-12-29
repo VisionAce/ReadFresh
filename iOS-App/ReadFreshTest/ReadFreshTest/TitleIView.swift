@@ -8,22 +8,22 @@
 import SwiftUI
 
 struct TitleIView: View {
-    let reads:[ReadData_v2]
+    let read : ReadData_v2
     var body: some View {
         
         HStack {
-            Text("\(reads.first?.training_topic ?? "")")
+            Text("\(read.training_topic)")
                 .font(.title)
-            Text("\(reads.first?.training_year ?? "")")
+            Text("\(read.training_year)")
                 .foregroundStyle(.secondary)
         }
         .padding(.vertical)
-        Text("\(reads.first?.section_name ?? "")")
+        Text("\(read.section_name)")
             .font(.title3.bold())
         
     }
 }
 
-#Preview {
-    TitleIView(reads: [])
-}
+//#Preview {
+//    TitleIView()
+//}
