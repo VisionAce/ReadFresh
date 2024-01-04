@@ -19,7 +19,7 @@ struct LoadingView: View {
                 .symbolEffect(.bounce.byLayer, options: .repeating.speed(0.1), value: didStartAnimation)
                 .onAppear { didStartAnimation = true }
                 .foregroundStyle(.indigo)
-           
+            
         }
         .padding()
     }

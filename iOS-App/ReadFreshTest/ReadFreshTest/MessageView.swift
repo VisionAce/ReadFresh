@@ -9,9 +9,7 @@ import SwiftUI
 import SwiftData
 
 struct MessageView: View {
-    
-    
-    
+
     static let currentDate = Date()
     @Query(filter: #Predicate<ReadData_v2> { read in
         if read.ended_day > currentDate && read.started_day < currentDate {
@@ -42,9 +40,13 @@ struct MessageView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                if showTitle {
-                    TitleIView(read: reads[weekPickerIndex])
-                        .padding(.horizontal)
+                if reads.isEmpty {
+                    Text("沒有資料")
+                } else {
+                    if showTitle {
+                        TitleIView(read: reads[weekPickerIndex])
+                            .padding(.horizontal)
+                    }
                 }
                 
                 Picker("Week", selection: $weekPickerIndex) {
@@ -77,6 +79,14 @@ struct MessageView: View {
                 
             }
             .padding(.horizontal)
+//            .toolbar {
+//                ToolbarItem(placement: .navigationBarTrailing) {
+//                    Toggle(isOn: $showTitle) {
+//                        Text(showTitle ? "關閉標題" : "顯示標題")
+//                    }
+//                    .padding(.horizontal)
+//                }
+//            }
             
             Spacer()
         }
@@ -97,10 +107,6 @@ struct MessageView: View {
     }
     
 }
-
-
-
-
 
 
 #Preview {
