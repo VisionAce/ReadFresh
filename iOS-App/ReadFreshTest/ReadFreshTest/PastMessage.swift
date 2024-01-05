@@ -29,9 +29,13 @@ struct PastMessage: View {
             if result.isEmpty {
                 result.append(read)
             } else {
-                if read.section_number == result.last?.section_number || read.started_day == result.last?.started_day || read.ended_day == result.last?.ended_day {
-                    result.removeLast()
-                    result.append(read)
+                if read.section_number == result.last!.section_number || read.started_day == result.last!.started_day || read.ended_day == result.last!.ended_day {
+                    if read.created_day > result.last!.created_day {
+                        result.removeLast()
+                        result.append(read)
+                    }
+                    // not need to append
+                    
                 } else {
                     result.append(read)
                 }
