@@ -10,7 +10,7 @@ import SwiftData
 
 
 struct PastMessage: View {
-
+    
     static let currentDate = Date()
     @Query(filter: #Predicate<ReadData_v2> { read in
         if read.ended_day < currentDate {
@@ -23,24 +23,38 @@ struct PastMessage: View {
            order: .reverse
     ) var reads: [ReadData_v2]
     
+    var uniqueReads: [ReadData_v2] {
+        var result = [ReadData_v2]()
+        for read in reads {
+            if result.isEmpty {
+                result.append(read)
+            } else {
+                if read.section_number == result.last?.section_number || read.started_day == result.last?.started_day || read.ended_day == result.last?.ended_day {
+                    result.removeLast()
+                    result.append(read)
+                } else {
+                    result.append(read)
+                }
+            }
+        }
+        return result
+    }
+    
     @AppStorage(UserDefaultsDataKeys.fontSize) private var fontSize: Double = 18.0
-    
     @AppStorage(UserDefaultsDataKeys.lineSpacingSize) private var lineSpacingSize: Double = 8.0
-    
     @AppStorage(UserDefaultsDataKeys.showTitle) private var showTitle = true
-    
     
     
     var body: some View {
         NavigationStack {
-            if reads.isEmpty {
+            if uniqueReads.isEmpty {
                 ContentUnavailableView(
                     "沒有資料",
                     systemImage: "swiftdata",
                     description: Text("請開啟網路後重啟App")
                 )
             } else {
-                List(reads) { read in
+                List(uniqueReads) { read in
                     NavigationLink {
                         if showTitle {
                             TitleIView(read: read)
@@ -76,16 +90,13 @@ struct PastMessage: View {
                 .padding()
                 .background(.indigo.opacity(0.3))
                 .listStyle(.plain)
-            
             }
-        
         }
-     
     }
 }
 
 
 //#Preview {
-//    
+//
 //    PastMessage()
 //}

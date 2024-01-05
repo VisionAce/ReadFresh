@@ -12,7 +12,7 @@ struct SettingView: View {
     @AppStorage(UserDefaultsDataKeys.showTitle) private var showTitle = true
     @AppStorage(UserDefaultsDataKeys.fontSize) private var fontSize: Double = 18.0
     @AppStorage(UserDefaultsDataKeys.lineSpacingSize) private var lineSpacingSize: Double = 8.0
-        
+    
     @GestureState private var longPressTap = false
     @State private var isPressed = false
     @State private var showdata = false
@@ -21,8 +21,6 @@ struct SettingView: View {
     var body: some View {
         Form {
             Section("基本設定") {
-                
-                
                 HStack {
                     Image(systemName: "list.dash.header.rectangle")
                         .foregroundStyle(.indigo)
@@ -72,7 +70,6 @@ struct SettingView: View {
                 .sheet(isPresented: $isPressed) {
                     DeveloperView(modelContext: _modelContext, showdata: $showdata, reads: reads)
                 }
-                
             }
         }
     }

@@ -20,31 +20,44 @@ struct MessageView: View {
     }
     ) var reads: [ReadData_v2]
     
-    @State private var weekPickerIndex = 0
+    var uniqueReads: [ReadData_v2] {
+        var result = [ReadData_v2]()
+        for read in reads {
+            if result.isEmpty {
+                result.append(read)
+            } else {
+                if read.section_number == result.last?.section_number || read.started_day == result.last?.started_day || read.ended_day == result.last?.ended_day {
+                    result.removeLast()
+                    result.append(read)
+                } else {
+                    result.append(read)
+                }
+            }
+        }
+        return result
+    }
     
     var weeks: [String] {
         var res = [String]()
-        for read in reads {
+        for read in uniqueReads {
             res.append(read.section_number)
         }
         return res
     }
     
-    
+    @State private var weekPickerIndex = 0
     @AppStorage(UserDefaultsDataKeys.fontSize) private var fontSize: Double = 18.0
-    
     @AppStorage(UserDefaultsDataKeys.lineSpacingSize) private var lineSpacingSize: Double = 8.0
-    
     @AppStorage(UserDefaultsDataKeys.showTitle) private var showTitle = true
     
     var body: some View {
         NavigationStack {
             VStack {
-                if reads.isEmpty {
+                if uniqueReads.isEmpty {
                     //                    Text("沒有資料")
                 } else {
                     if showTitle {
-                        TitleIView(read: reads[weekPickerIndex])
+                        TitleIView(read: uniqueReads[weekPickerIndex])
                             .padding(.horizontal)
                     }
                 }
@@ -65,15 +78,14 @@ struct MessageView: View {
                 
                 Spacer()
                 
-                if reads.isEmpty {
+                if uniqueReads.isEmpty {
                     ContentUnavailableView(
                         "沒有資料",
                         systemImage: "swiftdata",
                         description: Text("請開啟網路後重啟App")
                     )
                 } else {
-                    dayMessageView(read: reads[weekPickerIndex])
-                        .lineSpacing(lineSpacingSize)
+                    dayMessageView(read: uniqueReads[weekPickerIndex])
                 }
                 
             }

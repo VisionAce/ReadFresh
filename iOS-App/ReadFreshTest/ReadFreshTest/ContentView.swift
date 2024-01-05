@@ -36,7 +36,7 @@ struct ContentView: View {
                 .font(.largeTitle)
                 
             } else {
- 
+                
                 TabView {
                     MessageView()
                         .tabItem {

@@ -11,13 +11,12 @@ struct dayMessageView: View {
     let read: ReadData_v2
     @State private var dayPicker = "綱要"
     @AppStorage(UserDefaultsDataKeys.fontSize) private var fontSize: Double = 18.0
-    
     @AppStorage(UserDefaultsDataKeys.lineSpacingSize) private var lineSpacingSize: Double = 8.0
-
+    
     var days: [String] {
         var res = ["綱要"]
-            for title in read.day_messages {
-                res.append(title.day)
+        for title in read.day_messages {
+            res.append(title.day)
         }
         return res
     }
@@ -36,22 +35,22 @@ struct dayMessageView: View {
             ScrollView(.vertical) {
                 VStack(alignment: .leading) {
                     if dayPicker == "綱要" {
-                            ForEach(read.outline, id: \.self) { data in
-                                ForEach(data.context, id: \.self) { context in
-                                    Text("\(context)\n")
-                                }
+                        ForEach(read.outline, id: \.self) { data in
+                            ForEach(data.context, id: \.self) { context in
+                                Text("\(context)\n")
                             }
+                        }
                     } else {
-                            ForEach(read.day_messages, id: \.self) { day_message in
-                                if dayPicker == day_message.day  {
-                                    ForEach(day_message.data, id: \.self) { page in
-                                        ForEach(page.context, id: \.self) { context in
-                                            Text("\(context)\n")
-                                        }
+                        ForEach(read.day_messages, id: \.self) { day_message in
+                            if dayPicker == day_message.day  {
+                                ForEach(day_message.data, id: \.self) { page in
+                                    ForEach(page.context, id: \.self) { context in
+                                        Text("\(context)\n")
                                     }
                                 }
-                                
                             }
+                            
+                        }
                     }
                 }
             }
@@ -71,7 +70,6 @@ struct dayMessageView: View {
                     }
             )
         }
-        
     }
 }
 

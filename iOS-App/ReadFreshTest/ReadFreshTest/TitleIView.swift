@@ -10,7 +10,6 @@ import SwiftUI
 struct TitleIView: View {
     let read : ReadData_v2
     var body: some View {
-        
         HStack {
             Text("\(read.training_topic)")
                 .font(.title)
@@ -20,7 +19,6 @@ struct TitleIView: View {
         .padding(.vertical)
         Text("\(read.section_name)")
             .font(.title3.bold())
-        
     }
 }
 
