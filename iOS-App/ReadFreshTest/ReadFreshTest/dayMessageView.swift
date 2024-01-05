@@ -10,6 +10,9 @@ import SwiftUI
 struct dayMessageView: View {
     let read: ReadData_v2
     @State private var dayPicker = "綱要"
+    @AppStorage(UserDefaultsDataKeys.fontSize) private var fontSize: Double = 18.0
+    
+    @AppStorage(UserDefaultsDataKeys.lineSpacingSize) private var lineSpacingSize: Double = 8.0
 
     var days: [String] {
         var res = ["綱要"]
@@ -31,7 +34,7 @@ struct dayMessageView: View {
                 }
             }
             .pickerStyle(.palette)
-            .padding(.horizontal)
+            .padding([.horizontal, .bottom])
             
             ScrollView(.vertical) {
                 VStack(alignment: .leading) {
@@ -60,6 +63,21 @@ struct dayMessageView: View {
                     }
                 }
             }
+            .lineSpacing(lineSpacingSize)
+            .font(.system(size: fontSize))
+            .contentShape(Rectangle())
+            .simultaneousGesture(
+                MagnificationGesture()
+                    .onChanged { value in
+                        // 根據手勢缩放的比例調整字體大小
+                        let newFontSize = 18.0 * value
+                        // 將字體大小限制在18.0到50.0之間
+                        let rang = 18...50
+                        if (rang).contains(Int(newFontSize)) {
+                            self.fontSize = newFontSize
+                        }
+                    }
+            )
         }
         
     }

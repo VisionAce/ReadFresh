@@ -41,7 +41,7 @@ struct MessageView: View {
         NavigationStack {
             VStack {
                 if reads.isEmpty {
-                    Text("沒有資料")
+//                    Text("沒有資料")
                 } else {
                     if showTitle {
                         TitleIView(read: reads[weekPickerIndex])
@@ -67,43 +67,15 @@ struct MessageView: View {
                         description: Text("請開啟網路後重啟App")
                     )
                 } else {
-                    
-                    //                    ForEach(reads) { read in
-                    //                        if weekPicker == read.section_number {
-                    
                     dayMessageView(read: reads[weekPickerIndex])
                         .lineSpacing(lineSpacingSize)
-                    //                        }
-                    //                    }
                 }
                 
             }
             .padding(.horizontal)
-//            .toolbar {
-//                ToolbarItem(placement: .navigationBarTrailing) {
-//                    Toggle(isOn: $showTitle) {
-//                        Text(showTitle ? "關閉標題" : "顯示標題")
-//                    }
-//                    .padding(.horizontal)
-//                }
-//            }
             
             Spacer()
         }
-        .font(.system(size: fontSize))
-        .contentShape(Rectangle())
-        .simultaneousGesture(
-            MagnificationGesture()
-                .onChanged { value in
-                    // 根據手勢缩放的比例調整字體大小
-                    let newFontSize = 18.0 * value
-                    // 將字體大小限制在18.0到50.0之間
-                    let rang = 18...50
-                    if (rang).contains(Int(newFontSize)) {
-                        self.fontSize = newFontSize
-                    }
-                }
-        )
     }
     
 }

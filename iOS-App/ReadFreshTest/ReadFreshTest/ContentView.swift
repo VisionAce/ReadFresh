@@ -26,7 +26,7 @@ struct ContentView: View {
     
     
     var body: some View {
-        NavigationStack {
+        Group {
             if showingloadingView {
                 
                 Group {
@@ -42,6 +42,12 @@ struct ContentView: View {
                     MessageView()
                         .tabItem {
                             Label("本週", systemImage: "book.pages")
+                                .foregroundStyle(.indigo)
+                        }
+                    
+                    PastMessage()
+                        .tabItem {
+                            Label("已過", systemImage: "book.fill")
                                 .foregroundStyle(.indigo)
                         }
                     
