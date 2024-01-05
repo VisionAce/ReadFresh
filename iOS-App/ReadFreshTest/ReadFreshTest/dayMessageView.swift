@@ -16,10 +16,8 @@ struct dayMessageView: View {
 
     var days: [String] {
         var res = ["綱要"]
-//        for read in reads {
             for title in read.day_messages {
                 res.append(title.day)
-//            }
         }
         return res
     }
@@ -28,7 +26,6 @@ struct dayMessageView: View {
         VStack {
             
             Picker("Day", selection: $dayPicker) {
-                
                 ForEach(days, id: \.self) {
                     Text($0)
                 }
@@ -39,15 +36,12 @@ struct dayMessageView: View {
             ScrollView(.vertical) {
                 VStack(alignment: .leading) {
                     if dayPicker == "綱要" {
-//                        ForEach(reads) { read in
                             ForEach(read.outline, id: \.self) { data in
                                 ForEach(data.context, id: \.self) { context in
                                     Text("\(context)\n")
                                 }
                             }
-//                        }
                     } else {
-//                        ForEach(reads) { read in
                             ForEach(read.day_messages, id: \.self) { day_message in
                                 if dayPicker == day_message.day  {
                                     ForEach(day_message.data, id: \.self) { page in
@@ -58,8 +52,6 @@ struct dayMessageView: View {
                                 }
                                 
                             }
-//                        }
-                        
                     }
                 }
             }

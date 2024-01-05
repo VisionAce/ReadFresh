@@ -9,7 +9,7 @@ import SwiftUI
 import SwiftData
 
 struct MessageView: View {
-
+    
     static let currentDate = Date()
     @Query(filter: #Predicate<ReadData_v2> { read in
         if read.ended_day > currentDate && read.started_day < currentDate {
@@ -41,7 +41,7 @@ struct MessageView: View {
         NavigationStack {
             VStack {
                 if reads.isEmpty {
-//                    Text("沒有資料")
+                    //                    Text("沒有資料")
                 } else {
                     if showTitle {
                         TitleIView(read: reads[weekPickerIndex])
@@ -49,14 +49,19 @@ struct MessageView: View {
                     }
                 }
                 
+                
                 Picker("Week", selection: $weekPickerIndex) {
-                    
                     ForEach(0..<weeks.count, id: \.self) {
-                        Text(weeks[$0])
+                        if weeks.isEmpty {
+                            // No Data
+                        } else {
+                            Text(weeks[$0])
+                        }
                     }
                 }
                 .pickerStyle(.palette)
                 .padding(.horizontal)
+                
                 
                 Spacer()
                 
@@ -77,11 +82,9 @@ struct MessageView: View {
             Spacer()
         }
     }
-    
 }
 
 
 #Preview {
-    
     MessageView()
 }

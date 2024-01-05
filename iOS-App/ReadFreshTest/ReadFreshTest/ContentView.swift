@@ -19,7 +19,6 @@ struct ContentView: View {
     @State private var showingloadingView = true
     @GestureState private var longPressTap = false
     @State private var isPressed = false
-
     
     @AppStorage(UserDefaultsDataKeys.localVersion) private var localVersion = 0
     @AppStorage(UserDefaultsDataKeys.showTitle) private var showTitle = true
@@ -60,9 +59,7 @@ struct ContentView: View {
             }
         }
         .onAppear {
-            
             checkRemoteVersionTask { }
-            
         }
         .onChange(of: remoteVersion) {
             updateVersion(version: remoteVersion)
@@ -73,6 +70,10 @@ struct ContentView: View {
                 loadDataTask()
             }
         }
+        .onChange(of: showingloadingView) {
+            print("showingloadingView: \(showingloadingView)")
+        }
+        
     }
     
     func saveDataSwiftWithVersion(DBcollection: String, DBdocument: String) {

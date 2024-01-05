@@ -12,9 +12,7 @@ struct SettingView: View {
     @AppStorage(UserDefaultsDataKeys.showTitle) private var showTitle = true
     @AppStorage(UserDefaultsDataKeys.fontSize) private var fontSize: Double = 18.0
     @AppStorage(UserDefaultsDataKeys.lineSpacingSize) private var lineSpacingSize: Double = 8.0
-    
-    @State private var remoteVersion = -1
-    
+        
     @GestureState private var longPressTap = false
     @State private var isPressed = false
     @State private var showdata = false
@@ -72,7 +70,7 @@ struct SettingView: View {
                         })
                 )
                 .sheet(isPresented: $isPressed) {
-                    DeveloperView(modelContext: _modelContext, remoteVersion: remoteVersion, showdata: $showdata, reads: reads)
+                    DeveloperView(modelContext: _modelContext, showdata: $showdata, reads: reads)
                 }
                 
             }
