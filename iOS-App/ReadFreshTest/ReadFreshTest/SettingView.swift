@@ -8,15 +8,19 @@
 import SwiftUI
 
 struct SettingView: View {
+    @Environment(\.modelContext) var modelContext
     @AppStorage(UserDefaultsDataKeys.showTitle) private var showTitle = true
     @AppStorage(UserDefaultsDataKeys.fontSize) private var fontSize: Double = 18.0
     @AppStorage(UserDefaultsDataKeys.lineSpacingSize) private var lineSpacingSize: Double = 8.0
     
+    @GestureState private var longPressTap = false
+    @State private var isPressed = false
+    @State private var showdata = false
+    
+    let reads: [ReadData_v2]
     var body: some View {
         Form {
             Section("基本設定") {
-                
-                
                 HStack {
                     Image(systemName: "list.dash.header.rectangle")
                         .foregroundStyle(.indigo)
@@ -53,13 +57,24 @@ struct SettingView: View {
                 .font(.system(size: fontSize))
                 .lineSpacing(lineSpacingSize)
                 .padding(.horizontal)
-                
+                .containerShape(Rectangle())
+                .gesture(
+                    LongPressGesture(minimumDuration: 5.0)
+                        .updating($longPressTap, body: {(currentState, state, transaction) in
+                            state = currentState
+                        })
+                        .onEnded({ _ in
+                            isPressed.toggle()
+                        })
+                )
+                .sheet(isPresented: $isPressed) {
+                    DeveloperView(modelContext: _modelContext, showdata: $showdata, reads: reads)
+                }
             }
         }
-        
     }
 }
 
-#Preview {
-    SettingView()
-}
+//#Preview {
+//    SettingView()
+//}

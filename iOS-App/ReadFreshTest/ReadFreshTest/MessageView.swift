@@ -10,11 +10,10 @@ import SwiftData
 
 struct MessageView: View {
     
-    
-    
     static let currentDate = Date()
+    static let updatedTime = Calendar.current.date(byAdding: .hour, value: 12, to: currentDate)!
     @Query(filter: #Predicate<ReadData_v2> { read in
-        if read.ended_day > currentDate && read.started_day < currentDate {
+        if read.ended_day > updatedTime && read.started_day < updatedTime {
             return true
         } else {
             return false
@@ -22,88 +21,95 @@ struct MessageView: View {
     }
     ) var reads: [ReadData_v2]
     
-    @State private var weekPickerIndex = 0
+    var uniqueReads: [ReadData_v2] {
+        var result = [ReadData_v2]()
+        for read in reads {
+            if result.isEmpty {
+                result.append(read)
+            } else {
+                if read.section_number == result.last!.section_number || read.started_day == result.last!.started_day || read.ended_day == result.last!.ended_day {
+                    if read.created_day > result.last!.created_day {
+                        result.removeLast()
+                        result.append(read)
+                    }
+                    // not need to append
+                    
+                } else {
+                    result.append(read)
+                }
+            }
+        }
+        return result
+    }
     
     var weeks: [String] {
         var res = [String]()
-        for read in reads {
+        for read in uniqueReads {
             res.append(read.section_number)
         }
         return res
     }
     
-    
-    @AppStorage(UserDefaultsDataKeys.fontSize) private var fontSize: Double = 18.0
-    
-    @AppStorage(UserDefaultsDataKeys.lineSpacingSize) private var lineSpacingSize: Double = 8.0
-    
+    @State private var weekPickerIndex = 0
     @AppStorage(UserDefaultsDataKeys.showTitle) private var showTitle = true
     
     var body: some View {
         NavigationStack {
             VStack {
-                if showTitle {
-                    TitleIView(read: reads[weekPickerIndex])
-                        .padding(.horizontal)
+                if uniqueReads.isEmpty {
+                    //                    Text("沒有資料")
+                } else {
+                    if showTitle {
+                        TitleIView(read: uniqueReads[weekPickerIndex])
+                            .padding(.horizontal)
+                    }
                 }
                 
+                
                 Picker("Week", selection: $weekPickerIndex) {
-                    
                     ForEach(0..<weeks.count, id: \.self) {
-                        Text(weeks[$0])
+                        if weeks.isEmpty {
+                            // No Data
+                        } else {
+                            Text(weeks[$0])
+                        }
                     }
                 }
                 .pickerStyle(.palette)
                 .padding(.horizontal)
                 
+                
                 Spacer()
                 
-                if reads.isEmpty {
+                if uniqueReads.isEmpty {
                     ContentUnavailableView(
                         "沒有資料",
                         systemImage: "swiftdata",
-                        description: Text("請開啟網路後重啟App")
+                        description: Text("請開啟網路後重啟App，或等待資料更新，謝謝～")
                     )
                 } else {
-                    
-                    //                    ForEach(reads) { read in
-                    //                        if weekPicker == read.section_number {
-                    
-                    dayMessageView(read: reads[weekPickerIndex])
-                        .lineSpacing(lineSpacingSize)
-                    //                        }
-                    //                    }
+                    dayMessageView(read: uniqueReads[weekPickerIndex])
                 }
                 
             }
             .padding(.horizontal)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Toggle(isOn: $showTitle) {
+                        Text(showTitle ? "關閉標題" : "顯示標題")
+                    }
+                    .padding(.horizontal)
+                    
+                }
+            }
             
             Spacer()
+
         }
-        .font(.system(size: fontSize))
-        .contentShape(Rectangle())
-        .simultaneousGesture(
-            MagnificationGesture()
-                .onChanged { value in
-                    // 根據手勢缩放的比例調整字體大小
-                    let newFontSize = 18.0 * value
-                    // 將字體大小限制在18.0到50.0之間
-                    let rang = 18...50
-                    if (rang).contains(Int(newFontSize)) {
-                        self.fontSize = newFontSize
-                    }
-                }
-        )
     }
-    
 }
 
 
-
-
-
-
 #Preview {
-    
     MessageView()
 }
