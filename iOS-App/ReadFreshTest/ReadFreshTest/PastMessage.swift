@@ -12,8 +12,9 @@ import SwiftData
 struct PastMessage: View {
     
     static let currentDate = Date()
+    static let updatedTime = Calendar.current.date(byAdding: .hour, value: 12, to: currentDate)!
     @Query(filter: #Predicate<ReadData_v2> { read in
-        if read.ended_day < currentDate {
+        if read.ended_day < updatedTime {
             return true
         } else {
             return false
@@ -44,8 +45,6 @@ struct PastMessage: View {
         return result
     }
     
-    @AppStorage(UserDefaultsDataKeys.fontSize) private var fontSize: Double = 18.0
-    @AppStorage(UserDefaultsDataKeys.lineSpacingSize) private var lineSpacingSize: Double = 8.0
     @AppStorage(UserDefaultsDataKeys.showTitle) private var showTitle = true
     
     
@@ -55,7 +54,7 @@ struct PastMessage: View {
                 ContentUnavailableView(
                     "沒有資料",
                     systemImage: "swiftdata",
-                    description: Text("請開啟網路後重啟App")
+                    description: Text("請開啟網路後重啟App，或等待資料更新，謝謝～")
                 )
             } else {
                 List(uniqueReads) { read in
@@ -83,11 +82,11 @@ struct PastMessage: View {
                                 Spacer()
                                 Text(read.training_year)
                             }
+                            .font(.headline)
                             .padding(.vertical)
                             Text(read.section_name)
                                 .foregroundStyle(.secondary)
                         }
-                        .foregroundStyle(.black)
                         .padding()
                     }
                 }

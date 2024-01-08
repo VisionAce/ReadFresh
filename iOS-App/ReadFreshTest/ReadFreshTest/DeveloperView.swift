@@ -39,9 +39,12 @@ struct DeveloperView: View {
                     if reads.isEmpty {
                         Text("No Data")
                     } else {
+                        let nowDate = Date.now
+                        
                         Text("\(reads[0].section_name)\n")
                         Text("\(reads[0].outline[0].context[7])\n")
                         Text("\(reads[0].day_messages[0].data[0].context[0])")
+                        Text("現在時間： \(nowDate.formatted(date: .complete, time: .complete))")
                     }
                     
                 }

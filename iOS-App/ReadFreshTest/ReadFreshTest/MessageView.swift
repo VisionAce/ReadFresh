@@ -11,8 +11,9 @@ import SwiftData
 struct MessageView: View {
     
     static let currentDate = Date()
+    static let updatedTime = Calendar.current.date(byAdding: .hour, value: 12, to: currentDate)!
     @Query(filter: #Predicate<ReadData_v2> { read in
-        if read.ended_day > currentDate && read.started_day < currentDate {
+        if read.ended_day > updatedTime && read.started_day < updatedTime {
             return true
         } else {
             return false
@@ -50,8 +51,6 @@ struct MessageView: View {
     }
     
     @State private var weekPickerIndex = 0
-    @AppStorage(UserDefaultsDataKeys.fontSize) private var fontSize: Double = 18.0
-    @AppStorage(UserDefaultsDataKeys.lineSpacingSize) private var lineSpacingSize: Double = 8.0
     @AppStorage(UserDefaultsDataKeys.showTitle) private var showTitle = true
     
     var body: some View {
@@ -86,7 +85,7 @@ struct MessageView: View {
                     ContentUnavailableView(
                         "沒有資料",
                         systemImage: "swiftdata",
-                        description: Text("請開啟網路後重啟App")
+                        description: Text("請開啟網路後重啟App，或等待資料更新，謝謝～")
                     )
                 } else {
                     dayMessageView(read: uniqueReads[weekPickerIndex])
@@ -94,8 +93,18 @@ struct MessageView: View {
                 
             }
             .padding(.horizontal)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Toggle(isOn: $showTitle) {
+                        Text(showTitle ? "關閉標題" : "顯示標題")
+                    }
+                    .padding(.horizontal)
+                    
+                }
+            }
             
             Spacer()
+
         }
     }
 }
