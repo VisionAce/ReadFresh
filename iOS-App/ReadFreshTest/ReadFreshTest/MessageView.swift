@@ -88,7 +88,7 @@ struct MessageView: View {
                         description: Text("請開啟網路後重啟App，或等待資料更新，謝謝～")
                     )
                 } else {
-                    dayMessageView(read: uniqueReads[weekPickerIndex])
+                    DayMessageView(read: uniqueReads[weekPickerIndex])
                 }
                 
             }

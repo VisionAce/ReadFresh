@@ -7,11 +7,15 @@
 
 import SwiftUI
 
-struct dayMessageView: View {
+struct DayMessageView: View {
     let read: ReadData_v2
     @State private var dayPicker = "綱要"
     @AppStorage(UserDefaultsDataKeys.fontSize) private var fontSize: Double = 18.0
     @AppStorage(UserDefaultsDataKeys.lineSpacingSize) private var lineSpacingSize: Double = 8.0
+    
+
+    @GestureState private var magnifyBy = 1.0
+    @State private var lastGestureState = 0.0
     
     var days: [String] {
         var res = ["綱要"]
@@ -19,6 +23,23 @@ struct dayMessageView: View {
             res.append(title.day)
         }
         return res
+    }
+    
+    var magnification: some Gesture {
+        MagnifyGesture()
+            .updating($magnifyBy) { value, gestureState, transaction in
+                
+                gestureState = value.magnification
+                //print("\(gestureState)")
+            }
+            .onChanged { value in
+                fontSize += min(0.5,max(-0.5,(value.magnification - lastGestureState))) * 10
+                //print("Size: \(value.magnification - lastGestureState)")
+                fontSize = min(50,max(18,fontSize))
+                //print("fontSize: \(fontSize)")
+                lastGestureState = value.magnification
+                //print("lastGestureState: \(lastGestureState)")
+            }
     }
     
     var body: some View {
@@ -32,7 +53,7 @@ struct dayMessageView: View {
             .pickerStyle(.palette)
             .padding([.horizontal, .bottom])
             
-            ScrollView(.vertical) {
+            ScrollView(.vertical, showsIndicators: false) {
                 VStack(alignment: .leading) {
                     if dayPicker == "綱要" {
                         ForEach(read.outline, id: \.self) { data in
@@ -57,22 +78,11 @@ struct dayMessageView: View {
             .lineSpacing(lineSpacingSize)
             .font(.system(size: fontSize))
             .contentShape(Rectangle())
-            .simultaneousGesture(
-                MagnificationGesture()
-                    .onChanged { value in
-                        // 根據手勢缩放的比例調整字體大小
-                        let newFontSize = 18.0 * value
-                        // 將字體大小限制在18.0到50.0之間
-                        let rang = 18...50
-                        if (rang).contains(Int(newFontSize)) {
-                            self.fontSize = newFontSize
-                        }
-                    }
-            )
+            .gesture(magnification)
         }
     }
 }
 
 //#Preview {
-//    dayMessageView(reads: [])
+//    DayMessageView(reads: [])
 //}
