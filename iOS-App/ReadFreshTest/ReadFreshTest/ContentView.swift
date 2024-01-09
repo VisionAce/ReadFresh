@@ -116,7 +116,7 @@ struct ContentView: View {
         let dataManager = DataManager()
         
         // Get remote version
-        dataManager.db.collection("stg-metadata").document("metadata").getDocument { document, error in
+        dataManager.db.collection(StagingKeys.stgMetadata).document(StagingKeys.metadata).getDocument { document, error in
             guard let document,
                   document.exists,
                   let remoteMetadata = try? document.data(as: StgMetadata.self) else { return }
@@ -135,7 +135,7 @@ struct ContentView: View {
     
     func loadDataTask() {
         // Compare the local version with the version on Firebase.
-        let collection = "stg-data"
+        let collection = StagingKeys.stgData
         print("AAAAAAAAA")
         print("Remote version: \(remoteVersion)")
         if localVersion < remoteVersion {
