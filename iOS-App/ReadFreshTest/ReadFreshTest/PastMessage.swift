@@ -63,7 +63,7 @@ struct PastMessage: View {
                             TitleIView(read: read)
                                 .padding(.horizontal)
                         }
-                        dayMessageView(read: read)
+                        DayMessageView(read: read)
                             .padding(.horizontal)
                             .toolbar {
                                 ToolbarItem(placement: .navigationBarTrailing) {
