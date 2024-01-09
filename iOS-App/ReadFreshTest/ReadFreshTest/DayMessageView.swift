@@ -9,22 +9,13 @@ import SwiftUI
 
 struct DayMessageView: View {
     let read: ReadData_v2
-    @State private var dayPicker = "綱要"
+    let dayPicker: String
     @AppStorage(UserDefaultsDataKeys.fontSize) private var fontSize: Double = 18.0
     @AppStorage(UserDefaultsDataKeys.lineSpacingSize) private var lineSpacingSize: Double = 8.0
     
-
     @GestureState private var magnifyBy = 1.0
     @State private var lastGestureState = 0.0
-    
-    var days: [String] {
-        var res = ["綱要"]
-        for title in read.day_messages {
-            res.append(title.day)
-        }
-        return res
-    }
-    
+
     var magnification: some Gesture {
         MagnifyGesture()
             .updating($magnifyBy) { value, gestureState, transaction in
@@ -43,17 +34,6 @@ struct DayMessageView: View {
     }
     
     var body: some View {
-        VStack {
-            
-            Picker("Day", selection: $dayPicker) {
-                ForEach(days, id: \.self) {
-                    Text($0)
-                }
-            }
-            .pickerStyle(.palette)
-            .padding([.horizontal, .bottom])
-            
-            ScrollView(.vertical, showsIndicators: false) {
                 VStack(alignment: .leading) {
                     if dayPicker == "綱要" {
                         ForEach(read.outline, id: \.self) { data in
@@ -74,12 +54,10 @@ struct DayMessageView: View {
                         }
                     }
                 }
-            }
             .lineSpacing(lineSpacingSize)
             .font(.system(size: fontSize))
             .contentShape(Rectangle())
             .gesture(magnification)
-        }
     }
 }
 

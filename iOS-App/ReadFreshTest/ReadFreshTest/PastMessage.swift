@@ -45,9 +45,6 @@ struct PastMessage: View {
         return result
     }
     
-    @AppStorage(UserDefaultsDataKeys.showTitle) private var showTitle = true
-    
-    
     var body: some View {
         NavigationStack {
             if uniqueReads.isEmpty {
@@ -59,22 +56,14 @@ struct PastMessage: View {
             } else {
                 List(uniqueReads) { read in
                     NavigationLink {
-                        if showTitle {
-                            TitleIView(read: read)
-                                .padding(.horizontal)
+                        GeometryReader {
+                            let size = $0.size
+                            let safeArea = $0.safeAreaInsets
+            
+                            ArticleView(size: size, safeArea: safeArea, read: read)
+                                .ignoresSafeArea(.all, edges: .top)
                         }
-                        DayMessageView(read: read)
-                            .padding(.horizontal)
-                            .toolbar {
-                                ToolbarItem(placement: .navigationBarTrailing) {
-                                    Toggle(isOn: $showTitle) {
-                                        Text(showTitle ? "關閉標題" : "顯示標題")
-                                    }
-                                    .padding(.horizontal)
-                                    
-                                }
-                            }
-                        Spacer()
+                    
                     } label: {
                         VStack(alignment: .leading) {
                             HStack {
