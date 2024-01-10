@@ -33,7 +33,7 @@ struct ArticleView: View {
                     DayMessageView(read: read, dayPicker: dayPicker)
                         .padding(.horizontal)
                 }
-                .id("SCROLLVIEW")
+                .id(ViewIDKeys.scrollviewID)
                 .background {
                     ScrollDetector { offset in
                         offsetY = -offset
@@ -45,7 +45,7 @@ struct ArticleView: View {
                         let targetEnd = offset + (velocity * 45)
                         if targetEnd < (headerHeight - minimumHeaderHeight) && targetEnd > 0 {
                             withAnimation(.interactiveSpring(response: 0.55, dampingFraction: 0.65, blendDuration: 0.65)) {
-                                scrolllProxy.scrollTo("SCROLLVIEW", anchor: .top)
+                                scrolllProxy.scrollTo(ViewIDKeys.scrollviewID, anchor: .top)
                             }
                         }
                     }
@@ -67,9 +67,9 @@ struct ArticleView: View {
         GeometryReader { _ in
             ZStack {
                 Rectangle()
-                    .fill(.indigo)
+                    .fill(Color(red: 228/255, green: 210/255, blue: 236/255))
                 
-                VStack(spacing: 15) {
+                VStack(spacing: 10) {
                     
                     TitleIView(read: read)
                         .padding(.horizontal)
@@ -86,11 +86,11 @@ struct ArticleView: View {
                         /// Scaling Text Little Bit
                         .scaleEffect(1 - (progress * 0.15))
                         /// Moving Text Little Bit
-                        /// 4.5 -> 15 (Spacing) ; 0.3 (Image Scaling)
-                        .offset(y: -4.5 * progress)
+                        /// 3 -> 10 (Spacing) ; 0.3 (Image Scaling)
+                        .offset(y: -3 * progress)
                 }
                 .padding(.top, safeArea.top)
-                .padding(.bottom, 15)
+                .padding(.bottom, 10)
             }
             /// Resizing Header
             .frame(height: (headerHeight + offsetY) < minimumHeaderHeight ? minimumHeaderHeight :  (headerHeight + offsetY), alignment: .bottom)

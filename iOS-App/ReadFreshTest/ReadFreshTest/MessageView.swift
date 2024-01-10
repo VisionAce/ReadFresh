@@ -67,7 +67,6 @@ struct MessageView: View {
                 .pickerStyle(.palette)
                 .padding(.horizontal)
                 
-                
                 Spacer()
                 
                 if uniqueReads.isEmpty {
@@ -80,15 +79,15 @@ struct MessageView: View {
                     GeometryReader {
                         let size = $0.size
                         let safeArea = $0.safeAreaInsets
-        
-                        ArticleView(size: size, safeArea: safeArea, read: uniqueReads[weekPickerIndex])
-                            .ignoresSafeArea(.all, edges: .top)
+                        if uniqueReads.isEmpty {
+                            // No Data
+                        } else {
+                            ArticleView(size: size, safeArea: safeArea, read: uniqueReads[weekPickerIndex])
+                                .ignoresSafeArea(.all, edges: .top)
+                        }
                     }
-                    
                 }
-                
             }
-            
             Spacer()
         }
     }

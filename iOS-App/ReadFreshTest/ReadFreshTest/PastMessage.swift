@@ -59,11 +59,11 @@ struct PastMessage: View {
                         GeometryReader {
                             let size = $0.size
                             let safeArea = $0.safeAreaInsets
-            
+                            
                             ArticleView(size: size, safeArea: safeArea, read: read)
                                 .ignoresSafeArea(.all, edges: .top)
                         }
-                    
+                        
                     } label: {
                         VStack(alignment: .leading) {
                             HStack {
