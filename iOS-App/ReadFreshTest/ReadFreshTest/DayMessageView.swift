@@ -33,6 +33,25 @@ struct DayMessageView: View {
             }
     }
     
+    init(read: ReadData_v2, dayPicker: String) {
+        self.read = read
+        self.dayPicker = dayPicker
+     //This changes the "thumb" that selects between items
+        UISegmentedControl.appearance().selectedSegmentTintColor = .brown
+      
+     //This changes the color for the whole "bar" background
+        UISegmentedControl.appearance().backgroundColor = .lightText
+
+      
+     //This will change the font size
+     UISegmentedControl.appearance().setTitleTextAttributes([.font : UIFont.preferredFont(forTextStyle: .headline)], for: .highlighted)
+        UISegmentedControl.appearance().setTitleTextAttributes([.font : UIFont.preferredFont(forTextStyle: .subheadline)], for: .normal)
+      
+     //these lines change the text color for various states
+     UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor : UIColor.cyan], for: .highlighted)
+        UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor : UIColor.white], for: .selected)
+   }
+    
     var body: some View {
                 VStack(alignment: .leading) {
                     if dayPicker == "綱要" {

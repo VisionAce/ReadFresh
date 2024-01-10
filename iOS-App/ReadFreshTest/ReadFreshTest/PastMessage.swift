@@ -45,6 +45,8 @@ struct PastMessage: View {
         return result
     }
     
+    @AppStorage(UserDefaultsDataKeys.fontSize) private var fontSize: Double = 18.0
+    
     var body: some View {
         NavigationStack {
             if uniqueReads.isEmpty {

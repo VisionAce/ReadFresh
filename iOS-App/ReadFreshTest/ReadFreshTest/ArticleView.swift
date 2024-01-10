@@ -14,6 +14,7 @@ struct ArticleView: View {
     /// View Properties
     @State private var offsetY: CGFloat = 0
     @State private var dayPicker = "綱要"
+    @AppStorage(UserDefaultsDataKeys.fontSize) private var fontSize: Double = 18.0
     
     var days: [String] {
         var res = ["綱要"]
@@ -54,6 +55,7 @@ struct ArticleView: View {
             }
             
         }
+        .font(.system(size: fontSize))
     }
     
     /// Header View
@@ -66,8 +68,11 @@ struct ArticleView: View {
         let progress = min(1,max(0,(-offsetY / (headerHeight - minimumHeaderHeight))))
         GeometryReader { _ in
             ZStack {
-                Rectangle()
-                    .fill(Color(red: 228/255, green: 210/255, blue: 236/255))
+                UnevenRoundedRectangle(cornerRadii: .init(
+                    topLeading: 10,
+                    topTrailing: 10
+                ))
+                    .fill(.brown.gradient)
                 
                 VStack(spacing: 10) {
                     
@@ -84,7 +89,7 @@ struct ArticleView: View {
                         .fontWeight(.bold)
                         .foregroundStyle(.white)
                         /// Scaling Text Little Bit
-                        .scaleEffect(1 - (progress * 0.15))
+                        .scaleEffect(1 - (progress * 0.05))
                         /// Moving Text Little Bit
                         /// 3 -> 10 (Spacing) ; 0.3 (Image Scaling)
                         .offset(y: -3 * progress)
