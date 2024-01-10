@@ -21,8 +21,6 @@ struct ContentView: View {
     @State private var isPressed = false
     
     @AppStorage(UserDefaultsDataKeys.localVersion) private var localVersion = 0
-    @AppStorage(UserDefaultsDataKeys.showTitle) private var showTitle = true
-    
     
     var body: some View {
         Group {

@@ -51,21 +51,10 @@ struct MessageView: View {
     }
     
     @State private var weekPickerIndex = 0
-    @AppStorage(UserDefaultsDataKeys.showTitle) private var showTitle = true
     
     var body: some View {
         NavigationStack {
             VStack {
-                if uniqueReads.isEmpty {
-                    //                    Text("沒有資料")
-                } else {
-                    if showTitle {
-                        TitleIView(read: uniqueReads[weekPickerIndex])
-                            .padding(.horizontal)
-                    }
-                }
-                
-                
                 Picker("Week", selection: $weekPickerIndex) {
                     ForEach(0..<weeks.count, id: \.self) {
                         if weeks.isEmpty {
@@ -78,7 +67,6 @@ struct MessageView: View {
                 .pickerStyle(.palette)
                 .padding(.horizontal)
                 
-                
                 Spacer()
                 
                 if uniqueReads.isEmpty {
@@ -88,23 +76,19 @@ struct MessageView: View {
                         description: Text("請開啟網路後重啟App，或等待資料更新，謝謝～")
                     )
                 } else {
-                    DayMessageView(read: uniqueReads[weekPickerIndex])
-                }
-                
-            }
-            .padding(.horizontal)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Toggle(isOn: $showTitle) {
-                        Text(showTitle ? "關閉標題" : "顯示標題")
+                    GeometryReader {
+                        let size = $0.size
+                        let safeArea = $0.safeAreaInsets
+                        if uniqueReads.isEmpty {
+                            // No Data
+                        } else {
+                            ArticleView(size: size, safeArea: safeArea, read: uniqueReads[weekPickerIndex])
+                                .ignoresSafeArea(.all, edges: .top)
+                        }
                     }
-                    .padding(.horizontal)
-                    
                 }
             }
-            
             Spacer()
-
         }
     }
 }

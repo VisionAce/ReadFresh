@@ -11,5 +11,4 @@ enum UserDefaultsDataKeys {
     static let localVersion = "localVersion"
     static let fontSize = "fontSize"
     static let lineSpacingSize = "lineSpacingSize"
-    static let showTitle = "showTitle"
 }

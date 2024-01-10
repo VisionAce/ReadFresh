@@ -9,7 +9,6 @@ import SwiftUI
 
 struct SettingView: View {
     @Environment(\.modelContext) var modelContext
-    @AppStorage(UserDefaultsDataKeys.showTitle) private var showTitle = true
     @AppStorage(UserDefaultsDataKeys.fontSize) private var fontSize: Double = 18.0
     @AppStorage(UserDefaultsDataKeys.lineSpacingSize) private var lineSpacingSize: Double = 8.0
     
@@ -21,12 +20,6 @@ struct SettingView: View {
     var body: some View {
         Form {
             Section("基本設定") {
-                HStack {
-                    Image(systemName: "list.dash.header.rectangle")
-                        .foregroundStyle(.indigo)
-                    Toggle("是否顯示標題?", isOn: $showTitle)
-                }
-                .padding(.horizontal)
                 HStack {
                     Image(systemName: "character.bubble.fill.zh")
                         .foregroundStyle(.indigo)
