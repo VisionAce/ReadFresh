@@ -29,29 +29,48 @@ class HtmlParser():
         self.page = requests.get(html).text
         self.outline_check = ['週一','週二','週三','週四','週五','週六']
         self.day_message_check = ['晨興餧養', 'WEEK', '信息選讀']
-        self.training_check = ['<h2 class="font_2 wixui-rich-text__text" style="font-size:15px;"><span style="font-size:15px;" class="wixui-rich-text__text">']
+        self.training_check = ['感恩節國際相調特會','秋季國際長老及負責弟兄訓練']
+        self.prefix = '<span style="font-size:'
+
+    def _get_text(self, soup):
+        if soup.p:
+            return soup.p.text
+        elif soup.div:
+            return soup.div.text
+        else:
+            raise Exception('Cannot find text')
 
     def run(self):
-        if self._check(self.training_check, self.page):
+        if self.check_training():
             print('Training')
             return self.parse_training()
         elif self._check(self.outline_check, self.page):
             print('Outline')
+            #print(self.page)
             return self.parse_outline()
         elif self._check(self.day_message_check, self.page):
+            #print(self.page)
             print('Day message')
             return self.parse_day_message()
         else:
             print('Skip Html')
 
+    def check_training(self):
+        for c in self.training_check:
+            if c in self.page:
+                return True
+        return False
+
     def parse_training(self):
         res = {}
         split_page = self.page.split('\n')
         for c in split_page:
-            if self.training_check[0] in c:
-                soup = BeautifulSoup(c, "html.parser")
-                line = soup.h2.text
-                break
+            for tc in self.training_check:
+                if tc in c:
+                    soup = BeautifulSoup(c, "html.parser")
+                    line = soup.h2.text
+                    break
+        #print(line)
         year, tmp_name = line.split('─')
         training_name, topic = tmp_name.split('『') 
         res['training_year'] = year.strip()
@@ -65,13 +84,14 @@ class HtmlParser():
         day_message_data = []
         split_page = self.page.split('\n')
         for c in split_page:
-            if '<p><span style="font-size:12pt">' in c:
+            if self.prefix in c:
                 if 'WEEK' in c:
                     break
                 soup = BeautifulSoup(c, "html.parser")
-                line = soup.p.text
+                line = self._get_text(soup)
                 day_message_data.append(line)
-        res['week'], res['day'] = day_message_data[0].split('■') 
+        res['week'] = day_message_data[0][:3]
+        res['day'] = day_message_data[0][4:]
         # Support page
         res['data'] = [
             {
@@ -82,18 +102,24 @@ class HtmlParser():
         res['type'] = 'DayMessage'
         return res
 
+
     def parse_outline(self):
         res = {}
       
         outline_data = []
         split_page = self.page.split('\n')
         for c in split_page:
-            if '<p><span style="font-size:12pt">' in c:
+            if self.prefix in c:
+                #print(c)
                 if 'Message' in c:
                     break
+                if 'Week' in c:
+                    break
                 soup = BeautifulSoup(c, "html.parser")
-                line = soup.p.text
-                index = line.split()[0]
+                line = self._get_text(soup)
+                index = ''
+                if ' ' in line:
+                    index = line.split()[0]
                 #if index in TOP_INDEX:
                 if index in SECOND_INDEX:
                     line =  '  ' + line
@@ -103,7 +129,7 @@ class HtmlParser():
                     pass
                     #print('Else: ', line)
                 outline_data.append(line)
-        #print(outline_data)
+        print(outline_data)
         res['section_number'] = outline_data[0]
         res['section_name'] = outline_data[1]
         res['data'] = [
@@ -135,13 +161,13 @@ def run_once(html):
 
 def run_section(htmls, fm, current_week=False):
     #html='https://classic-blog.udn.com/ymch130/180049577'
-    now = datetime.datetime.utcnow()
+    now = datetime.datetime.utcnow().replace(minute=0, hour=0, second=0, microsecond=0)
     if current_week:
         started_day = now - datetime.timedelta(days=now.weekday())
-        ended_day = started_day + datetime.timedelta(days=6)
+        ended_day = started_day + datetime.timedelta(days=7)
     else:
         started_day = now + datetime.timedelta(days=-now.weekday(), weeks=1)
-        ended_day =  started_day + datetime.timedelta(days=6)
+        ended_day =  started_day + datetime.timedelta(days=7)
     print(now)
     print(started_day)
     print(ended_day)
@@ -153,6 +179,7 @@ def run_section(htmls, fm, current_week=False):
     res['db_version'] = DB_VERSION
     for html in htmls:
         data = run_once(html)
+        print(data)
         _type = data['type']
         if _type == 'Training':
             res.update(data)
@@ -165,6 +192,8 @@ def run_section(htmls, fm, current_week=False):
         else:
             print('Invalid')
     #print(res)
+    if DEBUG:
+        return
     version = fm.get_metadata_version('stg-metadata', 'metadata')
     upload_version = str(int(version) + 1)
     print('Upload_version: ', upload_version)
@@ -173,7 +202,9 @@ def run_section(htmls, fm, current_week=False):
 
 def main():
     from constant import week_htmls
-    CURRENT_WEEK = True
+    CURRENT_WEEK = False
+    global DEBUG
+    DEBUG = False
     fm = FirebaseManager()
     for week_html in week_htmls.values():
         run_section(week_html, fm, current_week=CURRENT_WEEK)
