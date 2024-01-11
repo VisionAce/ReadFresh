@@ -59,6 +59,9 @@
 		27A0F21D2B230D5A00242AAA /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27A0F21C2B230D5A00242AAA /* MessageView.swift */; };
 		27A0F21F2B23272D00242AAA /* FileManager-DocumentsDirectory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27A0F21E2B23272D00242AAA /* FileManager-DocumentsDirectory.swift */; };
 		27AFBE642B20F13C004505B7 /* ReadData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27AFBE632B20F13C004505B7 /* ReadData.swift */; };
+		27B5408D2B4E9FF900333785 /* TabShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27B5408C2B4E9FF900333785 /* TabShape.swift */; };
+		27B5408F2B4EA00B00333785 /* TabPosition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27B5408E2B4EA00B00333785 /* TabPosition.swift */; };
+		27B540912B4EA01300333785 /* Tab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27B540902B4EA01300333785 /* Tab.swift */; };
 		27C6F8FB2B35817400E33C9B /* UserDefaultsData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27C6F8FA2B35817400E33C9B /* UserDefaultsData.swift */; };
 /* End PBXBuildFile section */
 
@@ -84,6 +87,9 @@
 		27A0F21C2B230D5A00242AAA /* MessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
 		27A0F21E2B23272D00242AAA /* FileManager-DocumentsDirectory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FileManager-DocumentsDirectory.swift"; sourceTree = "<group>"; };
 		27AFBE632B20F13C004505B7 /* ReadData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadData.swift; sourceTree = "<group>"; };
+		27B5408C2B4E9FF900333785 /* TabShape.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabShape.swift; sourceTree = "<group>"; };
+		27B5408E2B4EA00B00333785 /* TabPosition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabPosition.swift; sourceTree = "<group>"; };
+		27B540902B4EA01300333785 /* Tab.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tab.swift; sourceTree = "<group>"; };
 		27C6F8FA2B35817400E33C9B /* UserDefaultsData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsData.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -178,6 +184,7 @@
 				274FA4122B468A2A00B8E883 /* DeveloperView.swift */,
 				2766D2EC2B39D48400F7C5A8 /* LoadingView.swift */,
 				276DFA5E2B1DB1110035274B /* DataManager.swift */,
+				27B5408B2B4E9FC200333785 /* CustomTabBar */,
 				274DAB592B4D9CE40088A9A9 /* Helper */,
 				274DAB562B4D98560088A9A9 /* Keys */,
 				279D2E9E2B36F99E000B5144 /* Extension */,
@@ -220,6 +227,32 @@
 				27AFBE632B20F13C004505B7 /* ReadData.swift */,
 			);
 			path = Version1;
+			sourceTree = "<group>";
+		};
+		27B5408B2B4E9FC200333785 /* CustomTabBar */ = {
+			isa = PBXGroup;
+			children = (
+				27B540922B4EA01A00333785 /* VIew */,
+				27B540932B4EA02900333785 /* Model */,
+			);
+			path = CustomTabBar;
+			sourceTree = "<group>";
+		};
+		27B540922B4EA01A00333785 /* VIew */ = {
+			isa = PBXGroup;
+			children = (
+				27B5408C2B4E9FF900333785 /* TabShape.swift */,
+				27B5408E2B4EA00B00333785 /* TabPosition.swift */,
+			);
+			path = VIew;
+			sourceTree = "<group>";
+		};
+		27B540932B4EA02900333785 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				27B540902B4EA01300333785 /* Tab.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -361,7 +394,9 @@
 				27C6F8FB2B35817400E33C9B /* UserDefaultsData.swift in Sources */,
 				2766D2EF2B39D75B00F7C5A8 /* SettingView.swift in Sources */,
 				274DAB5B2B4D9D000088A9A9 /* ScrollDetector.swift in Sources */,
+				27B5408F2B4EA00B00333785 /* TabPosition.swift in Sources */,
 				274DAB582B4D98A70088A9A9 /* FirebaseKey.swift in Sources */,
+				27B540912B4EA01300333785 /* Tab.swift in Sources */,
 				276DFA0E2B1DA0170035274B /* ContentView.swift in Sources */,
 				274FA4152B46989E00B8E883 /* PastMessage.swift in Sources */,
 				274FA4132B468A2A00B8E883 /* DeveloperView.swift in Sources */,
@@ -371,6 +406,7 @@
 				272A696F2B3BE5C5009A1090 /* DayMessageView.swift in Sources */,
 				2778A19C2B4E6F8C009DD86C /* ViewIDKey.swift in Sources */,
 				274DAB5D2B4D9F180088A9A9 /* ArticleView.swift in Sources */,
+				27B5408D2B4E9FF900333785 /* TabShape.swift in Sources */,
 				27AFBE642B20F13C004505B7 /* ReadData.swift in Sources */,
 				276DFA0C2B1DA0170035274B /* ReadFreshTestApp.swift in Sources */,
 				2766D2ED2B39D48400F7C5A8 /* LoadingView.swift in Sources */,

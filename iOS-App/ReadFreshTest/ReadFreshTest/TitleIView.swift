@@ -12,10 +12,10 @@ struct TitleIView: View {
     var body: some View {
         Group {
             Text("\(read.training_topic)")
-                .font(.title3.bold())
+//                .font(.title3.bold())
             
             Text("\(read.section_name)")
-                .font(.headline.bold())
+//                .font(.headline.bold())
             
             HStack {
                 Spacer()
