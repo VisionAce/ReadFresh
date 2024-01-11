@@ -161,13 +161,13 @@ def run_once(html):
 
 def run_section(htmls, fm, current_week=False):
     #html='https://classic-blog.udn.com/ymch130/180049577'
-    now = datetime.datetime.utcnow()
+    now = datetime.datetime.utcnow().replace(minute=0, hour=0, second=0, microsecond=0)
     if current_week:
         started_day = now - datetime.timedelta(days=now.weekday())
-        ended_day = started_day + datetime.timedelta(days=6)
+        ended_day = started_day + datetime.timedelta(days=7)
     else:
         started_day = now + datetime.timedelta(days=-now.weekday(), weeks=1)
-        ended_day =  started_day + datetime.timedelta(days=6)
+        ended_day =  started_day + datetime.timedelta(days=7)
     print(now)
     print(started_day)
     print(ended_day)
@@ -202,7 +202,7 @@ def run_section(htmls, fm, current_week=False):
 
 def main():
     from constant import week_htmls
-    CURRENT_WEEK = True
+    CURRENT_WEEK = False
     global DEBUG
     DEBUG = False
     fm = FirebaseManager()
