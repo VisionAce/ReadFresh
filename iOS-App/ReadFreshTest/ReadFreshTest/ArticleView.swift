@@ -29,15 +29,36 @@ struct ArticleView: View {
             ScrollView(.vertical, showsIndicators: false) {
                 VStack(spacing: 0) {
                     HeaderView()
+                        .padding(.bottom)
                     /// Making to Top
                         .zIndex(1000)
                     DayMessageView(read: read, dayPicker: dayPicker)
                         .padding(.horizontal)
+                    HStack {
+                        Spacer()
+                    Button {
+                        withAnimation {
+                            scrolllProxy.scrollTo(ViewIDKeys.scrollviewID, anchor: .top)
+                            print("offsetY: \(offsetY)")
+                            DispatchQueue.main.async {
+                                offsetY = 0
+                            }
+                        }
+                    } label: {
+                        Image(systemName: "arrowshape.up.circle")
+                    }
+                    .font(.largeTitle)
+                    .padding()
+                    .foregroundStyle(.brown.gradient)
+                }
                 }
                 .id(ViewIDKeys.scrollviewID)
                 .background {
                     ScrollDetector { offset in
-                        offsetY = -offset
+                        DispatchQueue.main.async {
+                            offsetY = -offset
+                            print("offsetY: \(offsetY)")
+                        }
                     } onDraggingEnd: { offset, velocity in
                         /// Resetting to initial State, if not Completely Scrolled
                         let headerHeight = (size.height * 0.3) + safeArea.top
@@ -50,7 +71,15 @@ struct ArticleView: View {
                             }
                         }
                     }
-
+                }
+                .onChange(of: dayPicker) {
+                    withAnimation {
+                        scrolllProxy.scrollTo(ViewIDKeys.scrollviewID, anchor: .top)
+                        print("offsetY: \(offsetY)")
+                        DispatchQueue.main.async {
+                            offsetY = 0
+                        }
+                    }
                 }
             }
             

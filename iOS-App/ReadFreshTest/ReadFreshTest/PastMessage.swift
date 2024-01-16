@@ -81,9 +81,11 @@ struct PastMessage: View {
                         .padding()
                     }
                 }
+                .clipShape(RoundedRectangle(cornerRadius: 20))
                 .padding()
-                .background(.indigo.opacity(0.3))
+                .background(.brown.gradient.opacity(0.3))
                 .listStyle(.plain)
+                
             }
         }
     }

@@ -12,9 +12,11 @@ struct TitleIView: View {
     var body: some View {
         Group {
             Text("\(read.training_topic)")
+                .foregroundStyle(.primary)
 //                .font(.title3.bold())
             
             Text("\(read.section_name)")
+                .foregroundStyle(.secondary)
 //                .font(.headline.bold())
             
             HStack {

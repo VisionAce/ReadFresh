@@ -27,6 +27,15 @@ struct ContentView: View {
     @Namespace private var animation
     @State private var tabShapePosition: CGPoint = .zero
     
+    //  TelegramDarkModeAnimation
+    @AppStorage("toggleDarkMode") private var toggleDarkMode = false
+    @AppStorage("activateDarkMode") private var activateDarkMode = false
+    @State private var buttonRect: CGRect = .zero
+    /// Current & Previous State Images
+    @State private var currengeImage: UIImage?
+    @State private var preiousImage: UIImage?
+    @State private var maskAnimation: Bool = false
+    
     init() {
         /// Hiding Tab Bar Due To SwiftUI iOS 16 Bug
         UITabBar.appearance().isHidden = true
@@ -59,6 +68,79 @@ struct ContentView: View {
                     }
                     customTabBar()
                 }
+                .createImages(toggleDarkMode: toggleDarkMode,
+                              currentImage: $currengeImage,
+                              previousImage: $preiousImage,
+                              activateDarkMode: $activateDarkMode)
+                .overlay(content: {
+                    GeometryReader(content: { geometry in
+                        let size = geometry.size
+                        
+                        if let preiousImage, let currengeImage {
+                            ZStack {
+                                Image(uiImage: preiousImage)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: size.width, height: size.height)
+                                
+                                Image(uiImage: currengeImage)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: size.width, height: size.height)
+                                    .mask(alignment: .topLeading) {
+                                        Circle()
+                                            .frame(width: buttonRect.width * (maskAnimation ? 80 : 1), height: buttonRect.height * (maskAnimation ? 80 : 1), alignment: .bottomLeading)
+                                            .frame(width: buttonRect.width, height: buttonRect.height)
+                                            .offset(x: buttonRect.minX, y: buttonRect.minY)
+                                            .ignoresSafeArea()
+                                        
+                                    }
+                            }
+                            .task {
+                                guard !maskAnimation else { return }
+                                withAnimation(.easeInOut(duration: 0.9), completionCriteria: .logicallyComplete) {
+                                    maskAnimation = true
+                                } completion: {
+                                    /// Removing all snapshots
+                                    self.currengeImage = nil
+                                    self.preiousImage = nil
+                                    maskAnimation = false
+                                }
+                            }
+                        }
+                    })
+                    /// Reverse Masking
+                    .mask({
+                        Rectangle()
+                            .overlay(alignment: .topLeading) {
+                                Circle()
+                                    .frame(width: buttonRect.width, height: buttonRect.height)
+                                    .offset(x: buttonRect.minX, y: buttonRect.minY)
+                                    .blendMode(.destinationOut)
+                            }
+                    })
+                    .ignoresSafeArea()
+                })
+                .overlay(alignment: .topTrailing) {
+                    
+                    Button(action: {
+                        toggleDarkMode.toggle()
+                    }, label: {
+                        Image(systemName: toggleDarkMode ? "sun.max.fill" : "moon.fill")
+                            .font(.title2)
+                            .foregroundStyle(Color.primary)
+                            .symbolEffect(.bounce, value: toggleDarkMode)
+                            .frame(width: 40, height: 40)
+                            .opacity(activeTab == Tab.thisWeek || activeTab == Tab.pastWeek ? 0 : 1)
+                    })
+                    .rect { rect in
+                        buttonRect = rect
+                    }
+                    .padding(10)
+                    .disabled(currengeImage != nil || preiousImage != nil || maskAnimation || activeTab == Tab.thisWeek || activeTab == Tab.pastWeek)
+                }
+                .preferredColorScheme(activateDarkMode ? .dark : .light)
+                
             }
         }
         .onAppear {
