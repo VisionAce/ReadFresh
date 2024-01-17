@@ -28,8 +28,8 @@ struct ContentView: View {
     @State private var tabShapePosition: CGPoint = .zero
     
     //  TelegramDarkModeAnimation
-    @AppStorage("toggleDarkMode") private var toggleDarkMode = false
-    @AppStorage("activateDarkMode") private var activateDarkMode = false
+    @AppStorage(UserDefaultsDataKeys.toggleDarkMode) private var toggleDarkMode = false
+    @AppStorage(UserDefaultsDataKeys.activateDarkMode) private var activateDarkMode = false
     @State private var buttonRect: CGRect = .zero
     /// Current & Previous State Images
     @State private var currengeImage: UIImage?
@@ -131,13 +131,13 @@ struct ContentView: View {
                             .foregroundStyle(Color.primary)
                             .symbolEffect(.bounce, value: toggleDarkMode)
                             .frame(width: 40, height: 40)
-                            .opacity(activeTab == Tab.thisWeek || activeTab == Tab.pastWeek ? 0 : 1)
+                            .opacity(activeTab == .setting ? 1 : 0)
                     })
                     .rect { rect in
                         buttonRect = rect
                     }
                     .padding(10)
-                    .disabled(currengeImage != nil || preiousImage != nil || maskAnimation || activeTab == Tab.thisWeek || activeTab == Tab.pastWeek)
+                    .disabled(currengeImage != nil || preiousImage != nil || maskAnimation || activeTab != .setting)
                 }
                 .preferredColorScheme(activateDarkMode ? .dark : .light)
                 
@@ -256,7 +256,7 @@ struct ContentView: View {
         .padding(.vertical, 5)
         .background(content: {
             TabShape(midpoint: tabShapePosition.x)
-                .fill(.white)
+                .fill(.windowBackground)
                 .ignoresSafeArea()
                 /// Adding Blur + Shadow
                 /// For shape Smoothening

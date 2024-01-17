@@ -11,4 +11,6 @@ enum UserDefaultsDataKeys {
     static let localVersion = "localVersion"
     static let fontSize = "fontSize"
     static let lineSpacingSize = "lineSpacingSize"
+    static let toggleDarkMode = "toggleDarkMode"
+    static let activateDarkMode = "activateDarkMode"
 }

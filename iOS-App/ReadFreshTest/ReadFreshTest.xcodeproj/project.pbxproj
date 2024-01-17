@@ -77,6 +77,7 @@
 		274FA4142B46989E00B8E883 /* PastMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PastMessage.swift; sourceTree = "<group>"; };
 		2759DBE92B56A97C0071317E /* View+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "View+Extensions.swift"; sourceTree = "<group>"; };
 		2759DBEB2B56A98F0071317E /* RectKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RectKey.swift; sourceTree = "<group>"; };
+		2759DBED2B56D4C20071317E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		2766D2EC2B39D48400F7C5A8 /* LoadingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		2766D2EE2B39D75B00F7C5A8 /* SettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingView.swift; sourceTree = "<group>"; };
 		276DFA082B1DA0170035274B /* ReadFreshTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReadFreshTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -178,6 +179,7 @@
 		276DFA0A2B1DA0170035274B /* ReadFreshTest */ = {
 			isa = PBXGroup;
 			children = (
+				2759DBED2B56D4C20071317E /* Info.plist */,
 				276DFA0B2B1DA0170035274B /* ReadFreshTestApp.swift */,
 				276DFA0D2B1DA0170035274B /* ContentView.swift */,
 				27A0F21C2B230D5A00242AAA /* MessageView.swift */,
@@ -555,6 +557,7 @@
 				DEVELOPMENT_TEAM = 2N99K4SE77;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ReadFreshTest/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = GodMorning;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -585,6 +588,7 @@
 				DEVELOPMENT_TEAM = 2N99K4SE77;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ReadFreshTest/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = GodMorning;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

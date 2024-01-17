@@ -39,7 +39,6 @@ struct ArticleView: View {
                     Button {
                         withAnimation {
                             scrolllProxy.scrollTo(ViewIDKeys.scrollviewID, anchor: .top)
-                            print("offsetY: \(offsetY)")
                             DispatchQueue.main.async {
                                 offsetY = 0
                             }
@@ -57,7 +56,6 @@ struct ArticleView: View {
                     ScrollDetector { offset in
                         DispatchQueue.main.async {
                             offsetY = -offset
-                            print("offsetY: \(offsetY)")
                         }
                     } onDraggingEnd: { offset, velocity in
                         /// Resetting to initial State, if not Completely Scrolled
@@ -75,7 +73,6 @@ struct ArticleView: View {
                 .onChange(of: dayPicker) {
                     withAnimation {
                         scrolllProxy.scrollTo(ViewIDKeys.scrollviewID, anchor: .top)
-                        print("offsetY: \(offsetY)")
                         DispatchQueue.main.async {
                             offsetY = 0
                         }
