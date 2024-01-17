@@ -81,6 +81,7 @@ struct PastMessage: View {
                         .padding()
                     }
                 }
+                .scrollIndicators(.hidden)
                 .clipShape(RoundedRectangle(cornerRadius: 20))
                 .padding()
                 .background(.brown.gradient.opacity(0.3))
