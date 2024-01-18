@@ -18,52 +18,58 @@ struct SettingView: View {
     
     let reads: [ReadData_v2]
     var body: some View {
-        Form {
-            Section("基本設定") {
-                HStack {
-                    Image(systemName: "character.bubble.fill.zh")
-                        .foregroundStyle(.indigo)
-                    Text("字級 \(fontSize, specifier: "%.0f")")
-                    Slider(value: $fontSize,
-                           in: 18...50,
-                           step: 1)
-                }
-                .padding(.horizontal)
-                
-                HStack {
-                    Image(systemName: "line.horizontal.star.fill.line.horizontal")
-                        .foregroundStyle(.indigo)
-                    Text("行距 \(lineSpacingSize, specifier: "%.0f")")
-                    Slider(value: $lineSpacingSize,
-                           in: 8...20,
-                           step: 1)
-                }
-                .padding(.horizontal)
-            }
+        NavigationStack {
             
-            Section("顯示") {
-                Text("""
+            Form {
+                Section("基本設定") {
+                    HStack {
+                        Image(systemName: "character.bubble.fill.zh")
+                            .foregroundStyle(.indigo)
+                        Text("字級 \(fontSize, specifier: "%.0f")")
+                        Slider(value: $fontSize,
+                               in: 18...50,
+                               step: 1)
+                    }
+                    .padding(.horizontal)
+                    
+                    HStack {
+                        Image(systemName: "line.horizontal.star.fill.line.horizontal")
+                            .foregroundStyle(.indigo)
+                        Text("行距 \(lineSpacingSize, specifier: "%.0f")")
+                        Slider(value: $lineSpacingSize,
+                               in: 8...20,
+                               step: 1)
+                    }
+                    .padding(.horizontal)
+                }
+                
+                Section("顯示") {
+                    Text("""
 哥林多前書 10:23-24 RCUV
 
 「凡事都可行」，但不都有益處。「凡事都可行」，但不都造就人。 無論甚麼人，不要求自己的益處，而要求別人的益處。
 """)
-                .font(.system(size: fontSize))
-                .lineSpacing(lineSpacingSize)
-                .padding(.horizontal)
-                .containerShape(Rectangle())
-                .gesture(
-                    LongPressGesture(minimumDuration: 5.0)
-                        .updating($longPressTap, body: {(currentState, state, transaction) in
-                            state = currentState
-                        })
-                        .onEnded({ _ in
-                            isPressed.toggle()
-                        })
-                )
-                .sheet(isPresented: $isPressed) {
-                    DeveloperView(modelContext: _modelContext, showdata: $showdata, reads: reads)
+                    .font(.system(size: fontSize))
+                    .lineSpacing(lineSpacingSize)
+                    .padding(.horizontal)
+                    .containerShape(Rectangle())
+                    .gesture(
+                        LongPressGesture(minimumDuration: 5.0)
+                            .updating($longPressTap, body: {(currentState, state, transaction) in
+                                state = currentState
+                            })
+                            .onEnded({ _ in
+                                isPressed.toggle()
+                            })
+                    )
+                    .sheet(isPresented: $isPressed) {
+                        DeveloperView(modelContext: _modelContext, showdata: $showdata, reads: reads)
+                    }
                 }
+        
             }
+            .navigationTitle("設定")
+            
         }
     }
 }
