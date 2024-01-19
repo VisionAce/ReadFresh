@@ -15,6 +15,7 @@ struct ArticleView: View {
     @State private var offsetY: CGFloat = 0
     @State private var dayPicker = "綱要"
     @AppStorage(UserDefaultsDataKeys.fontSize) private var fontSize: Double = 18.0
+    @AppStorage(UserDefaultsDataKeys.toggleDarkMode) private var toggleDarkMode = false
     
     var days: [String] {
         var res = ["綱要"]
@@ -98,12 +99,12 @@ struct ArticleView: View {
                     topLeading: 10,
                     topTrailing: 10
                 ))
-                    .fill(.brown.gradient)
+                .fill(toggleDarkMode ? Color.black.gradient : Color.brown.gradient)
                 
                 VStack(spacing: 10) {
                     
                     TitleIView(read: read)
-                        .padding(.horizontal)
+                        .padding([.horizontal, .top])
                     
                     Picker("Day", selection: $dayPicker) {
                         ForEach(days, id: \.self) {

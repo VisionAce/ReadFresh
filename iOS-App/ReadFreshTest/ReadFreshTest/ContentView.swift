@@ -66,8 +66,11 @@ struct ContentView: View {
                             .tag(Tab.setting)
                         
                     }
-                    customTabBar()
+                    .safeAreaInset(edge: .bottom, spacing: 0) {
+                        customTabBar()
+                    }
                 }
+                
                 .createImages(toggleDarkMode: toggleDarkMode,
                               currentImage: $currengeImage,
                               previousImage: $preiousImage,

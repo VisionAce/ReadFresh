@@ -45,6 +45,24 @@ struct PastMessage: View {
         return result
     }
     
+    var topics: [String] {
+        var res = Set<String>()
+        for read in uniqueReads {
+            res.insert(read.training_topic)
+        }
+        return Array(res)
+    }
+    
+    var years: [String] {
+        var res = Set<String>()
+        for read in uniqueReads {
+            res.insert(read.training_year)
+        }
+        return Array(res)
+    }
+    @State private var topicPickerIndex = 0
+    @State private var yearPickerIndex = 0
+    
     @AppStorage(UserDefaultsDataKeys.fontSize) private var fontSize: Double = 18.0
     
     var body: some View {
@@ -56,6 +74,31 @@ struct PastMessage: View {
                     description: Text("請開啟網路後重啟App，或等待資料更新，謝謝～")
                 )
             } else {
+              
+                HStack {
+                    Picker("訓練主題", selection: $topicPickerIndex) {
+                        ForEach(0..<topics.count, id: \.self) {
+                            if topics.isEmpty {
+                                // No Data
+                            } else {
+                                Text(topics[$0])
+                            }
+                        }
+                    }
+                    Spacer()
+                    Picker("訓練年份", selection: $yearPickerIndex) {
+                        ForEach(0..<years.count, id: \.self) {
+                            if years.isEmpty {
+                                // No Data
+                            } else {
+                                Text(years[$0])
+                            }
+                        }
+                    }
+                }
+                .pickerStyle(.menu)
+                .padding()
+                
                 List(uniqueReads) { read in
                     NavigationLink {
                         GeometryReader {
@@ -68,22 +111,27 @@ struct PastMessage: View {
                         
                     } label: {
                         VStack(alignment: .leading) {
+                            Text(read.section_name)
                             HStack {
                                 Text(read.section_number)
                                 Spacer()
                                 Text(read.training_year)
+                                    .font(.caption)
+                                    .clipShape(.capsule(style: .circular))
+                                    .background(.orange.gradient)
+                                    .padding()
                             }
-                            .font(.headline)
+                            
                             .padding(.vertical)
-                            Text(read.section_name)
-                                .foregroundStyle(.secondary)
                         }
+                        .font(.headline)
                         .padding()
                     }
                 }
                 .scrollIndicators(.hidden)
                 .clipShape(RoundedRectangle(cornerRadius: 20))
                 .padding()
+                .padding(.bottom, 80)
                 .background(.brown.gradient.opacity(0.3))
                 .listStyle(.plain)
                 
