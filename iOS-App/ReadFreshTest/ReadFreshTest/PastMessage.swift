@@ -8,8 +8,16 @@
 import SwiftUI
 import SwiftData
 
+enum PastMessageSorted {
+    case none, topic, year, topicAndyear
+}
 
 struct PastMessage: View {
+    
+    @State private var topicPicker = "預設"
+    @State private var yearPicker = "預設"
+    @AppStorage(UserDefaultsDataKeys.fontSize) private var fontSize: Double = 18.0
+    @State private var pastMessageSorted: PastMessageSorted = .none
     
     static let currentDate = Date()
     static let updatedTime = Calendar.current.date(byAdding: .hour, value: 12, to: currentDate)!
@@ -46,24 +54,67 @@ struct PastMessage: View {
     }
     
     var topics: [String] {
-        var res = Set<String>()
+        var res = [String]()
+        res.append("預設")
         for read in uniqueReads {
-            res.insert(read.training_topic)
+            if res.last! != read.training_topic {
+                res.append(read.training_topic)
+            }
         }
-        return Array(res)
+        return res
     }
     
     var years: [String] {
-        var res = Set<String>()
+        var res = [String]()
+        res.append("預設")
         for read in uniqueReads {
-            res.insert(read.training_year)
+            if res.last! != read.training_year {
+                res.append(read.training_year)
+            }
         }
-        return Array(res)
+        return res
     }
-    @State private var topicPickerIndex = 0
-    @State private var yearPickerIndex = 0
     
-    @AppStorage(UserDefaultsDataKeys.fontSize) private var fontSize: Double = 18.0
+    var topicsReads: [ReadData_v2] {
+        var result = [ReadData_v2]()
+        for read in uniqueReads {
+            if read.training_topic == topicPicker {
+                result.append(read)
+            }
+        }
+        return result
+    }
+    var yearsReads: [ReadData_v2] {
+        var result = [ReadData_v2]()
+        for read in uniqueReads {
+            if read.training_year == yearPicker {
+                result.append(read)
+            }
+        }
+        return result
+    }
+    var topicsAndYearsReads: [ReadData_v2] {
+        var result = [ReadData_v2]()
+        for read in uniqueReads {
+            if read.training_topic == topicPicker && read.training_year == yearPicker {
+                result.append(read)
+            }
+        }
+        return result
+    }
+    
+    var sortRead: [ReadData_v2] {
+        switch pastMessageSorted {
+        case .none:
+            return uniqueReads
+        case .topic:
+            return topicsReads
+        case .year:
+            return yearsReads
+        case .topicAndyear:
+            return topicsAndYearsReads
+        }
+    }
     
     var body: some View {
         NavigationStack {
@@ -74,32 +125,24 @@ struct PastMessage: View {
                     description: Text("請開啟網路後重啟App，或等待資料更新，謝謝～")
                 )
             } else {
-              
+                
                 HStack {
-                    Picker("訓練主題", selection: $topicPickerIndex) {
-                        ForEach(0..<topics.count, id: \.self) {
-                            if topics.isEmpty {
-                                // No Data
-                            } else {
-                                Text(topics[$0])
-                            }
+                    Picker("訓練主題", selection: $topicPicker) {
+                        ForEach(topics, id: \.self) {
+                            Text($0)
                         }
                     }
                     Spacer()
-                    Picker("訓練年份", selection: $yearPickerIndex) {
-                        ForEach(0..<years.count, id: \.self) {
-                            if years.isEmpty {
-                                // No Data
-                            } else {
-                                Text(years[$0])
-                            }
+                    Picker("訓練年份", selection: $yearPicker) {
+                        ForEach(years, id: \.self) {
+                            Text($0)
                         }
                     }
                 }
                 .pickerStyle(.menu)
                 .padding()
                 
-                List(uniqueReads) { read in
+                List(sortRead) { read in
                     NavigationLink {
                         GeometryReader {
                             let size = $0.size
@@ -134,7 +177,42 @@ struct PastMessage: View {
                 .padding(.bottom, 80)
                 .background(.brown.gradient.opacity(0.3))
                 .listStyle(.plain)
-                
+                .onChange(of: topicPicker) {
+                    if yearPicker != "預設" && topicPicker == "預設" {
+                        pastMessageSorted = .year
+                        print("year")
+                    }
+                    if yearPicker != "預設" && topicPicker != "預設" {
+                        pastMessageSorted = .topicAndyear
+                        print("topicAndyear")
+                    }
+                    if yearPicker == "預設" && topicPicker != "預設" {
+                        pastMessageSorted = .topic
+                        print("topic")
+                    }
+                    if yearPicker == "預設" && topicPicker == "預設" {
+                        pastMessageSorted = .none
+                        print("none")
+                    }
+                }
+                .onChange(of: yearPicker) {
+                    if yearPicker != "預設" && topicPicker == "預設" {
+                        pastMessageSorted = .year
+                        print("year")
+                    }
+                    if yearPicker != "預設" && topicPicker != "預設" {
+                        pastMessageSorted = .topicAndyear
+                        print("topicAndyear")
+                    }
+                    if yearPicker == "預設" && topicPicker != "預設" {
+                        pastMessageSorted = .topic
+                        print("topic")
+                    }
+                    if yearPicker == "預設" && topicPicker == "預設" {
+                        pastMessageSorted = .none
+                        print("none")
+                    }
+                }
             }
         }
     }
