@@ -204,7 +204,7 @@ def main():
     from constant import week_htmls
     CURRENT_WEEK = False
     global DEBUG
-    DEBUG = True
+    DEBUG = False
     fm = FirebaseManager()
     for week_html in week_htmls.values():
         run_section(week_html, fm, current_week=CURRENT_WEEK)
