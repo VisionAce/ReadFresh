@@ -7,7 +7,7 @@ from firebase_admin import firestore
 class FirebaseManager():
 
     def __init__(self):
-        cred = credentials.Certificate('readfresh-3c7d8-8146e5296dc3.json')
+        cred = credentials.Certificate('readfresh-3c7d8-firebase-adminsdk-gf1jy-2faadc2038.json')
 
         app = firebase_admin.initialize_app(cred)
 
