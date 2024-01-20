@@ -39,6 +39,8 @@ struct ContentView: View {
     init() {
         /// Hiding Tab Bar Due To SwiftUI iOS 16 Bug
         UITabBar.appearance().isHidden = true
+        /// Modifying Refresh Control
+        UIRefreshControl.appearance().attributedTitle = NSAttributedString(string: "下拉更新...")
     }
     
     var body: some View {
@@ -161,6 +163,14 @@ struct ContentView: View {
         .onChange(of: showingloadingView) {
             print("showingloadingView: \(showingloadingView)")
         }
+        .refreshable {
+            withAnimation {
+                checkRemoteVersionTask { }
+                if checkRemoteVersionTaskCompleted {
+                    loadDataTask()
+                }
+            }
+        }
         
     }
     
@@ -237,6 +247,7 @@ struct ContentView: View {
             localVersion = remoteVersion
         }
         showingloadingView = false
+        checkRemoteVersionTaskCompleted = false
     }
     
     
@@ -256,7 +267,7 @@ struct ContentView: View {
             }
         }
         .padding(.horizontal, 15)
-        .padding(.vertical, 5)
+        .padding(.vertical, 2)
         .background(content: {
             TabShape(midpoint: tabShapePosition.x)
                 .fill(.windowBackground)

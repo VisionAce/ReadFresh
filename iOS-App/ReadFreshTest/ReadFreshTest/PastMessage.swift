@@ -126,18 +126,24 @@ struct PastMessage: View {
                 )
             } else {
                 
-                HStack {
+                Grid {
+                    GridRow {
+                        Text("主題")
+                        Text("年份")
+                    }
+                    .font(.title2.bold())
+                    GridRow {
                     Picker("訓練主題", selection: $topicPicker) {
                         ForEach(topics, id: \.self) {
                             Text($0)
                         }
                     }
-                    Spacer()
                     Picker("訓練年份", selection: $yearPicker) {
                         ForEach(years, id: \.self) {
                             Text($0)
                         }
                     }
+                }
                 }
                 .pickerStyle(.menu)
                 .padding()
