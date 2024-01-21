@@ -1,13 +1,13 @@
 week_htmls = {
-    'w4': [
+    'w6': [
         'https://churchintamsui.wixsite.com/index/morning-revival',
-        'https://classic-blog.udn.com/ymch130/180180698',
-        'https://classic-blog.udn.com/ymch130/180180749',
-        'https://classic-blog.udn.com/ymch130/180180773',
-        'https://classic-blog.udn.com/ymch130/180180797',
-        'https://classic-blog.udn.com/ymch130/180180813',
-        'https://classic-blog.udn.com/ymch130/180180819',
-        'https://classic-blog.udn.com/ymch130/180180833'
+        'https://classic-blog.udn.com/ymch130/180275734',
+        'https://classic-blog.udn.com/ymch130/180275804',
+        'https://classic-blog.udn.com/ymch130/180275822',
+        'https://classic-blog.udn.com/ymch130/180275836',
+        'https://classic-blog.udn.com/ymch130/180275855',
+        'https://classic-blog.udn.com/ymch130/180275885',
+        'https://classic-blog.udn.com/ymch130/180275971'
     ]
 }
 
@@ -52,7 +52,28 @@ week_htmls_2023_thanks = {
         'https://classic-blog.udn.com/ymch130/180158270',
         'https://classic-blog.udn.com/ymch130/180158288',
         'https://classic-blog.udn.com/ymch130/180158315'
+    ],
+    'w5': [
+        'https://churchintamsui.wixsite.com/index/morning-revival',
+        'https://classic-blog.udn.com/ymch130/180180698',
+        'https://classic-blog.udn.com/ymch130/180180749',
+        'https://classic-blog.udn.com/ymch130/180180773',
+        'https://classic-blog.udn.com/ymch130/180180797',
+        'https://classic-blog.udn.com/ymch130/180180813',
+        'https://classic-blog.udn.com/ymch130/180180819',
+        'https://classic-blog.udn.com/ymch130/180180833'
+    ],
+    'w6': [
+        'https://churchintamsui.wixsite.com/index/morning-revival',
+        'https://classic-blog.udn.com/ymch130/180180848',
+        'https://classic-blog.udn.com/ymch130/180180893',
+        'https://classic-blog.udn.com/ymch130/180180913',
+        'https://classic-blog.udn.com/ymch130/180180936',
+        'https://classic-blog.udn.com/ymch130/180181089',
+        'https://classic-blog.udn.com/ymch130/180181106',
+        'https://classic-blog.udn.com/ymch130/180181115'
     ]
+
 }
 
 week_htmls_2023_fall = {

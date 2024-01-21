@@ -29,7 +29,7 @@ class HtmlParser():
         self.page = requests.get(html).text
         self.outline_check = ['週一','週二','週三','週四','週五','週六']
         self.day_message_check = ['晨興餧養', 'WEEK', '信息選讀']
-        self.training_check = ['感恩節國際相調特會','秋季國際長老及負責弟兄訓練']
+        self.training_check = ['感恩節國際相調特會','秋季國際長老及負責弟兄訓練', '冬季']
         self.prefix = '<span style="font-size:'
 
     def _get_text(self, soup):
@@ -37,7 +37,10 @@ class HtmlParser():
             return soup.p.text
         elif soup.div:
             return soup.div.text
+        elif soup.span:
+            return soup.span.text
         else:
+            #print(soup)
             raise Exception('Cannot find text')
 
     def run(self):
@@ -56,6 +59,7 @@ class HtmlParser():
             print('Skip Html')
 
     def check_training(self):
+        #print(self.page)
         for c in self.training_check:
             if c in self.page:
                 return True
@@ -71,12 +75,16 @@ class HtmlParser():
                     line = soup.h2.text
                     break
         #print(line)
-        year, tmp_name = line.split('─')
+        if '─' in line:
+            year, tmp_name = line.split('─')
+        else:
+           year, tmp_name = line.split(' ')
         training_name, topic = tmp_name.split('『') 
         res['training_year'] = year.strip()
         res['training_name'] = training_name
         res['training_topic'] = topic.strip('』')
         res['type'] = 'Training'
+        #print(res)
         return res
 
     def parse_day_message(self):
@@ -129,9 +137,17 @@ class HtmlParser():
                     pass
                     #print('Else: ', line)
                 outline_data.append(line)
-        print(outline_data)
-        res['section_number'] = outline_data[0]
-        res['section_name'] = outline_data[1]
+        #print(outline_data)
+        #print(outline_data)
+        # Fix 2023年 冬季訓練『經營美地所豫表包羅萬有的基督，為着建造召會作基督的身體，為着國度的實際與實現，並為着新婦得以為主的來臨將自己豫備好』
+        if ' ' in outline_data[0]:
+            _section_number, _section_name = outline_data[0].split()
+        else:
+            _section_number = outline_data[0]
+            _section_name = outline_data[1]
+        res['section_number'] = _section_number
+        res['section_name'] = _section_name
+        print(res)
         res['data'] = [
             {
                 "context" : outline_data,
@@ -139,7 +155,6 @@ class HtmlParser():
             }
         ]
         res['type'] = 'Outline'
-        #print(res)
         return res
 
     def _check(self, rules, page):
@@ -161,25 +176,26 @@ def run_once(html):
 
 def run_section(htmls, fm, current_week=False):
     #html='https://classic-blog.udn.com/ymch130/180049577'
-    now = datetime.datetime.utcnow().replace(minute=0, hour=0, second=0, microsecond=0)
+    now = datetime.datetime.utcnow()
     if current_week:
         started_day = now - datetime.timedelta(days=now.weekday())
         ended_day = started_day + datetime.timedelta(days=7)
     else:
         started_day = now + datetime.timedelta(days=-now.weekday(), weeks=1)
         ended_day =  started_day + datetime.timedelta(days=7)
-    print(now)
-    print(started_day)
-    print(ended_day)
+    #print(now)
+    #print(started_day)
+    #print(ended_day)
     res = {}
-    res['started_day'] = started_day
-    res['ended_day'] = ended_day
+    res['started_day'] = started_day.replace(minute=0, hour=0, second=0, microsecond=0)
+    res['ended_day'] = ended_day.replace(minute=0, hour=0, second=0, microsecond=0)
     res['created_day'] = now
     res['day_messages'] = []
     res['db_version'] = DB_VERSION
+    print(res)
     for html in htmls:
         data = run_once(html)
-        print(data)
+        #print(data)
         _type = data['type']
         if _type == 'Training':
             res.update(data)
@@ -187,11 +203,12 @@ def run_section(htmls, fm, current_week=False):
             res['section_name'] = data['section_name']
             res['section_number'] = data['section_number']
             res['outline'] = data['data']
+            print(res)
         elif _type == 'DayMessage':
             res['day_messages'].append(data)
         else:
             print('Invalid')
-    #print(res)
+    print(res)
     if DEBUG:
         return
     version = fm.get_metadata_version('stg-metadata', 'metadata')
