@@ -124,7 +124,6 @@ struct PastMessage: View {
     
     var topicList: [String] {
         var result = [String]()
-        
         for read in sortRead {
             if result.isEmpty {
                 result.append(read.training_topic)
@@ -139,7 +138,7 @@ struct PastMessage: View {
         return result
     }
     
-    var topicRead: [TopicRead] {
+    var filteredRead: [TopicRead] {
         var result = [TopicRead]()
         for topic in topicList {
             var data = [ReadData_v2]()
@@ -150,6 +149,7 @@ struct PastMessage: View {
             }
             let save = TopicRead(topicName: topic, data: data)
             result.append(save)
+            data.removeAll()
         }
         return result
     }
@@ -222,7 +222,7 @@ struct PastMessage: View {
                     }
                 }
                 
-                List(topicRead, id: \.self) { item in
+                List(filteredRead, id: \.self) { item in
                     Section(header: Text("主題：\(item.topicName)").font(.title3)) {
                         ForEach(item.data) { read in
                             NavigationLink {

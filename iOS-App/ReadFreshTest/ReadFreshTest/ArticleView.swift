@@ -35,7 +35,7 @@ struct ArticleView: View {
 
                         DayMessageView(read: read, dayPicker: dayPicker)
                             .padding(.horizontal)
-                        ForEach(0..<6, id: \.self) { _ in
+                        ForEach(0..<8, id: \.self) { _ in
                             Spacer()
                         }
                     }
