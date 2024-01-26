@@ -14,6 +14,7 @@
 		274DAB5D2B4D9F180088A9A9 /* ArticleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 274DAB5C2B4D9F180088A9A9 /* ArticleView.swift */; };
 		274FA4132B468A2A00B8E883 /* DeveloperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 274FA4122B468A2A00B8E883 /* DeveloperView.swift */; };
 		274FA4152B46989E00B8E883 /* PastMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 274FA4142B46989E00B8E883 /* PastMessage.swift */; };
+		27577C882B641DAC00108009 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27577C872B641DAC00108009 /* AppDelegate.swift */; };
 		2759DBEA2B56A97C0071317E /* View+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2759DBE92B56A97C0071317E /* View+Extensions.swift */; };
 		2759DBEC2B56A98F0071317E /* RectKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2759DBEB2B56A98F0071317E /* RectKey.swift */; };
 		2766D2ED2B39D48400F7C5A8 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2766D2EC2B39D48400F7C5A8 /* LoadingView.swift */; };
@@ -75,6 +76,8 @@
 		274DAB5C2B4D9F180088A9A9 /* ArticleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleView.swift; sourceTree = "<group>"; };
 		274FA4122B468A2A00B8E883 /* DeveloperView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeveloperView.swift; sourceTree = "<group>"; };
 		274FA4142B46989E00B8E883 /* PastMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PastMessage.swift; sourceTree = "<group>"; };
+		27577C862B641D2100108009 /* ReadFreshTest.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ReadFreshTest.entitlements; sourceTree = "<group>"; };
+		27577C872B641DAC00108009 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2759DBE92B56A97C0071317E /* View+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "View+Extensions.swift"; sourceTree = "<group>"; };
 		2759DBEB2B56A98F0071317E /* RectKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RectKey.swift; sourceTree = "<group>"; };
 		2759DBED2B56D4C20071317E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -179,6 +182,7 @@
 		276DFA0A2B1DA0170035274B /* ReadFreshTest */ = {
 			isa = PBXGroup;
 			children = (
+				27577C862B641D2100108009 /* ReadFreshTest.entitlements */,
 				2759DBED2B56D4C20071317E /* Info.plist */,
 				276DFA0B2B1DA0170035274B /* ReadFreshTestApp.swift */,
 				276DFA0D2B1DA0170035274B /* ContentView.swift */,
@@ -217,6 +221,7 @@
 				2759DBE92B56A97C0071317E /* View+Extensions.swift */,
 				27A0F21E2B23272D00242AAA /* FileManager-DocumentsDirectory.swift */,
 				2778A19D2B4E7166009DD86C /* ViewExtension.swift */,
+				27577C872B641DAC00108009 /* AppDelegate.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -398,6 +403,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				27577C882B641DAC00108009 /* AppDelegate.swift in Sources */,
 				2778A19E2B4E7166009DD86C /* ViewExtension.swift in Sources */,
 				27C6F8FB2B35817400E33C9B /* UserDefaultsData.swift in Sources */,
 				2766D2EF2B39D75B00F7C5A8 /* SettingView.swift in Sources */,
@@ -551,6 +557,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = ReadFreshTest/ReadFreshTest.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"ReadFreshTest/Preview Content\"";
@@ -582,6 +589,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = ReadFreshTest/ReadFreshTest.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"ReadFreshTest/Preview Content\"";
