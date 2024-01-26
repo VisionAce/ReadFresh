@@ -36,9 +36,13 @@ struct ContentView: View {
     @State private var preiousImage: UIImage?
     @State private var maskAnimation: Bool = false
     
+//    @State private var lastRefreshTime: Date?
+    
     init() {
         /// Hiding Tab Bar Due To SwiftUI iOS 16 Bug
         UITabBar.appearance().isHidden = true
+        /// Modifying Refresh Control
+        UIRefreshControl.appearance().attributedTitle = NSAttributedString(string: "下拉更新...")
     }
     
     var body: some View {
@@ -66,8 +70,11 @@ struct ContentView: View {
                             .tag(Tab.setting)
                         
                     }
-                    customTabBar()
+                    .safeAreaInset(edge: .bottom, spacing: 0) {
+                        customTabBar()
+                    }
                 }
+                
                 .createImages(toggleDarkMode: toggleDarkMode,
                               currentImage: $currengeImage,
                               previousImage: $preiousImage,
@@ -158,6 +165,15 @@ struct ContentView: View {
         .onChange(of: showingloadingView) {
             print("showingloadingView: \(showingloadingView)")
         }
+        .refreshable {
+            
+//            let currentTime = Date()
+//            guard let lastTime = lastRefreshTime, currentTime.timeIntervalSince(lastTime) > 1.0 else {
+//                return  // 短时间内不执行刷新
+//            }
+//            lastRefreshTime = currentTime
+            onRefresh()
+        }
         
     }
     
@@ -234,6 +250,16 @@ struct ContentView: View {
             localVersion = remoteVersion
         }
         showingloadingView = false
+        checkRemoteVersionTaskCompleted = false
+    }
+    
+    func onRefresh() {
+        withAnimation {
+            checkRemoteVersionTask { }
+            if checkRemoteVersionTaskCompleted {
+                loadDataTask()
+            }
+        }
     }
     
     
@@ -253,13 +279,13 @@ struct ContentView: View {
             }
         }
         .padding(.horizontal, 15)
-        .padding(.vertical, 5)
+        .padding(.vertical, 2)
         .background(content: {
             TabShape(midpoint: tabShapePosition.x)
                 .fill(.windowBackground)
                 .ignoresSafeArea()
-                /// Adding Blur + Shadow
-                /// For shape Smoothening
+            /// Adding Blur + Shadow
+            /// For shape Smoothening
                 .shadow(color: tint.opacity(0.2), radius: 5, x: 0, y: -5)
                 .blur(radius: 2)
                 .padding(.top, 25)
@@ -284,7 +310,7 @@ struct TabItem: View {
             Image(systemName: tab.systemImage)
                 .font(.title2)
                 .foregroundStyle(activeTab == tab ? .white : tint)
-                /// Increasing size for the Active Tab
+            /// Increasing size for the Active Tab
                 .frame(width: activeTab == tab ? 58 : 35, height: activeTab == tab ? 58 : 35)
                 .background {
                     if activeTab == tab {

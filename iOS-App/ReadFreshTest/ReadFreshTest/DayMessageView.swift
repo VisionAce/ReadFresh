@@ -56,16 +56,20 @@ struct DayMessageView: View {
                 VStack(alignment: .leading) {
                     if dayPicker == "綱要" {
                         ForEach(read.outline, id: \.self) { data in
-                            ForEach(data.context, id: \.self) { context in
-                                Text("\(context)\n")
+                            if let firstIndex = data.context.firstIndex(where: { $0.contains("詩歌：") }) {
+                                ForEach(firstIndex..<data.context.count, id: \.self) { index in
+                                    Text("\(data.context[index])\n")
+                                }
                             }
                         }
                     } else {
                         ForEach(read.day_messages, id: \.self) { day_message in
                             if dayPicker == day_message.day  {
                                 ForEach(day_message.data, id: \.self) { page in
-                                    ForEach(page.context, id: \.self) { context in
-                                        Text("\(context)\n")
+                                    if let firstIndex = page.context.firstIndex(where: { $0.contains("晨興餧養") }) {
+                                        ForEach(firstIndex..<page.context.count, id: \.self) { index in
+                                            Text("\(page.context[index])\n")
+                                        }
                                     }
                                 }
                             }
