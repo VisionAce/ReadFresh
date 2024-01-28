@@ -17,6 +17,8 @@ struct ArticleView: View {
     @AppStorage(UserDefaultsDataKeys.fontSize) private var fontSize: Double = 18.0
     @AppStorage(UserDefaultsDataKeys.toggleDarkMode) private var toggleDarkMode = false
     
+    @State private var colorData = ColorData()
+    
     var days: [String] {
         var res = ["綱要"]
         for title in read.day_messages {
@@ -79,7 +81,7 @@ struct ArticleView: View {
                             .symbolRenderingMode(.palette)
                             .font(.largeTitle)
                             .padding()
-                            .foregroundStyle(Color.white.gradient, Color.brown.gradient)
+                            .foregroundStyle(Color.white.gradient, colorData.themeColor.gradient)
                     }
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
                         .padding(EdgeInsets(top: 0, leading: 0, bottom: 50, trailing: 5))
@@ -103,7 +105,7 @@ struct ArticleView: View {
                     topLeading: 10,
                     topTrailing: 10
                 ))
-                .fill(toggleDarkMode ? Color.black.gradient : Color.brown.gradient)
+                .fill(toggleDarkMode ? Color.black.gradient : colorData.themeColor.gradient)
                 
                 VStack(spacing: 10) {
                     

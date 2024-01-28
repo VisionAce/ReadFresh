@@ -36,6 +36,7 @@ struct ContentView: View {
     @State private var preiousImage: UIImage?
     @State private var maskAnimation: Bool = false
     
+    private var colorData = ColorData()
 //    @State private var lastRefreshTime: Date?
     
     init() {
@@ -270,7 +271,7 @@ struct ContentView: View {
         /// Moving all the Remaining Tab Item's to Bottom
         HStack(alignment: .bottom, spacing: 0) {
             ForEach(Tab.allCases, id: \.rawValue) {
-                TabItem(tint: tint,
+                TabItem(tint: colorData.themeColor,
                         inactiveTint: inactiveTint,
                         tab: $0,
                         animation: animation,
@@ -286,7 +287,7 @@ struct ContentView: View {
                 .ignoresSafeArea()
             /// Adding Blur + Shadow
             /// For shape Smoothening
-                .shadow(color: tint.opacity(0.2), radius: 5, x: 0, y: -5)
+                .shadow(color: colorData.themeColor.opacity(0.2), radius: 5, x: 0, y: -5)
                 .blur(radius: 2)
                 .padding(.top, 25)
         })

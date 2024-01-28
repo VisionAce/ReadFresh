@@ -24,6 +24,7 @@ struct PastMessage: View {
     @State private var yearPicker = "預設"
     @AppStorage(UserDefaultsDataKeys.fontSize) private var fontSize: Double = 18.0
     @State private var pastMessageSorted: PastMessageSorted = .none
+    @State private var colorData = ColorData()
     
     static let currentDate = Date()
     static let updatedTime = Calendar.current.date(byAdding: .hour, value: 12, to: currentDate)!
@@ -223,7 +224,7 @@ struct PastMessage: View {
                 }
                 
                 List(filteredRead, id: \.self) { item in
-                    Section(header: Text("\(item.topicName)").font(.title3)) {
+                    Section(header: Text("\(item.topicName)").font(.title3).bold()) {
                         ForEach(item.data) { read in
                             NavigationLink {
                                 GeometryReader {
@@ -244,7 +245,7 @@ struct PastMessage: View {
                                             .padding(3)
                                             .background(
                                                 Capsule()
-                                                    .foregroundStyle(.orange.gradient)
+                                                    .foregroundStyle(colorData.themeColor.gradient)
                                             )
                                         
                                         
@@ -264,7 +265,7 @@ struct PastMessage: View {
                 .clipShape(RoundedRectangle(cornerRadius: 20))
                 .padding()
                 .padding(.bottom, 80)
-                .background(.brown.gradient.opacity(0.3))
+                .background(colorData.themeColor.gradient)
                 .listStyle(.plain)
 //                .listStyle(GroupedListStyle())
             }
