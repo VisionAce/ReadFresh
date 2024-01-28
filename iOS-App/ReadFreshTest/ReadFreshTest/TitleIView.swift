@@ -16,13 +16,13 @@ struct TitleIView: View {
 //                .font(.title3.bold())
             
             Text("\(read.section_name)")
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.primary)
 //                .font(.headline.bold())
             
             HStack {
                 Spacer()
                 Text("\(read.training_year)")
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.primary)
             }
         }
     }

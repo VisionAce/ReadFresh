@@ -236,22 +236,21 @@ struct PastMessage: View {
                                 }
                             } label: {
                                 VStack(alignment: .leading) {
-                                    Text(read.section_name)
                                     HStack {
                                         Text(read.section_number)
                                         Spacer()
                                         Text(read.training_year)
                                             .font(.caption)
                                             .padding(3)
+                                            .foregroundStyle(.windowBackground)
                                             .background(
                                                 Capsule()
                                                     .foregroundStyle(colorData.themeColor.gradient)
                                             )
-                                        
-                                        
                                     }
-                                    
                                     .padding(.vertical)
+                                    
+                                    Text(read.section_name)
                                 }
                                 .font(.headline)
                                 .padding()

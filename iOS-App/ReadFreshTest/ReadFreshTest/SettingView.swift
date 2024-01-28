@@ -26,7 +26,7 @@ struct SettingView: View {
             Form {
                 Section("顏色") {
                     ColorPicker("選擇您要的主題顏色", selection: $color)
-                        .padding()
+                        .padding(.horizontal)
                         .onChange(of: color) {
                             colorData.saveColor(color: color)
                             color = colorData.loadColor()
