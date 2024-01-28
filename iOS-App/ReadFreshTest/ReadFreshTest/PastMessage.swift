@@ -223,7 +223,7 @@ struct PastMessage: View {
                 }
                 
                 List(filteredRead, id: \.self) { item in
-                    Section(header: Text("主題：\(item.topicName)").font(.title3)) {
+                    Section(header: Text("\(item.topicName)").font(.title3)) {
                         ForEach(item.data) { read in
                             NavigationLink {
                                 GeometryReader {
