@@ -16,15 +16,27 @@ struct SettingView: View {
     @State private var isPressed = false
     @State private var showdata = false
     
+    @State private var color: Color = Color.brown
+    @State private var colorData = ColorData()
+    
     let reads: [ReadData_v2]
     var body: some View {
         NavigationStack {
             
             Form {
+                Section("顏色") {
+                    ColorPicker("選擇您要的主題顏色", selection: $color)
+                        .padding(.horizontal)
+                        .onChange(of: color) {
+                            colorData.saveColor(color: color)
+                            color = colorData.loadColor()
+                        }
+                }
+                
                 Section("基本設定") {
                     HStack {
                         Image(systemName: "character.bubble.fill.zh")
-                            .foregroundStyle(.indigo)
+                            .foregroundStyle(colorData.themeColor)
                         Text("字級 \(fontSize, specifier: "%.0f")")
                         Slider(value: $fontSize,
                                in: 18...50,
@@ -34,7 +46,7 @@ struct SettingView: View {
                     
                     HStack {
                         Image(systemName: "line.horizontal.star.fill.line.horizontal")
-                            .foregroundStyle(.indigo)
+                            .foregroundStyle(colorData.themeColor)
                         Text("行距 \(lineSpacingSize, specifier: "%.0f")")
                         Slider(value: $lineSpacingSize,
                                in: 8...20,
@@ -50,6 +62,7 @@ struct SettingView: View {
 「凡事都可行」，但不都有益處。「凡事都可行」，但不都造就人。 無論甚麼人，不要求自己的益處，而要求別人的益處。
 """)
                     .font(.system(size: fontSize))
+                    .foregroundStyle(colorData.themeColor)
                     .lineSpacing(lineSpacingSize)
                     .padding(.horizontal)
                     .containerShape(Rectangle())
@@ -69,6 +82,9 @@ struct SettingView: View {
         
             }
             .navigationTitle("設定")
+            .onAppear {
+                color = colorData.loadColor()
+            }
             
         }
     }

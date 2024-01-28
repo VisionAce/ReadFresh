@@ -15,6 +15,7 @@ struct DayMessageView: View {
     
     @GestureState private var magnifyBy = 1.0
     @State private var lastGestureState = 0.0
+    @State private var colorData = ColorData()
 
     var magnification: some Gesture {
         MagnifyGesture()
@@ -37,7 +38,7 @@ struct DayMessageView: View {
         self.read = read
         self.dayPicker = dayPicker
      //This changes the "thumb" that selects between items
-        UISegmentedControl.appearance().selectedSegmentTintColor = .brown
+        UISegmentedControl.appearance().selectedSegmentTintColor = colorData.uiColor
       
      //This changes the color for the whole "bar" background
         UISegmentedControl.appearance().backgroundColor = .lightText

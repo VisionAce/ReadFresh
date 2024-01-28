@@ -24,6 +24,7 @@ struct PastMessage: View {
     @State private var yearPicker = "預設"
     @AppStorage(UserDefaultsDataKeys.fontSize) private var fontSize: Double = 18.0
     @State private var pastMessageSorted: PastMessageSorted = .none
+    @State private var colorData = ColorData()
     
     static let currentDate = Date()
     static let updatedTime = Calendar.current.date(byAdding: .hour, value: 12, to: currentDate)!
@@ -223,7 +224,7 @@ struct PastMessage: View {
                 }
                 
                 List(filteredRead, id: \.self) { item in
-                    Section(header: Text("\(item.topicName)").font(.title3)) {
+                    Section(header: Text("\(item.topicName)").font(.title3).bold()) {
                         ForEach(item.data) { read in
                             NavigationLink {
                                 GeometryReader {
@@ -235,22 +236,21 @@ struct PastMessage: View {
                                 }
                             } label: {
                                 VStack(alignment: .leading) {
-                                    Text(read.section_name)
                                     HStack {
                                         Text(read.section_number)
                                         Spacer()
                                         Text(read.training_year)
                                             .font(.caption)
                                             .padding(3)
+                                            .foregroundStyle(.windowBackground)
                                             .background(
                                                 Capsule()
-                                                    .foregroundStyle(.orange.gradient)
+                                                    .foregroundStyle(colorData.themeColor.gradient)
                                             )
-                                        
-                                        
                                     }
-                                    
                                     .padding(.vertical)
+                                    
+                                    Text(read.section_name)
                                 }
                                 .font(.headline)
                                 .padding()
@@ -264,7 +264,7 @@ struct PastMessage: View {
                 .clipShape(RoundedRectangle(cornerRadius: 20))
                 .padding()
                 .padding(.bottom, 80)
-                .background(.brown.gradient.opacity(0.3))
+                .background(colorData.themeColor.gradient)
                 .listStyle(.plain)
 //                .listStyle(GroupedListStyle())
             }

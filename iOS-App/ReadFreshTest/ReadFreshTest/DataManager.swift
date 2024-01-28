@@ -10,9 +10,6 @@ import FirebaseFirestore
 import FirebaseFirestoreSwift
 
 
-
-
-
 struct StgMetadata: Codable, Identifiable {
     @DocumentID var id: String?
 //    var id: String = UUID().uuidString
@@ -130,7 +127,5 @@ class DataManager {
             print(song)
         }
     }
-    
-        
     
 }
