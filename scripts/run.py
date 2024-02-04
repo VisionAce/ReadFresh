@@ -219,7 +219,7 @@ def run_section(htmls, fm, current_week=False):
 
 def main():
     from constant import week_htmls
-    CURRENT_WEEK = False
+    CURRENT_WEEK = True
     global DEBUG
     DEBUG = False
     fm = FirebaseManager()
