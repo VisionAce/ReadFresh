@@ -33,7 +33,12 @@ struct SettingView: View {
                         }
                 }
                 
-                Section("基本設定") {
+                Section("關於") {
+                    NavigationLink("關於＆聯絡方式", destination: AboutView())
+                        .padding(.horizontal)
+                }
+                
+                Section("文本設定") {
                     HStack {
                         Image(systemName: "character.bubble.fill.zh")
                             .foregroundStyle(colorData.themeColor)
@@ -54,6 +59,8 @@ struct SettingView: View {
                     }
                     .padding(.horizontal)
                 }
+                
+                
                 
                 Section("顯示") {
                     Text("""
@@ -85,10 +92,11 @@ struct SettingView: View {
             .onAppear {
                 color = colorData.loadColor()
             }
-            
+            }
+        
         }
     }
-}
+
 
 //#Preview {
 //    SettingView()
