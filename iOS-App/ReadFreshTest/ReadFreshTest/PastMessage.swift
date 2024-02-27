@@ -227,7 +227,9 @@ struct PastMessage: View {
                 }
                 
                 List(filteredRead, id: \.self) { item in
-                    Section(header: Text("\(item.topicName)")) {
+                    Section(header: Text("\(item.topicName)")
+                        .bold()
+                        .lineLimit(1)) {
                         ForEach(item.data) { read in
                             NavigationLink {
                                 GeometryReader {
@@ -259,28 +261,30 @@ struct PastMessage: View {
                                                     .foregroundStyle(colorData.themeColor.gradient)
                                             )
                                     }
-                                    
-                                    Text(read.section_number)
-                                        .padding(.vertical)
-                                    
-                                    Text(read.section_name)
-                                    
+                                    HStack {
+                                        Text(read.section_number)
+                                            .padding(.vertical)
+                                        
+                                        Text(read.section_name)
+                                            .lineLimit(1)
+                                    }
                                 }
-                                .font(.headline)
-                                .padding()
+                                .padding(5)
                             }
                             
                         }
                         
                     }
+                        .headerProminence(.increased)
                 }
                 .scrollIndicators(.hidden)
-                .clipShape(RoundedRectangle(cornerRadius: 20))
-                .padding()
-                .padding(.bottom, 80)
-                .background(activateDarkMode ? Color.black.gradient : colorData.themeColor.gradient)
+//                .clipShape(RoundedRectangle(cornerRadius: 20))
+//                .padding()
+                .padding(.bottom, 65)
+//                .background(activateDarkMode ? Color.black.gradient : colorData.themeColor.gradient)
                 .listStyle(.plain)
-                //                .listStyle(GroupedListStyle())
+//                .listStyle(GroupedListStyle())
+                                
             }
         }
     }

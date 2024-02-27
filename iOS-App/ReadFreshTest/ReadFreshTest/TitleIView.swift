@@ -13,11 +13,11 @@ struct TitleIView: View {
         Group {
             Text("\(read.training_topic)")
                 .foregroundStyle(.primary)
-                .font(.title3.bold())
+                .font(.subheadline)
             
             Text("\(read.section_name)")
                 .foregroundStyle(.primary)
-                .font(.headline.bold())
+                .font(.headline)
                 .padding(.bottom)
             
         }

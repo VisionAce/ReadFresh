@@ -14,6 +14,7 @@ struct AboutView: View {
     @State private var email = SupportEmail(toAddress: "ambitious4728@gmail.com",
                                             subject: "App問題回報",
                                             messageHeader: "請在以下描述您的問題")
+    @AppStorage(UserDefaultsDataKeys.activateDarkMode) private var activateDarkMode = false
     
     var body: some View {
         NavigationStack {
@@ -23,8 +24,13 @@ struct AboutView: View {
                     Text("App版本: \(Bundle.main.appVersion)")
                     
                     
-                    Link("資料來源", destination: URL(string: "https://blog.udn.com/ymch130/article")!)
                     
+                    
+                }
+                
+                Section("資料來源") {
+                    Link("部落格", destination: URL(string: "https://blog.udn.com/ymch130/article")!)
+                    Link("新北市召會淡水會所", destination: URL(string: "https://churchintamsui.wixsite.com/index/morning-revival")!)
                 }
                 
                 Section("聯絡方式") {
@@ -42,12 +48,15 @@ struct AboutView: View {
                         } label: {
                             HStack {
                                 Image(systemName: "envelope.circle.fill")
-                                    .font(.title)
+                                    .resizable()
+                                    .frame(width: 30,height: 30)
                                     .foregroundStyle(colorData.themeColor.gradient)
+                                
+                                Text("開發者信箱")
+                                    .textSelection(.enabled)
                             }
                         }
-                        Text("ambotious4728@gmail.com")
-                            .textSelection(.enabled)
+                        
                     }
                     
                     HStack {
@@ -55,15 +64,17 @@ struct AboutView: View {
                             .resizable()
                             .frame(width: 30,height: 30)
                         
-                        Link("Line", destination: URL(string: "https://lin.ee/hqPBXDu")!)
+                        Link("Line官方", destination: URL(string: "https://lin.ee/hqPBXDu")!)
                     }
                     
                     HStack {
-                        Image(.github)
+                        Image(activateDarkMode ? .githubDark : .githubLight)
                             .resizable()
                             .frame(width: 30,height: 30)
+                            .background(.white)
+                            .clipShape(RoundedRectangle(cornerRadius: 5))
                         
-                        Link("Github", destination: URL(string: "https://github.com/VisionAce/ReadFresh")!)
+                        Link("Github原始碼", destination: URL(string: "https://github.com/VisionAce/ReadFresh")!)
                     }
                     
                 }
