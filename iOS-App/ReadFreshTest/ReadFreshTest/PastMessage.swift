@@ -23,6 +23,7 @@ struct PastMessage: View {
     @State private var trainNamePicker = "預設"
     @State private var yearPicker = "預設"
     @AppStorage(UserDefaultsDataKeys.fontSize) private var fontSize: Double = 18.0
+    @AppStorage(UserDefaultsDataKeys.activateDarkMode) private var activateDarkMode = false
     @State private var pastMessageSorted: PastMessageSorted = .none
     @State private var colorData = ColorData()
     
@@ -158,11 +159,13 @@ struct PastMessage: View {
     var body: some View {
         NavigationStack {
             if uniqueReads.isEmpty {
-                ContentUnavailableView(
-                    "沒有資料",
-                    systemImage: "swiftdata",
-                    description: Text("請開啟網路後重啟App，或等待資料更新，謝謝～")
-                )
+                List {
+                    ContentUnavailableView(
+                        "沒有資料",
+                        systemImage: "swiftdata",
+                        description: Text("請開啟網路後重啟App，或等待資料更新，謝謝～\n\n下拉可刷新頁面")
+                    )
+                }
             } else {
                 
                 Grid {
@@ -224,7 +227,9 @@ struct PastMessage: View {
                 }
                 
                 List(filteredRead, id: \.self) { item in
-                    Section(header: Text("\(item.topicName)").font(.title3).bold()) {
+                    Section(header: Text("\(item.topicName)")
+                        .bold()
+                        .lineLimit(1)) {
                         ForEach(item.data) { read in
                             NavigationLink {
                                 GeometryReader {
@@ -236,8 +241,16 @@ struct PastMessage: View {
                                 }
                             } label: {
                                 VStack(alignment: .leading) {
+                                    
                                     HStack {
-                                        Text(read.section_number)
+                                        Text(read.training_name)
+                                            .font(.caption)
+                                            .padding(3)
+                                            .foregroundStyle(.windowBackground)
+                                            .background(
+                                                Capsule()
+                                                    .foregroundStyle(colorData.themeColor.gradient)
+                                            )
                                         Spacer()
                                         Text(read.training_year)
                                             .font(.caption)
@@ -248,25 +261,30 @@ struct PastMessage: View {
                                                     .foregroundStyle(colorData.themeColor.gradient)
                                             )
                                     }
-                                    .padding(.vertical)
-                                    
-                                    Text(read.section_name)
+                                    HStack {
+                                        Text(read.section_number)
+                                            .padding(.vertical)
+                                        
+                                        Text(read.section_name)
+                                            .lineLimit(1)
+                                    }
                                 }
-                                .font(.headline)
-                                .padding()
+                                .padding(5)
                             }
                             
                         }
                         
                     }
+                        .headerProminence(.increased)
                 }
                 .scrollIndicators(.hidden)
-                .clipShape(RoundedRectangle(cornerRadius: 20))
-                .padding()
-                .padding(.bottom, 80)
-                .background(colorData.themeColor.gradient)
+//                .clipShape(RoundedRectangle(cornerRadius: 20))
+//                .padding()
+                .padding(.bottom, 65)
+//                .background(activateDarkMode ? Color.black.gradient : colorData.themeColor.gradient)
                 .listStyle(.plain)
 //                .listStyle(GroupedListStyle())
+                                
             }
         }
     }

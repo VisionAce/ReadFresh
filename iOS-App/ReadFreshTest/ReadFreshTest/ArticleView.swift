@@ -105,7 +105,8 @@ struct ArticleView: View {
                     topLeading: 10,
                     topTrailing: 10
                 ))
-                .fill(toggleDarkMode ? Color.black.gradient : colorData.themeColor.gradient)
+//                .fill(toggleDarkMode ? Color.black.gradient : colorData.themeColor.gradient)
+                .fill(toggleDarkMode ? Color.black.gradient : Color.white.gradient)
                 
                 VStack(spacing: 10) {
                     

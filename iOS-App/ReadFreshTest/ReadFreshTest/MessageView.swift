@@ -70,11 +70,13 @@ struct MessageView: View {
                 Spacer()
                 
                 if uniqueReads.isEmpty {
-                    ContentUnavailableView(
-                        "沒有資料",
-                        systemImage: "swiftdata",
-                        description: Text("請開啟網路後重啟App，或等待資料更新，謝謝～")
-                    )
+                    List {
+                        ContentUnavailableView(
+                            "沒有資料",
+                            systemImage: "swiftdata",
+                            description: Text("請開啟網路後重啟App，或等待資料更新，謝謝～\n\n下拉可刷新頁面")
+                        )
+                    }
                 } else {
                     GeometryReader {
                         let size = $0.size

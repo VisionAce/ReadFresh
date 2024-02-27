@@ -57,6 +57,12 @@
 		276DFA5B2B1DB0B30035274B /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 276DFA5A2B1DB0B30035274B /* FirebaseStorage */; };
 		276DFA5D2B1DB0B30035274B /* FirebaseStorageCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = 276DFA5C2B1DB0B30035274B /* FirebaseStorageCombine-Community */; };
 		276DFA5F2B1DB1110035274B /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 276DFA5E2B1DB1110035274B /* DataManager.swift */; };
+		27735F1E2B8A5F33003064DA /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27735F1D2B8A5F33003064DA /* AboutView.swift */; };
+		27735F212B8A5FAF003064DA /* SupportEmail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27735F202B8A5FAF003064DA /* SupportEmail.swift */; };
+		27735F242B8A5FC0003064DA /* MailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27735F232B8A5FC0003064DA /* MailView.swift */; };
+		27735F262B8A6166003064DA /* Bundle+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27735F252B8A6166003064DA /* Bundle+Extension.swift */; };
+		27735F282B8A617C003064DA /* UIDevice+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27735F272B8A617C003064DA /* UIDevice+Extension.swift */; };
+		27735F2A2B8A6196003064DA /* DeviceModels.json in Resources */ = {isa = PBXBuildFile; fileRef = 27735F292B8A6196003064DA /* DeviceModels.json */; };
 		2778A19C2B4E6F8C009DD86C /* ViewIDKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2778A19B2B4E6F8C009DD86C /* ViewIDKey.swift */; };
 		2778A19E2B4E7166009DD86C /* ViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2778A19D2B4E7166009DD86C /* ViewExtension.swift */; };
 		278E4DD62B666EB000A8F394 /* ColorData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 278E4DD52B666EB000A8F394 /* ColorData.swift */; };
@@ -92,6 +98,12 @@
 		276DFA122B1DA0180035274B /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		276DFA262B1DA94B0035274B /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		276DFA5E2B1DB1110035274B /* DataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
+		27735F1D2B8A5F33003064DA /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
+		27735F202B8A5FAF003064DA /* SupportEmail.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SupportEmail.swift; sourceTree = "<group>"; };
+		27735F232B8A5FC0003064DA /* MailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MailView.swift; sourceTree = "<group>"; };
+		27735F252B8A6166003064DA /* Bundle+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Bundle+Extension.swift"; sourceTree = "<group>"; };
+		27735F272B8A617C003064DA /* UIDevice+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIDevice+Extension.swift"; sourceTree = "<group>"; };
+		27735F292B8A6196003064DA /* DeviceModels.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = DeviceModels.json; sourceTree = "<group>"; };
 		2778A19B2B4E6F8C009DD86C /* ViewIDKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewIDKey.swift; sourceTree = "<group>"; };
 		2778A19D2B4E7166009DD86C /* ViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtension.swift; sourceTree = "<group>"; };
 		278E4DD52B666EB000A8F394 /* ColorData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorData.swift; sourceTree = "<group>"; };
@@ -197,10 +209,12 @@
 				272A69722B3C20E8009A1090 /* TitleIView.swift */,
 				272A696E2B3BE5C5009A1090 /* DayMessageView.swift */,
 				2766D2EE2B39D75B00F7C5A8 /* SettingView.swift */,
+				27735F1D2B8A5F33003064DA /* AboutView.swift */,
 				274FA4122B468A2A00B8E883 /* DeveloperView.swift */,
 				2766D2EC2B39D48400F7C5A8 /* LoadingView.swift */,
 				276DFA5E2B1DB1110035274B /* DataManager.swift */,
 				278E4DD52B666EB000A8F394 /* ColorData.swift */,
+				27735F1F2B8A5F75003064DA /* EmailSupport */,
 				27B5408B2B4E9FC200333785 /* CustomTabBar */,
 				274DAB592B4D9CE40088A9A9 /* Helper */,
 				274DAB562B4D98560088A9A9 /* Keys */,
@@ -208,6 +222,7 @@
 				27AFBE622B20EB60004505B7 /* LocalData */,
 				276DFA0F2B1DA0180035274B /* Assets.xcassets */,
 				276DFA262B1DA94B0035274B /* GoogleService-Info.plist */,
+				27735F292B8A6196003064DA /* DeviceModels.json */,
 				276DFA112B1DA0180035274B /* Preview Content */,
 			);
 			path = ReadFreshTest;
@@ -221,6 +236,23 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
+		27735F1F2B8A5F75003064DA /* EmailSupport */ = {
+			isa = PBXGroup;
+			children = (
+				27735F222B8A5FC0003064DA /* UIVIewControllweRepresentable */,
+				27735F202B8A5FAF003064DA /* SupportEmail.swift */,
+			);
+			path = EmailSupport;
+			sourceTree = "<group>";
+		};
+		27735F222B8A5FC0003064DA /* UIVIewControllweRepresentable */ = {
+			isa = PBXGroup;
+			children = (
+				27735F232B8A5FC0003064DA /* MailView.swift */,
+			);
+			path = UIVIewControllweRepresentable;
+			sourceTree = "<group>";
+		};
 		279D2E9E2B36F99E000B5144 /* Extension */ = {
 			isa = PBXGroup;
 			children = (
@@ -228,6 +260,8 @@
 				27A0F21E2B23272D00242AAA /* FileManager-DocumentsDirectory.swift */,
 				2778A19D2B4E7166009DD86C /* ViewExtension.swift */,
 				27577C872B641DAC00108009 /* AppDelegate.swift */,
+				27735F252B8A6166003064DA /* Bundle+Extension.swift */,
+				27735F272B8A617C003064DA /* UIDevice+Extension.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -371,6 +405,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				276DFA132B1DA0180035274B /* Preview Assets.xcassets in Resources */,
+				27735F2A2B8A6196003064DA /* DeviceModels.json in Resources */,
 				276DFA102B1DA0180035274B /* Assets.xcassets in Resources */,
 				276DFA272B1DA94B0035274B /* GoogleService-Info.plist in Resources */,
 			);
@@ -410,11 +445,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				27577C882B641DAC00108009 /* AppDelegate.swift in Sources */,
+				27735F262B8A6166003064DA /* Bundle+Extension.swift in Sources */,
 				2778A19E2B4E7166009DD86C /* ViewExtension.swift in Sources */,
+				27735F282B8A617C003064DA /* UIDevice+Extension.swift in Sources */,
 				27C6F8FB2B35817400E33C9B /* UserDefaultsData.swift in Sources */,
 				2766D2EF2B39D75B00F7C5A8 /* SettingView.swift in Sources */,
 				274DAB5B2B4D9D000088A9A9 /* ScrollDetector.swift in Sources */,
 				27B5408F2B4EA00B00333785 /* TabPosition.swift in Sources */,
+				27735F212B8A5FAF003064DA /* SupportEmail.swift in Sources */,
 				274DAB582B4D98A70088A9A9 /* FirebaseKey.swift in Sources */,
 				27B540912B4EA01300333785 /* Tab.swift in Sources */,
 				2759DBEC2B56A98F0071317E /* RectKey.swift in Sources */,
@@ -427,10 +465,12 @@
 				27A0F21D2B230D5A00242AAA /* MessageView.swift in Sources */,
 				276DFA5F2B1DB1110035274B /* DataManager.swift in Sources */,
 				27A0F21F2B23272D00242AAA /* FileManager-DocumentsDirectory.swift in Sources */,
+				27735F242B8A5FC0003064DA /* MailView.swift in Sources */,
 				272A696F2B3BE5C5009A1090 /* DayMessageView.swift in Sources */,
 				2778A19C2B4E6F8C009DD86C /* ViewIDKey.swift in Sources */,
 				274DAB5D2B4D9F180088A9A9 /* ArticleView.swift in Sources */,
 				27B5408D2B4E9FF900333785 /* TabShape.swift in Sources */,
+				27735F1E2B8A5F33003064DA /* AboutView.swift in Sources */,
 				27AFBE642B20F13C004505B7 /* ReadData.swift in Sources */,
 				276DFA0C2B1DA0170035274B /* ReadFreshTestApp.swift in Sources */,
 				2766D2ED2B39D48400F7C5A8 /* LoadingView.swift in Sources */,
@@ -583,7 +623,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.04;
 				PRODUCT_BUNDLE_IDENTIFIER = com.CXD.ReadFreshTest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -615,7 +655,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.04;
 				PRODUCT_BUNDLE_IDENTIFIER = com.CXD.ReadFreshTest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

@@ -45,8 +45,8 @@ struct DayMessageView: View {
 
       
      //This will change the font size
-     UISegmentedControl.appearance().setTitleTextAttributes([.font : UIFont.preferredFont(forTextStyle: .headline)], for: .highlighted)
-        UISegmentedControl.appearance().setTitleTextAttributes([.font : UIFont.preferredFont(forTextStyle: .subheadline)], for: .normal)
+        UISegmentedControl.appearance().setTitleTextAttributes([.font: UIFont.systemFont(ofSize: 17) ], for: .highlighted)
+        UISegmentedControl.appearance().setTitleTextAttributes([.font: UIFont.systemFont(ofSize: 15) ], for: .normal)
       
      //these lines change the text color for various states
      UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor : UIColor.cyan], for: .highlighted)
