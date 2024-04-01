@@ -98,8 +98,11 @@ class HtmlParser():
                 soup = BeautifulSoup(c, "html.parser")
                 line = self._get_text(soup)
                 day_message_data.append(line)
-        res['week'] = day_message_data[0][:3]
-        res['day'] = day_message_data[0][4:]
+        # Fix 第十一週•週四
+        res['week'], res['day'] = day_message_data[0].split('•')
+        #res['week'] = day_message_data[0][:3]
+        #res['day'] = day_message_data[0][-2:]
+
         # Support page
         res['data'] = [
             {
