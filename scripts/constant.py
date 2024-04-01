@@ -7,7 +7,7 @@ week_htmls = {
         'https://classic-blog.udn.com/ymch130/180364828',
         'https://classic-blog.udn.com/ymch130/180364849',
         'https://classic-blog.udn.com/ymch130/180417009',
-        
+        'https://classic-blog.udn.com/ymch130/180417029'
         
     ]
 }
