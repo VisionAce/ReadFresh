@@ -10,7 +10,7 @@ from firebase import FirebaseManager
 # Update DB version if database structure changed
 DB_VERSION = "1"
 
-TOP_INDEX = ['壹', '贰', '叁', '肆', '伍',  '陆',  '柒', 
+TOP_INDEX = ['壹', '贰', '叁', '肆', '伍',  '陆',  '柒',
     '捌', '玖', '拾'
 ]
 
@@ -29,7 +29,7 @@ class HtmlParser():
         self.page = requests.get(html).text
         self.outline_check = ['週一','週二','週三','週四','週五','週六']
         self.day_message_check = ['晨興餧養', 'WEEK', '信息選讀']
-        self.training_check = ['感恩節國際相調特會','秋季國際長老及負責弟兄訓練', '冬季']
+        self.training_check = ['感恩節國際相調特會','秋季國際長老及負責弟兄訓練', '冬季','國際華語特會']
         self.prefix = '<span style="font-size:'
 
     def _get_text(self, soup):
@@ -77,9 +77,13 @@ class HtmlParser():
         #print(line)
         if '─' in line:
             year, tmp_name = line.split('─')
+        elif ' ' in line:
+            year, tmp_name = line.split(' ')
+        # Fix 2024國際華語特會『打美好的仗，跑盡賽程，守住信仰，並愛主的顯現，好得著基督作公義冠冕的獎賞 』
         else:
-           year, tmp_name = line.split(' ')
-        training_name, topic = tmp_name.split('『') 
+            year = line[:4]
+            tmp_name = line[4:]
+        training_name, topic = tmp_name.split('『')
         res['training_year'] = year.strip()
         res['training_name'] = training_name
         res['training_topic'] = topic.strip('』')
@@ -222,7 +226,7 @@ def run_section(htmls, fm, current_week=False):
 
 def main():
     from constant import week_htmls
-    CURRENT_WEEK = True
+    CURRENT_WEEK = False
     global DEBUG
     DEBUG = False
     fm = FirebaseManager()

@@ -1,14 +1,13 @@
 week_htmls = {
-    'w11': [
+    'w1': [
         'https://churchintamsui.wixsite.com/index/morning-revival',
-        'https://classic-blog.udn.com/ymch130/180364748',
-        'https://classic-blog.udn.com/ymch130/180364792',
-        'https://classic-blog.udn.com/ymch130/180364809',
-        'https://classic-blog.udn.com/ymch130/180364828',
-        'https://classic-blog.udn.com/ymch130/180364849',
-        'https://classic-blog.udn.com/ymch130/180417009',
-        'https://classic-blog.udn.com/ymch130/180417029'
-        
+        'https://classic-blog.udn.com/ymch130/180460435',
+        'https://classic-blog.udn.com/ymch130/180460487',
+        'https://classic-blog.udn.com/ymch130/180460503',
+        'https://classic-blog.udn.com/ymch130/180460520',
+        'https://classic-blog.udn.com/ymch130/180460540',
+        'https://classic-blog.udn.com/ymch130/180460659',
+        'https://classic-blog.udn.com/ymch130/180460683'
     ]
 }
 
@@ -112,9 +111,27 @@ week_htmls_2023_winter = {
         'https://classic-blog.udn.com/ymch130/180356406',
         'https://classic-blog.udn.com/ymch130/180356420',
         'https://classic-blog.udn.com/ymch130/180356442'
+    ],
+    'w11': [
+        'https://churchintamsui.wixsite.com/index/morning-revival',
+        'https://classic-blog.udn.com/ymch130/180364748',
+        'https://classic-blog.udn.com/ymch130/180364792',
+        'https://classic-blog.udn.com/ymch130/180364809',
+        'https://classic-blog.udn.com/ymch130/180364828',
+        'https://classic-blog.udn.com/ymch130/180364849',
+        'https://classic-blog.udn.com/ymch130/180417009',
+        'https://classic-blog.udn.com/ymch130/180417029'
+    ],
+    'w12': [
+        'https://churchintamsui.wixsite.com/index/morning-revival',
+        'https://classic-blog.udn.com/ymch130/180417051',
+        'https://classic-blog.udn.com/ymch130/180417095',
+        'https://classic-blog.udn.com/ymch130/180417144',
+        'https://classic-blog.udn.com/ymch130/180417155',
+        'https://classic-blog.udn.com/ymch130/180417179',
+        'https://classic-blog.udn.com/ymch130/180417192',
+        'https://classic-blog.udn.com/ymch130/180417205'
     ]
-
-
 }
 
 
