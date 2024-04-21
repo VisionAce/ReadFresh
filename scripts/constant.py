@@ -1,4 +1,17 @@
 week_htmls = {
+    'w3': [
+        'https://churchintamsui.wixsite.com/index/morning-revival',
+        'https://classic-blog.udn.com/ymch130/180477741',
+        'https://classic-blog.udn.com/ymch130/180477781',
+        'https://classic-blog.udn.com/ymch130/180481762',
+        'https://classic-blog.udn.com/ymch130/180481785',
+        'https://classic-blog.udn.com/ymch130/180481808',
+        'https://classic-blog.udn.com/ymch130/180481830',
+        'https://classic-blog.udn.com/ymch130/180481855'
+    ]
+}
+
+week_htmls_2024_internationalChineseConference = {
     'w1': [
         'https://churchintamsui.wixsite.com/index/morning-revival',
         'https://classic-blog.udn.com/ymch130/180460435',
@@ -8,8 +21,20 @@ week_htmls = {
         'https://classic-blog.udn.com/ymch130/180460540',
         'https://classic-blog.udn.com/ymch130/180460659',
         'https://classic-blog.udn.com/ymch130/180460683'
+    ],
+    'w2': [
+        'https://churchintamsui.wixsite.com/index/morning-revival',
+        'https://classic-blog.udn.com/ymch130/180460764',
+        'https://classic-blog.udn.com/ymch130/180460823',
+        'https://classic-blog.udn.com/ymch130/180460861',
+        'https://classic-blog.udn.com/ymch130/180460889',
+        'https://classic-blog.udn.com/ymch130/180460916',
+        'https://classic-blog.udn.com/ymch130/180477692',
+        'https://classic-blog.udn.com/ymch130/180477714'
     ]
+
 }
+
 
 week_htmls_2023_winter = {
     'w1': [
