@@ -43,18 +43,21 @@ struct PastMessage: View {
     var uniqueReads: [ReadData_v2] {
         var result = [ReadData_v2]()
         for read in reads {
-            if result.isEmpty {
-                result.append(read)
+            if read.section_number.contains(" ") {
+                // not need to append
             } else {
-                if read.section_number == result.last!.section_number || read.started_day == result.last!.started_day || read.ended_day == result.last!.ended_day {
-                    if read.created_day > result.last!.created_day {
-                        result.removeLast()
+                if result.isEmpty {
+                    result.append(read)
+                } else {
+                    if read.section_number == result.last!.section_number {
+                        if read.created_day > result.last!.created_day {
+                            result.removeLast()
+                            result.append(read)
+                        }
+                        // not need to append
+                    } else {
                         result.append(read)
                     }
-                    // not need to append
-                    
-                } else {
-                    result.append(read)
                 }
             }
         }

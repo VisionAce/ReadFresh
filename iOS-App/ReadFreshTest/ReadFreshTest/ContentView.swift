@@ -10,6 +10,10 @@ import SwiftData
 import FirebaseFirestore
 import FirebaseFirestoreSwift
 
+enum LoadingState {
+    case loading, loaded, failed
+}
+
 struct ContentView: View {
     @Environment(\.modelContext) var modelContext
     @Query var reads: [ReadData_v2]
@@ -45,137 +49,173 @@ struct ContentView: View {
         /// Modifying Refresh Control
         UIRefreshControl.appearance().attributedTitle = NSAttributedString(string: "下拉更新...")
     }
+    // Enforced Updating Version
+    @State private var loadingState: LoadingState = .loading
+    @State private var appStoreVersion = "0"
+    @State private var needUpdate = false
+    @Environment(\.scenePhase) private var scenephase
     
     var body: some View {
-        Group {
-            if showingloadingView {
+        
+        
+        if appStoreVersion != Bundle.main.appVersion {
+            
+            VStack {
+                // emptyView
+            }
+            .onChange(of: scenephase)  { oldScenePhase, newScenePhase in
                 
-                Group {
-                    Text("Loading . . .")
-                    ProgressView()
+                if appStoreVersion != Bundle.main.appVersion {
+                    needUpdate = true
                 }
-                .padding()
-                .font(.largeTitle)
+            }
+            .alert("有新的版本唷!\n歡迎更新~", isPresented: $needUpdate) {
+                Link("前往更新", destination: URL(string: "https://apps.apple.com/tw/app/god-morning/id6476152119")!)
+//                Button("取消") {
+//                    // 關閉應用程式
+//                    UIApplication.shared.perform(#selector(NSXPCConnection.suspend))
+//                }
+            }
+            .task {
+                await fetchAppStoreVersion()
                 
-            } else {
-                VStack(spacing: 0) {
-                    TabView(selection: $activeTab) {
-                        MessageView()
-                            .tag(Tab.thisWeek)
-                        
-                        PastMessage()
-                            .tag(Tab.pastWeek)
-                        
-                        
-                        SettingView(reads: reads)
-                            .tag(Tab.setting)
-                        
-                    }
-                    .safeAreaInset(edge: .bottom, spacing: 0) {
-                        customTabBar()
-                    }
+                if appStoreVersion != Bundle.main.appVersion {
+                    needUpdate = true
                 }
                 
-                .createImages(toggleDarkMode: toggleDarkMode,
-                              currentImage: $currengeImage,
-                              previousImage: $preiousImage,
-                              activateDarkMode: $activateDarkMode)
-                .overlay(content: {
-                    GeometryReader(content: { geometry in
-                        let size = geometry.size
-                        
-                        if let preiousImage, let currengeImage {
-                            ZStack {
-                                Image(uiImage: preiousImage)
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: size.width, height: size.height)
-                                
-                                Image(uiImage: currengeImage)
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: size.width, height: size.height)
-                                    .mask(alignment: .topLeading) {
-                                        Circle()
-                                            .frame(width: buttonRect.width * (maskAnimation ? 80 : 1), height: buttonRect.height * (maskAnimation ? 80 : 1), alignment: .bottomLeading)
-                                            .frame(width: buttonRect.width, height: buttonRect.height)
-                                            .offset(x: buttonRect.minX, y: buttonRect.minY)
-                                            .ignoresSafeArea()
-                                        
+            }
+        } else {
+            
+            Group {
+                if showingloadingView {
+                    
+                    Group {
+                        Text("Loading . . .")
+                        ProgressView()
+                    }
+                    .padding()
+                    .font(.largeTitle)
+                    
+                    
+                } else {
+                    VStack(spacing: 0) {
+                        TabView(selection: $activeTab) {
+                            MessageView()
+                                .tag(Tab.thisWeek)
+                            
+                            PastMessage()
+                                .tag(Tab.pastWeek)
+                            
+                            
+                            SettingView(reads: reads)
+                                .tag(Tab.setting)
+                            
+                        }
+                        .safeAreaInset(edge: .bottom, spacing: 0) {
+                            customTabBar()
+                        }
+                    }
+                    
+                    .createImages(toggleDarkMode: toggleDarkMode,
+                                  currentImage: $currengeImage,
+                                  previousImage: $preiousImage,
+                                  activateDarkMode: $activateDarkMode)
+                    .overlay(content: {
+                        GeometryReader(content: { geometry in
+                            let size = geometry.size
+                            
+                            if let preiousImage, let currengeImage {
+                                ZStack {
+                                    Image(uiImage: preiousImage)
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: size.width, height: size.height)
+                                    
+                                    Image(uiImage: currengeImage)
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: size.width, height: size.height)
+                                        .mask(alignment: .topLeading) {
+                                            Circle()
+                                                .frame(width: buttonRect.width * (maskAnimation ? 80 : 1), height: buttonRect.height * (maskAnimation ? 80 : 1), alignment: .bottomLeading)
+                                                .frame(width: buttonRect.width, height: buttonRect.height)
+                                                .offset(x: buttonRect.minX, y: buttonRect.minY)
+                                                .ignoresSafeArea()
+                                            
+                                        }
+                                }
+                                .task {
+                                    guard !maskAnimation else { return }
+                                    withAnimation(.easeInOut(duration: 0.9), completionCriteria: .logicallyComplete) {
+                                        maskAnimation = true
+                                    } completion: {
+                                        /// Removing all snapshots
+                                        self.currengeImage = nil
+                                        self.preiousImage = nil
+                                        maskAnimation = false
                                     }
-                            }
-                            .task {
-                                guard !maskAnimation else { return }
-                                withAnimation(.easeInOut(duration: 0.9), completionCriteria: .logicallyComplete) {
-                                    maskAnimation = true
-                                } completion: {
-                                    /// Removing all snapshots
-                                    self.currengeImage = nil
-                                    self.preiousImage = nil
-                                    maskAnimation = false
                                 }
                             }
+                        })
+                        /// Reverse Masking
+                        .mask({
+                            Rectangle()
+                                .overlay(alignment: .topLeading) {
+                                    Circle()
+                                        .frame(width: buttonRect.width, height: buttonRect.height)
+                                        .offset(x: buttonRect.minX, y: buttonRect.minY)
+                                        .blendMode(.destinationOut)
+                                }
+                        })
+                        .ignoresSafeArea()
+                    })
+                    .overlay(alignment: .topTrailing) {
+                        
+                        Button(action: {
+                            toggleDarkMode.toggle()
+                        }, label: {
+                            Image(systemName: toggleDarkMode ? "sun.max.fill" : "moon.fill")
+                                .font(.title2)
+                                .foregroundStyle(Color.primary)
+                                .symbolEffect(.bounce, value: toggleDarkMode)
+                                .frame(width: 40, height: 40)
+                                .opacity(activeTab == .setting ? 1 : 0)
+                        })
+                        .rect { rect in
+                            buttonRect = rect
                         }
-                    })
-                    /// Reverse Masking
-                    .mask({
-                        Rectangle()
-                            .overlay(alignment: .topLeading) {
-                                Circle()
-                                    .frame(width: buttonRect.width, height: buttonRect.height)
-                                    .offset(x: buttonRect.minX, y: buttonRect.minY)
-                                    .blendMode(.destinationOut)
-                            }
-                    })
-                    .ignoresSafeArea()
-                })
-                .overlay(alignment: .topTrailing) {
-                    
-                    Button(action: {
-                        toggleDarkMode.toggle()
-                    }, label: {
-                        Image(systemName: toggleDarkMode ? "sun.max.fill" : "moon.fill")
-                            .font(.title2)
-                            .foregroundStyle(Color.primary)
-                            .symbolEffect(.bounce, value: toggleDarkMode)
-                            .frame(width: 40, height: 40)
-                            .opacity(activeTab == .setting ? 1 : 0)
-                    })
-                    .rect { rect in
-                        buttonRect = rect
+                        .padding(10)
+                        .disabled(currengeImage != nil || preiousImage != nil || maskAnimation || activeTab != .setting)
                     }
-                    .padding(10)
-                    .disabled(currengeImage != nil || preiousImage != nil || maskAnimation || activeTab != .setting)
+                    .preferredColorScheme(activateDarkMode ? .dark : .light)
+                    
                 }
-                .preferredColorScheme(activateDarkMode ? .dark : .light)
+            }
+            .onAppear {
+                checkRemoteVersionTask { }
+            }
+            .onChange(of: remoteVersion) {
+                updateVersion(version: remoteVersion)
+                print("~~~~~~~~~!!!!~~~~~~~~~~~~\n\(remoteVersion)")
+            }
+            .onChange(of: checkRemoteVersionTaskCompleted) {
+                if checkRemoteVersionTaskCompleted {
+                    loadDataTask()
+                }
+            }
+            .onChange(of: showingloadingView) {
+                print("showingloadingView: \(showingloadingView)")
+            }
+            .refreshable {
                 
+                //            let currentTime = Date()
+                //            guard let lastTime = lastRefreshTime, currentTime.timeIntervalSince(lastTime) > 1.0 else {
+                //                return  // 短时间内不执行刷新
+                //            }
+                //            lastRefreshTime = currentTime
+                onRefresh()
             }
-        }
-        .onAppear {
-            checkRemoteVersionTask { }
-        }
-        .onChange(of: remoteVersion) {
-            updateVersion(version: remoteVersion)
-            print("~~~~~~~~~!!!!~~~~~~~~~~~~\n\(remoteVersion)")
-        }
-        .onChange(of: checkRemoteVersionTaskCompleted) {
-            if checkRemoteVersionTaskCompleted {
-                loadDataTask()
-            }
-        }
-        .onChange(of: showingloadingView) {
-            print("showingloadingView: \(showingloadingView)")
-        }
-        .refreshable {
-            
-//            let currentTime = Date()
-//            guard let lastTime = lastRefreshTime, currentTime.timeIntervalSince(lastTime) > 1.0 else {
-//                return  // 短时间内不执行刷新
-//            }
-//            lastRefreshTime = currentTime
-            onRefresh()
-        }
-        
+    }
     }
     
     func saveDataSwiftWithVersion(DBcollection: String, DBdocument: String) {
@@ -262,6 +302,30 @@ struct ContentView: View {
             }
         }
     }
+    
+    func fetchAppStoreVersion() async {
+        let bundleID = Bundle.main.bundleIdentifier!
+        print(bundleID)
+        let urlString = "https://itunes.apple.com/lookup?bundleId=\(bundleID)"
+        
+        guard let url = URL(string: urlString) else {
+            print("Bad URL: \(urlString)")
+            return
+        }
+        
+        do {
+            let (data, _) = try await URLSession.shared.data(from: url)
+            let items = try JSONDecoder().decode(AppStoreData.self, from: data)
+            for result in items.results {
+                appStoreVersion = result.version
+            }
+            
+            loadingState = .loaded
+        } catch {
+            loadingState = .failed
+        }
+    }
+
     
     
     /// Custom Tab Bar

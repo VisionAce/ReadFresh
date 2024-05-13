@@ -19,6 +19,7 @@
 		2759DBEC2B56A98F0071317E /* RectKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2759DBEB2B56A98F0071317E /* RectKey.swift */; };
 		2766D2ED2B39D48400F7C5A8 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2766D2EC2B39D48400F7C5A8 /* LoadingView.swift */; };
 		2766D2EF2B39D75B00F7C5A8 /* SettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2766D2EE2B39D75B00F7C5A8 /* SettingView.swift */; };
+		276C789F2BF27E0600758E64 /* AppStoreData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 276C789E2BF27E0600758E64 /* AppStoreData.swift */; };
 		276DFA0C2B1DA0170035274B /* ReadFreshTestApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 276DFA0B2B1DA0170035274B /* ReadFreshTestApp.swift */; };
 		276DFA0E2B1DA0170035274B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 276DFA0D2B1DA0170035274B /* ContentView.swift */; };
 		276DFA102B1DA0180035274B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 276DFA0F2B1DA0180035274B /* Assets.xcassets */; };
@@ -91,6 +92,8 @@
 		2759DBED2B56D4C20071317E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		2766D2EC2B39D48400F7C5A8 /* LoadingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		2766D2EE2B39D75B00F7C5A8 /* SettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingView.swift; sourceTree = "<group>"; };
+		276C789D2BF2771D00758E64 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		276C789E2BF27E0600758E64 /* AppStoreData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppStoreData.swift; sourceTree = "<group>"; };
 		276DFA082B1DA0170035274B /* ReadFreshTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReadFreshTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		276DFA0B2B1DA0170035274B /* ReadFreshTestApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadFreshTestApp.swift; sourceTree = "<group>"; };
 		276DFA0D2B1DA0170035274B /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -201,6 +204,7 @@
 			children = (
 				27577C862B641D2100108009 /* ReadFreshTest.entitlements */,
 				2759DBED2B56D4C20071317E /* Info.plist */,
+				276C789D2BF2771D00758E64 /* PrivacyInfo.xcprivacy */,
 				276DFA0B2B1DA0170035274B /* ReadFreshTestApp.swift */,
 				276DFA0D2B1DA0170035274B /* ContentView.swift */,
 				27A0F21C2B230D5A00242AAA /* MessageView.swift */,
@@ -213,6 +217,7 @@
 				274FA4122B468A2A00B8E883 /* DeveloperView.swift */,
 				2766D2EC2B39D48400F7C5A8 /* LoadingView.swift */,
 				276DFA5E2B1DB1110035274B /* DataManager.swift */,
+				276C789E2BF27E0600758E64 /* AppStoreData.swift */,
 				278E4DD52B666EB000A8F394 /* ColorData.swift */,
 				27735F1F2B8A5F75003064DA /* EmailSupport */,
 				27B5408B2B4E9FC200333785 /* CustomTabBar */,
@@ -465,6 +470,7 @@
 				27A0F21D2B230D5A00242AAA /* MessageView.swift in Sources */,
 				276DFA5F2B1DB1110035274B /* DataManager.swift in Sources */,
 				27A0F21F2B23272D00242AAA /* FileManager-DocumentsDirectory.swift in Sources */,
+				276C789F2BF27E0600758E64 /* AppStoreData.swift in Sources */,
 				27735F242B8A5FC0003064DA /* MailView.swift in Sources */,
 				272A696F2B3BE5C5009A1090 /* DayMessageView.swift in Sources */,
 				2778A19C2B4E6F8C009DD86C /* ViewIDKey.swift in Sources */,
@@ -624,7 +630,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.06;
+				MARKETING_VERSION = 1.07;
 				PRODUCT_BUNDLE_IDENTIFIER = com.CXD.ReadFreshTest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -657,7 +663,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.06;
+				MARKETING_VERSION = 1.07;
 				PRODUCT_BUNDLE_IDENTIFIER = com.CXD.ReadFreshTest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
