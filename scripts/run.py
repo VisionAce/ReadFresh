@@ -29,7 +29,7 @@ class HtmlParser():
         self.page = requests.get(html).text
         self.outline_check = ['週一','週二','週三','週四','週五','週六']
         self.day_message_check = ['晨興餧養', 'WEEK', '信息選讀']
-        self.training_check = ['感恩節國際相調特會','秋季國際長老及負責弟兄訓練', '冬季','國際華語特會']
+        self.training_check = ['感恩節國際相調特會', '秋季國際長老及負責弟兄訓練', '冬季', '國際華語特會', '春季國際長老及負責弟兄訓練']
         self.prefix = '<span style="font-size:'
 
     def _get_text(self, soup):
@@ -102,8 +102,13 @@ class HtmlParser():
                 soup = BeautifulSoup(c, "html.parser")
                 line = self._get_text(soup)
                 day_message_data.append(line)
+        
         # Fix 第十一週•週四
-        res['week'], res['day'] = day_message_data[0].split('•')
+        if '•' in day_message_data[0]:
+            res['week'], res['day'] = day_message_data[0].split('•')
+        # Fix 2024 春季國際長老及負責弟兄訓練 第一週■週一
+        elif '■' in day_message_data[0]:
+            res['week'], res['day'] = day_message_data[0].split('■')
         #res['week'] = day_message_data[0][:3]
         #res['day'] = day_message_data[0][-2:]
 
@@ -183,7 +188,7 @@ def run_once(html):
 
 def run_section(htmls, fm, current_week=False):
     #html='https://classic-blog.udn.com/ymch130/180049577'
-    now = datetime.datetime.utcnow()
+    now = datetime.datetime.now(datetime.timezone.utc)
     if current_week:
         started_day = now - datetime.timedelta(days=now.weekday())
         ended_day = started_day + datetime.timedelta(days=7)
