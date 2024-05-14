@@ -61,7 +61,7 @@ struct ReadFreshTestApp: App {
     var body: some Scene {
         
         WindowGroup {
-            ContentView()
+            AppStoreVersionView()
         }
         .modelContainer(for: ReadData_v2.self)
         
