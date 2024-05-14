@@ -10,10 +10,6 @@ import SwiftData
 import FirebaseFirestore
 import FirebaseFirestoreSwift
 
-enum LoadingState {
-    case loading, loaded, failed
-}
-
 struct ContentView: View {
     @Environment(\.modelContext) var modelContext
     @Query var reads: [ReadData_v2]
@@ -49,43 +45,9 @@ struct ContentView: View {
         /// Modifying Refresh Control
         UIRefreshControl.appearance().attributedTitle = NSAttributedString(string: "下拉更新...")
     }
-    // Enforced Updating Version
-    @State private var loadingState: LoadingState = .loading
-    @State private var appStoreVersion = "0"
-    @State private var needUpdate = false
-    @Environment(\.scenePhase) private var scenephase
-    
+
     var body: some View {
-        
-        
-        if appStoreVersion != Bundle.main.appVersion {
-            
-            VStack {
-                // emptyView
-            }
-            .onChange(of: scenephase)  { oldScenePhase, newScenePhase in
-                
-                if appStoreVersion != Bundle.main.appVersion {
-                    needUpdate = true
-                }
-            }
-            .alert("有新的版本唷!\n歡迎更新~", isPresented: $needUpdate) {
-                Link("前往更新", destination: URL(string: "https://apps.apple.com/tw/app/god-morning/id6476152119")!)
-//                Button("取消") {
-//                    // 關閉應用程式
-//                    UIApplication.shared.perform(#selector(NSXPCConnection.suspend))
-//                }
-            }
-            .task {
-                await fetchAppStoreVersion()
-                
-                if appStoreVersion != Bundle.main.appVersion {
-                    needUpdate = true
-                }
-                
-            }
-        } else {
-            
+    
             Group {
                 if showingloadingView {
                     
@@ -215,7 +177,7 @@ struct ContentView: View {
                 //            lastRefreshTime = currentTime
                 onRefresh()
             }
-    }
+    
     }
     
     func saveDataSwiftWithVersion(DBcollection: String, DBdocument: String) {
@@ -303,28 +265,7 @@ struct ContentView: View {
         }
     }
     
-    func fetchAppStoreVersion() async {
-        let bundleID = Bundle.main.bundleIdentifier!
-        print(bundleID)
-        let urlString = "https://itunes.apple.com/lookup?bundleId=\(bundleID)"
-        
-        guard let url = URL(string: urlString) else {
-            print("Bad URL: \(urlString)")
-            return
-        }
-        
-        do {
-            let (data, _) = try await URLSession.shared.data(from: url)
-            let items = try JSONDecoder().decode(AppStoreData.self, from: data)
-            for result in items.results {
-                appStoreVersion = result.version
-            }
-            
-            loadingState = .loaded
-        } catch {
-            loadingState = .failed
-        }
-    }
+
 
     
     
