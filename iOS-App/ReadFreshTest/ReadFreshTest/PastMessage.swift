@@ -43,9 +43,13 @@ struct PastMessage: View {
     var uniqueReads: [ReadData_v2] {
         var result = [ReadData_v2]()
         for read in reads {
+            if !(read.section_number.contains("第") || read.section_number.contains("週")) {
+                continue
+            }
             if read.section_number.contains(" ") {
                 // not need to append
-            } else {
+                continue
+            }
                 if result.isEmpty {
                     result.append(read)
                 } else {
@@ -59,7 +63,7 @@ struct PastMessage: View {
                         result.append(read)
                     }
                 }
-            }
+            
         }
         return result
     }

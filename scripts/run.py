@@ -27,9 +27,10 @@ class HtmlParser():
 
     def __init__(self, html):
         self.page = requests.get(html).text
-        self.outline_check = ['週一','週二','週三','週四','週五','週六']
+        self.outline_check1 = ['週一','週二','週三','週四','週五','週六']
+        self.outline_check2 = ['週　一','週　二','週　三','週　四','週　五','週　六']
         self.day_message_check = ['晨興餧養', 'WEEK', '信息選讀']
-        self.training_check = ['感恩節國際相調特會', '秋季國際長老及負責弟兄訓練', '冬季', '國際華語特會', '春季國際長老及負責弟兄訓練']
+        self.training_check = ['感恩節國際相調特會', '秋季國際長老及負責弟兄訓練', '冬季', '國際華語特會', '春季國際長老及負責弟兄訓練', '國殤節特會']
         self.prefix = '<span style="font-size:'
 
     def _get_text(self, soup):
@@ -44,10 +45,13 @@ class HtmlParser():
             raise Exception('Cannot find text')
 
     def run(self):
+        if self._check(self.outline_check2, self.page):
+            for i in range(len(self.outline_check2)):
+                self.page = self.page.replace(self.outline_check2[i], self.outline_check1[i])
         if self.check_training():
             print('Training')
             return self.parse_training()
-        elif self._check(self.outline_check, self.page):
+        elif self._check(self.outline_check1, self.page):
             print('Outline')
             #print(self.page)
             return self.parse_outline()
@@ -101,6 +105,10 @@ class HtmlParser():
                     break
                 soup = BeautifulSoup(c, "html.parser")
                 line = self._get_text(soup)
+                if '\u3000' in line:
+                    line = line.replace('\u3000', ' ')
+                if '\xa0' in line:
+                    line = line.replace('\xa0', '')
                 day_message_data.append(line)
         
         # Fix 第十一週•週四
@@ -109,6 +117,8 @@ class HtmlParser():
         # Fix 2024 春季國際長老及負責弟兄訓練 第一週■週一
         elif '■' in day_message_data[0]:
             res['week'], res['day'] = day_message_data[0].split('■')
+        res['week'] = res['week'].strip()
+        res['day'] = res['day'].strip()
         #res['week'] = day_message_data[0][:3]
         #res['day'] = day_message_data[0][-2:]
 
@@ -137,6 +147,8 @@ class HtmlParser():
                     break
                 soup = BeautifulSoup(c, "html.parser")
                 line = self._get_text(soup)
+                if '\u3000' in line:
+                    line = line.replace('\u3000', ' ')
                 index = ''
                 if ' ' in line:
                     index = line.split()[0]
@@ -155,6 +167,8 @@ class HtmlParser():
         if ' ' in outline_data[0]:
             _section_number, _section_name = outline_data[0].split()
         else:
+            if outline_data[0][0] != '第' and outline_data[0][-1] != '週':
+                outline_data = [''] + outline_data
             _section_number = outline_data[0]
             _section_name = outline_data[1]
         res['section_number'] = _section_number
@@ -207,7 +221,7 @@ def run_section(htmls, fm, current_week=False):
     print(res)
     for html in htmls:
         data = run_once(html)
-        #print(data)
+        print(data)
         _type = data['type']
         if _type == 'Training':
             res.update(data)
@@ -220,6 +234,10 @@ def run_section(htmls, fm, current_week=False):
             res['day_messages'].append(data)
         else:
             print('Invalid')
+        
+    if res['section_number'] == '':
+        del res['outline'][0]['context'][0]
+        res['section_number'] = res['day_messages'][0]['week']
     print(res)
     if DEBUG:
         return

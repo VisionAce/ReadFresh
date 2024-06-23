@@ -61,7 +61,12 @@ struct DayMessageView: View {
                                 ForEach(firstIndex..<data.context.count, id: \.self) { index in
                                     Text("\(data.context[index])\n")
                                 }
+                            } else {
+                                ForEach(0..<data.context.count, id: \.self) { index in
+                                    Text("\(data.context[index])\n")
+                                }
                             }
+                             
                         }
                     } else {
                         ForEach(read.day_messages, id: \.self) { day_message in
