@@ -23,25 +23,37 @@ struct MessageView: View {
     
     var uniqueReads: [ReadData_v2] {
         var result = [ReadData_v2]()
+        var tmp_result = [ReadData_v2]()
+        var read_exist = false
         for read in reads {
+            if !(read.section_number.contains("第") || read.section_number.contains("週")) {
+                continue
+            }
             if read.section_number.contains(" ") {
                 // not need to append
+                continue
+            }
+            if result.isEmpty {
+                tmp_result.append(read)
             } else {
-                if result.isEmpty {
-                    result.append(read)
-                } else {
-                    if read.section_number == result.last!.section_number {
-                        if read.created_day > result.last!.created_day {
-                            result.removeLast()
-                            result.append(read)
+                for r in result {
+                   if read.section_number == r.section_number && read.training_topic == r.training_topic  {
+                       read_exist = true
+                        if read.created_day > r.created_day {
+                            tmp_result.removeAll(where: { $0.section_number == read.section_number && $0.training_topic == read.training_topic })
+                            
+                            tmp_result.append(read)
                         }
-                        // not need to append
-                    } else {
-                        result.append(read)
                     }
                 }
+                if read_exist == false {
+                    tmp_result.append(read)
+                }
             }
+            read_exist = false
+            result = tmp_result
         }
+        
         return result
     }
     
