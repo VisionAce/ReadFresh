@@ -29,6 +29,7 @@ class HtmlParser():
         self.page = requests.get(html).text
         self.outline_check1 = ['週一','週二','週三','週四','週五','週六']
         self.outline_check2 = ['週　一','週　二','週　三','週　四','週　五','週　六']
+        self.outline_check3 = ['週　一','週二','週三','週　四','週　五','週　六']
         self.day_message_check = ['晨興餧養', 'WEEK', '信息選讀']
         self.training_check = ['感恩節國際相調特會', '秋季國際長老及負責弟兄訓練', '冬季', '國際華語特會', '春季國際長老及負責弟兄訓練', '國殤節特會']
         self.prefix = '<span style="font-size:'
@@ -48,6 +49,9 @@ class HtmlParser():
         if self._check(self.outline_check2, self.page):
             for i in range(len(self.outline_check2)):
                 self.page = self.page.replace(self.outline_check2[i], self.outline_check1[i])
+        if self._check(self.outline_check3, self.page):
+            for i in range(len(self.outline_check3)):
+                self.page = self.page.replace(self.outline_check3[i], self.outline_check1[i])
         if self.check_training():
             print('Training')
             return self.parse_training()
@@ -164,7 +168,13 @@ class HtmlParser():
         #print(outline_data)
         #print(outline_data)
         # Fix 2023年 冬季訓練『經營美地所豫表包羅萬有的基督，為着建造召會作基督的身體，為着國度的實際與實現，並為着新婦得以為主的來臨將自己豫備好』
-        if ' ' in outline_data[0]:
+        # Fix 2024年 國殤節特會 接枝的生命 "第二週 • 綱目"
+        if '•' in outline_data[0]:
+            not_space = outline_data[0].strip()
+            parts = not_space.split('•')
+            _section_number = parts[0].strip()
+            _section_name = outline_data[1]
+        elif ' ' in outline_data[0]:
             _section_number, _section_name = outline_data[0].split()
         else:
             if outline_data[0][0] != '第' and outline_data[0][-1] != '週':
@@ -251,7 +261,7 @@ def main():
     from constant import week_htmls
     CURRENT_WEEK = False
     global DEBUG
-    DEBUG = False
+    DEBUG = True
     fm = FirebaseManager()
     for week_html in week_htmls.values():
         run_section(week_html, fm, current_week=CURRENT_WEEK)
