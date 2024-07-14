@@ -29,7 +29,7 @@ class HtmlParser():
         self.page = requests.get(html).text
         self.outline_check1 = ['週一','週二','週三','週四','週五','週六']
         self.outline_check2 = ['週　一','週　二','週　三','週　四','週　五','週　六']
-        self.outline_check3 = ['週　一','週二','週三','週　四','週　五','週　六']
+#        self.outline_check3 = ['週　一','週二','週三','週　四','週　五','週　六']
         self.day_message_check = ['晨興餧養', 'WEEK', '信息選讀']
         self.training_check = ['感恩節國際相調特會', '秋季國際長老及負責弟兄訓練', '冬季', '國際華語特會', '春季國際長老及負責弟兄訓練', '國殤節特會']
         self.prefix = '<span style="font-size:'
@@ -46,12 +46,12 @@ class HtmlParser():
             raise Exception('Cannot find text')
 
     def run(self):
-        if self._check(self.outline_check2, self.page):
-            for i in range(len(self.outline_check2)):
-                self.page = self.page.replace(self.outline_check2[i], self.outline_check1[i])
-        if self._check(self.outline_check3, self.page):
-            for i in range(len(self.outline_check3)):
-                self.page = self.page.replace(self.outline_check3[i], self.outline_check1[i])
+#        if self._check(self.outline_check2, self.page):
+        for i in range(len(self.outline_check2)):
+            self.page = self.page.replace(self.outline_check2[i], self.outline_check1[i])
+#        if self._check(self.outline_check3, self.page):
+#            for i in range(len(self.outline_check3)):
+#                self.page = self.page.replace(self.outline_check3[i], self.outline_check1[i])
         if self.check_training():
             print('Training')
             return self.parse_training()
@@ -173,7 +173,11 @@ class HtmlParser():
             not_space = outline_data[0].strip()
             parts = not_space.split('•')
             _section_number = parts[0].strip()
-            _section_name = outline_data[1]
+        # Fix 2024年 國殤節特會 作為聖膏油之複合膏油的內在意義與啟示—經過過程之三一神的複合、包羅萬有之靈完滿的豫表
+            if outline_data[1][0] == 'w' and outline_data[1][-1] == 'h':
+                _section_name = outline_data[2]
+            else:
+                _section_name = outline_data[1]
         elif ' ' in outline_data[0]:
             _section_number, _section_name = outline_data[0].split()
         else:
@@ -259,7 +263,7 @@ def run_section(htmls, fm, current_week=False):
 
 def main():
     from constant import week_htmls
-    CURRENT_WEEK = False
+    CURRENT_WEEK = True
     global DEBUG
     DEBUG = True
     fm = FirebaseManager()
