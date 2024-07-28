@@ -23,12 +23,22 @@ THIRD_INDEX = list(map(str, range(1, 50)))
 FORTH_INDEX = list(string.ascii_lowercase)
 
 
+OUTLINE_REPLACE_RULES = {
+        '週一': ['週　一', '週  一', '週一'],
+        '週二': ['週　二', '週  二'],
+        '週三': ['週　三', '週  三'],
+        '週四': ['週　四', '週  四'],
+        '週五': ['週　五', '週  五'],
+        '週六': ['週　六', '週  六']
+}
+
+
 class HtmlParser():
 
-    def __init__(self, html):
+    def __init__(self, html, _type):
         self.page = requests.get(html).text
-        self.outline_check1 = ['週一','週二','週三','週四','週五','週六']
-        self.outline_check2 = ['週　一','週　二','週　三','週　四','週　五','週　六']
+        self.type = _type
+        self.outline_check = OUTLINE_REPLACE_RULES.keys()
         self.day_message_check = ['晨興餧養', 'WEEK', '信息選讀']
         self.training_check = ['感恩節國際相調特會', '秋季國際長老及負責弟兄訓練', '冬季', '國際華語特會', '春季國際長老及負責弟兄訓練', '國殤節特會', '七月半年度訓練']
         self.prefix = '<span style="font-size:'
@@ -45,12 +55,20 @@ class HtmlParser():
             raise Exception('Cannot find text')
 
     def run(self):
-        for i in range(len(self.outline_check2)):
-            self.page = self.page.replace(self.outline_check2[i], self.outline_check1[i])
+        if self.type == 'training':
+            return self.parse_training()
+        if self.type == 'outline':
+            return self.parse_outline()
+        if self.type == 'day_message':
+            return self.parse_day_message()
+
+        for key in OUTLINE_REPLACE_RULES:
+            for wrong_word in OUTLINE_REPLACE_RULES[key]:
+                self.page = self.page.replace(wrong_word, key)
         if self.check_training():
             print('Training')
             return self.parse_training()
-        elif self._check(self.outline_check1, self.page):
+        elif self._check(self.outline_check, self.page):
             print('Outline')
             #print(self.page)
             return self.parse_outline()
@@ -59,6 +77,7 @@ class HtmlParser():
             print('Day message')
             return self.parse_day_message()
         else:
+            print(self.page)
             print('Skip Html')
 
     def check_training(self):
@@ -78,16 +97,34 @@ class HtmlParser():
                     line = soup.h2.text
                     break
         #print(line)
+        line = line.strip()
+        if '\xa0'in line:
+            line = line.replace('\xa0', '')
+
         if '─' in line:
             year, tmp_name = line.split('─')
         elif ' ' in line:
-            year, tmp_name = line.split(' ')
+            _line_split = line.split(' ')
+            if len(_line_split) == 2:
+                year = _line_split[0]
+                tmp_name = _line_split[1]
+            if len(_line_split) == 3:
+                year = _line_split[0]
+                tmp_name = _line_split[1] + _line_split[2]
+            else:
+                raise Exception('[ERROR] Cannot get training year and name.')
+                
         # Fix 2024國際華語特會『打美好的仗，跑盡賽程，守住信仰，並愛主的顯現，好得著基督作公義冠冕的獎賞 』
         else:
-            year = line[:4]
-            tmp_name = line[4:]
+            if '年' in line:
+                year_index = line.index('年')
+                year = line[:year_index]
+                tmp_name = line[year_index+1:]
+            else:
+                year = line[:4]
+                tmp_name = line[4:]
         training_name, topic = tmp_name.split('『')
-        res['training_year'] = year.strip()
+        res['training_year'] = year.strip().strip('年')
         res['training_name'] = training_name
         res['training_topic'] = topic.strip('』')
         res['type'] = 'Training'
@@ -116,6 +153,11 @@ class HtmlParser():
         # Fix 2024 春季國際長老及負責弟兄訓練 第一週■週一
         elif '■' in day_message_data[0]:
             res['week'], res['day'] = day_message_data[0].split('■')
+        elif ' · ' in day_message_data[0]:
+            res['week'], res['day'] = day_message_data[0].split(' · ')
+        else:
+            print(day_message_data[0])
+            raise Exception('[ERROR] Cannot get day message week and day.')
         res['week'] = res['week'].strip()
         res['day'] = res['day'].strip()
         #res['week'] = day_message_data[0][:3]
@@ -146,6 +188,8 @@ class HtmlParser():
                     break
                 soup = BeautifulSoup(c, "html.parser")
                 line = self._get_text(soup)
+                if '\xa0' in line:
+                    line = line.replace('\xa0', '')
                 if '\u3000' in line:
                     line = line.replace('\u3000', ' ')
                 index = ''
@@ -162,34 +206,48 @@ class HtmlParser():
                 outline_data.append(line)
         #print(outline_data)
         #print(outline_data)
+
         # Fix 2023年 冬季訓練『經營美地所豫表包羅萬有的基督，為着建造召會作基督的身體，為着國度的實際與實現，並為着新婦得以為主的來臨將自己豫備好』
         # Fix 2024年 國殤節特會 接枝的生命 "第二週 • 綱目"
-        if '•' in outline_data[0]:
-            not_space = outline_data[0].strip()
-            parts = not_space.split('•')
-            _section_number = parts[0].strip()
+
+        # Get outline data
+        _outline_data = None
+        _section_number = None
+        _section_name = None
+        for _line in outline_data:
+            _line = _line.strip()
+            if '第' in _line[0]:
+                _outline_data = _line
+                break
+        if not _outline_data:
+            raise Exception('[ERROR] Cannot get outline data.')
+        if '•' in _outline_data:
+            _section_number, _section_name = _outline_data.split('•')
+        if ' ' in _outline_data:
+            _outline_data_split = _outline_data.split(' ')
+            if len(_outline_data_split) == 2:
+                _section_number = _outline_data_split[0]
+                _section_name = _outline_data_split[1]
+            
         # Fix 2024年 國殤節特會 作為聖膏油之複合膏油的內在意義與啟示—經過過程之三一神的複合、包羅萬有之靈完滿的豫表
-            if outline_data[1][0] == 'w' and outline_data[1][-1] == 'h':
-                _section_name = outline_data[2]
-            else:
-                _section_name = outline_data[1]
-#        elif ' ' in outline_data[0]:
-#        # Fix 2024年 國殤節特會 "第六週  "
-#            not_space2 = outline_data[0].strip()
-#            if not_space2[0] == '第' and not_space2[-1] == '週':
-#                _section_number = not_space2
-#                _section_name = outline_data[1]
-#            else:
-#                _section_number, _section_name = outline_data[0].split()
+        elif _outline_data[-1] in ['篇', '週'] and len(_outline_data) == 3:
+            _section_number = _outline_data
         else:
-            # Fix 2024年 七月半年度訓練『經歷、享受並彰顯基督』 "第一篇"
-            if outline_data[1][0] == '第' and outline_data[0][-1] == '篇':
-                _section_number = outline_data[0]
-                _section_name = outline_data[2]
-            elif outline_data[0][0] != '第' and outline_data[0][-1] != '週':
-                outline_data = [''] + outline_data
-            _section_number = outline_data[0]
-            _section_name = outline_data[1]
+            raise Exception('[ERROR] Cannot find section number and name.')
+           
+        # Fix section name not in the first line
+        if not _section_name:
+            for _line in outline_data: 
+                _line = _line.strip()
+                if _line == _outline_data:
+                    continue
+                if _line[0] == 'w':
+                    continue
+                if '讀經' in _line:
+                    raise Exception('[ERROR] Cannot get outline data section name.')
+                _section_name = _line
+                break
+
         res['section_number'] = _section_number
         res['section_name'] = _section_name
         print(res)
@@ -205,6 +263,7 @@ class HtmlParser():
     def _check(self, rules, page):
         for c in rules:
             if c not in page:
+                print('[ERROR] %s not in page.' %(c))
                 return False
         return True
 
@@ -215,8 +274,8 @@ def next_weekday(d, weekday):
         days_ahead += 7
     return d + datetime.timedelta(days_ahead)
 
-def run_once(html):
-    hp = HtmlParser(html)
+def run_once(html, _type):
+    hp = HtmlParser(html, _type)
     return hp.run()
 
 def run_section(htmls, fm, current_week=False):
@@ -238,21 +297,22 @@ def run_section(htmls, fm, current_week=False):
     res['day_messages'] = []
     res['db_version'] = DB_VERSION
     print(res)
-    for html in htmls:
-        data = run_once(html)
-        print(data)
-        _type = data['type']
-        if _type == 'Training':
-            res.update(data)
-        elif _type == 'Outline':
-            res['section_name'] = data['section_name']
-            res['section_number'] = data['section_number']
-            res['outline'] = data['data']
-            print(res)
-        elif _type == 'DayMessage':
-            res['day_messages'].append(data)
-        else:
-            print('Invalid')
+    for _type, htmls in htmls.items():
+        for html in htmls:
+            data = run_once(html, _type)
+            print(data)
+            _type = data['type']
+            if _type == 'Training':
+                res.update(data)
+            elif _type == 'Outline':
+                res['section_name'] = data['section_name']
+                res['section_number'] = data['section_number']
+                res['outline'] = data['data']
+                print(res)
+            elif _type == 'DayMessage':
+                res['day_messages'].append(data)
+            else:
+                print('Invalid')
         
     if res['section_number'] == '':
         del res['outline'][0]['context'][0]
