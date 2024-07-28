@@ -30,7 +30,7 @@ class HtmlParser():
         self.outline_check1 = ['週一','週二','週三','週四','週五','週六']
         self.outline_check2 = ['週　一','週　二','週　三','週　四','週　五','週　六']
         self.day_message_check = ['晨興餧養', 'WEEK', '信息選讀']
-        self.training_check = ['感恩節國際相調特會', '秋季國際長老及負責弟兄訓練', '冬季', '國際華語特會', '春季國際長老及負責弟兄訓練', '國殤節特會']
+        self.training_check = ['感恩節國際相調特會', '秋季國際長老及負責弟兄訓練', '冬季', '國際華語特會', '春季國際長老及負責弟兄訓練', '國殤節特會', '七月半年度訓練']
         self.prefix = '<span style="font-size:'
 
     def _get_text(self, soup):
@@ -173,16 +173,20 @@ class HtmlParser():
                 _section_name = outline_data[2]
             else:
                 _section_name = outline_data[1]
-        elif ' ' in outline_data[0]:
-        # Fix 2024年 國殤節特會 "第六週  "
-            not_space2 = outline_data[0].strip()
-            if not_space2[0] == '第' and not_space2[-1] == '週':
-                _section_number = not_space2
-                _section_name = outline_data[1]
-            else:
-                _section_number, _section_name = outline_data[0].split()
+#        elif ' ' in outline_data[0]:
+#        # Fix 2024年 國殤節特會 "第六週  "
+#            not_space2 = outline_data[0].strip()
+#            if not_space2[0] == '第' and not_space2[-1] == '週':
+#                _section_number = not_space2
+#                _section_name = outline_data[1]
+#            else:
+#                _section_number, _section_name = outline_data[0].split()
         else:
-            if outline_data[0][0] != '第' and outline_data[0][-1] != '週':
+            # Fix 2024年 七月半年度訓練『經歷、享受並彰顯基督』 "第一篇"
+            if outline_data[1][0] == '第' and outline_data[0][-1] == '篇':
+                _section_number = outline_data[0]
+                _section_name = outline_data[2]
+            elif outline_data[0][0] != '第' and outline_data[0][-1] != '週':
                 outline_data = [''] + outline_data
             _section_number = outline_data[0]
             _section_name = outline_data[1]
@@ -266,7 +270,7 @@ def main():
     from constant import week_htmls
     CURRENT_WEEK = False
     global DEBUG
-    DEBUG = False
+    DEBUG = True
     fm = FirebaseManager()
     for week_html in week_htmls.values():
         run_section(week_html, fm, current_week=CURRENT_WEEK)
