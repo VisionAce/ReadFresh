@@ -40,7 +40,7 @@ class HtmlParser():
         self.type = _type
         self.outline_check = OUTLINE_REPLACE_RULES.keys()
         self.day_message_check = ['晨興餧養', 'WEEK', '信息選讀']
-        self.training_check = ['感恩節國際相調特會', '秋季國際長老及負責弟兄訓練', '冬季', '國際華語特會', '春季國際長老及負責弟兄訓練', '國殤節特會', '七月半年度訓練']
+        self.training_check = ['感恩節國際相調特會', '國際長老及負責弟兄訓練', '冬季', '國際華語特會', '春季國際長老及負責弟兄訓練', '國殤節特會', '七月半年度訓練']
         self.prefix = '<span style="font-size:'
 
     def _get_text(self, soup):
@@ -55,30 +55,35 @@ class HtmlParser():
             raise Exception('Cannot find text')
 
     def run(self):
-        if self.type == 'training':
+        if self.type == 'Training':
+            print('In type training')
             return self.parse_training()
-        if self.type == 'outline':
+        if self.type == 'Outline':
+            print('In type outline')
             return self.parse_outline()
-        if self.type == 'day_message':
+        if self.type == 'DayMessage':
+            print('In type day_message')
             return self.parse_day_message()
 
-        for key in OUTLINE_REPLACE_RULES:
-            for wrong_word in OUTLINE_REPLACE_RULES[key]:
-                self.page = self.page.replace(wrong_word, key)
-        if self.check_training():
-            print('Training')
-            return self.parse_training()
-        elif self._check(self.outline_check, self.page):
-            print('Outline')
-            #print(self.page)
-            return self.parse_outline()
-        elif self._check(self.day_message_check, self.page):
-            #print(self.page)
-            print('Day message')
-            return self.parse_day_message()
-        else:
-            print(self.page)
-            print('Skip Html')
+        raise Exception('[ERROR] Cannot find type.')
+
+        #for key in OUTLINE_REPLACE_RULES:
+        #    for wrong_word in OUTLINE_REPLACE_RULES[key]:
+        #        self.page = self.page.replace(wrong_word, key)
+        #if self.check_training():
+        #    print('Training')
+        #    return self.parse_training()
+        #elif self._check(self.outline_check, self.page):
+        #    print('Outline')
+        #    #print(self.page)
+        #    return self.parse_outline()
+        #elif self._check(self.day_message_check, self.page):
+        #    #print(self.page)
+        #    print('Day message')
+        #    return self.parse_day_message()
+        #else:
+        #    print(self.page)
+        #    print('Skip Html')
 
     def check_training(self):
         #print(self.page)
@@ -104,11 +109,12 @@ class HtmlParser():
         if '─' in line:
             year, tmp_name = line.split('─')
         elif ' ' in line:
+            print('empty in line')
             _line_split = line.split(' ')
             if len(_line_split) == 2:
                 year = _line_split[0]
                 tmp_name = _line_split[1]
-            if len(_line_split) == 3:
+            elif len(_line_split) == 3:
                 year = _line_split[0]
                 tmp_name = _line_split[1] + _line_split[2]
             else:
@@ -127,7 +133,7 @@ class HtmlParser():
         res['training_year'] = year.strip().strip('年')
         res['training_name'] = training_name
         res['training_topic'] = topic.strip('』')
-        res['type'] = 'Training'
+        #res['type'] = 'Training'
         #print(res)
         return res
 
@@ -170,7 +176,7 @@ class HtmlParser():
                 "page": "1"
             }
         ]
-        res['type'] = 'DayMessage'
+        #res['type'] = 'DayMessage'
         return res
 
 
@@ -257,7 +263,7 @@ class HtmlParser():
                 "page": "1"
             }
         ]
-        res['type'] = 'Outline'
+        #res['type'] = 'Outline'
         return res
 
     def _check(self, rules, page):
@@ -301,7 +307,7 @@ def run_section(htmls, fm, current_week=False):
         for html in htmls:
             data = run_once(html, _type)
             print(data)
-            _type = data['type']
+            #_type = data['type']
             if _type == 'Training':
                 res.update(data)
             elif _type == 'Outline':

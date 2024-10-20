@@ -1,8 +1,8 @@
 week_htmls = {
     'w1': {
-        'training': ['https://churchintamsui.wixsite.com/index/morning-revival'],
-        'outline': ['https://classic-blog.udn.com/ymch130/181167899'],
-        'day_message': [
+        'Training': ['https://churchintamsui.wixsite.com/index/morning-revival'],
+        'Outline': ['https://classic-blog.udn.com/ymch130/181167899'],
+        'DayMessage': [
             'https://classic-blog.udn.com/ymch130/181167904',
             'https://classic-blog.udn.com/ymch130/181171566',
             'https://classic-blog.udn.com/ymch130/181171699',
