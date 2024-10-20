@@ -307,7 +307,7 @@ def run_section(htmls, fm, current_week=False):
         for html in htmls:
             data = run_once(html, _type)
             print(data)
-            #_type = data['type']
+            data['type'] = _type
             if _type == 'Training':
                 res.update(data)
             elif _type == 'Outline':
@@ -336,7 +336,7 @@ def main():
     from constant import week_htmls
     CURRENT_WEEK = False
     global DEBUG
-    DEBUG = True
+    DEBUG = False
     fm = FirebaseManager()
     for week_html in week_htmls.values():
         run_section(week_html, fm, current_week=CURRENT_WEEK)
