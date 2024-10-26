@@ -1,4 +1,19 @@
 week_htmls = {
+    'w2': {
+        'Training': ['https://churchintamsui.wixsite.com/index/morning-revival'],
+        'Outline': ['https://classic-blog.udn.com/ymch130/181175746'],
+        'DayMessage': [
+            'https://classic-blog.udn.com/ymch130/181185916',
+            'https://classic-blog.udn.com/ymch130/181185928',
+            'https://classic-blog.udn.com/ymch130/181185933',
+            'https://classic-blog.udn.com/ymch130/181198746',
+            'https://classic-blog.udn.com/ymch130/181185967',
+            'https://classic-blog.udn.com/ymch130/181185970'
+        ]
+    }
+}
+
+week_htmls_2024_autumn = {
     'w1': {
         'Training': ['https://churchintamsui.wixsite.com/index/morning-revival'],
         'Outline': ['https://classic-blog.udn.com/ymch130/181167899'],
@@ -10,7 +25,8 @@ week_htmls = {
             'https://classic-blog.udn.com/ymch130/181172011',
             'https://classic-blog.udn.com/ymch130/181174436'
         ]
-    }
+    },
+
 }
 
 week_htmls_2024_july_training = {

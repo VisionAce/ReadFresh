@@ -159,8 +159,8 @@ class HtmlParser():
         # Fix 2024 春季國際長老及負責弟兄訓練 第一週■週一
         elif '■' in day_message_data[0]:
             res['week'], res['day'] = day_message_data[0].split('■')
-        elif ' · ' in day_message_data[0]:
-            res['week'], res['day'] = day_message_data[0].split(' · ')
+        elif '．' in day_message_data[0]:
+            res['week'], res['day'] = [part.strip() for part in day_message_data[0].split('．')]
         else:
             print(day_message_data[0])
             raise Exception('[ERROR] Cannot get day message week and day.')
@@ -336,7 +336,7 @@ def main():
     from constant import week_htmls
     CURRENT_WEEK = False
     global DEBUG
-    DEBUG = False
+    DEBUG = True
     fm = FirebaseManager()
     for week_html in week_htmls.values():
         run_section(week_html, fm, current_week=CURRENT_WEEK)
