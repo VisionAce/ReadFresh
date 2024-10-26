@@ -41,7 +41,7 @@ class HtmlParser():
         self.outline_check = OUTLINE_REPLACE_RULES.keys()
         self.day_message_check = ['晨興餧養', 'WEEK', '信息選讀']
         self.training_check = ['感恩節國際相調特會', '國際長老及負責弟兄訓練', '冬季', '國際華語特會', '春季國際長老及負責弟兄訓練', '國殤節特會', '七月半年度訓練']
-        self.prefix = '<span style="font-size:'
+        self.prefixs = ['<span style="font-size:', '<span style="background-color','<span style="font-family']
 
     def _get_text(self, soup):
         if soup.p:
@@ -137,12 +137,18 @@ class HtmlParser():
         #print(res)
         return res
 
+    def check_prefix(self, line):
+        for prefix in self.prefixs:
+            if prefix in line:
+                return True
+        return False
+
     def parse_day_message(self):
         res = {}
         day_message_data = []
         split_page = self.page.split('\n')
         for c in split_page:
-            if self.prefix in c:
+            if self.check_prefix(c):
                 if 'WEEK' in c:
                     break
                 soup = BeautifulSoup(c, "html.parser")
@@ -154,13 +160,16 @@ class HtmlParser():
                 day_message_data.append(line)
         
         # Fix 第十一週•週四
+        #print(day_message_data)
         if '•' in day_message_data[0]:
             res['week'], res['day'] = day_message_data[0].split('•')
         # Fix 2024 春季國際長老及負責弟兄訓練 第一週■週一
         elif '■' in day_message_data[0]:
             res['week'], res['day'] = day_message_data[0].split('■')
+        elif ' · ' in day_message_data[0]:
+            res['week'], res['day'] = day_message_data[0].split(' · ')
         elif '．' in day_message_data[0]:
-            res['week'], res['day'] = [part.strip() for part in day_message_data[0].split('．')]
+            res['week'], res['day'] = day_message_data[0].split('．')
         else:
             print(day_message_data[0])
             raise Exception('[ERROR] Cannot get day message week and day.')
@@ -186,7 +195,7 @@ class HtmlParser():
         outline_data = []
         split_page = self.page.split('\n')
         for c in split_page:
-            if self.prefix in c:
+            if self.check_prefix(c):
                 #print(c)
                 if 'Message' in c:
                     break
@@ -336,7 +345,7 @@ def main():
     from constant import week_htmls
     CURRENT_WEEK = False
     global DEBUG
-    DEBUG = True
+    DEBUG = False
     fm = FirebaseManager()
     for week_html in week_htmls.values():
         run_section(week_html, fm, current_week=CURRENT_WEEK)
