@@ -40,7 +40,7 @@ class HtmlParser():
         self.type = _type
         self.outline_check = OUTLINE_REPLACE_RULES.keys()
         self.day_message_check = ['晨興餧養', 'WEEK', '信息選讀']
-        self.training_check = ['感恩節國際相調特會', '國際長老及負責弟兄訓練', '冬季', '國際華語特會', '春季國際長老及負責弟兄訓練', '國殤節特會', '七月半年度訓練']
+        self.training_check = ['感恩節國際相調特會', '國際長老及負責弟兄訓練', '冬季', '國際華語特會', '春季國際長老及負責弟兄訓練', '國殤節特會', '七月半年度訓練','感恩節特會']
         self.prefixs = ['<span style="font-size:', '<span style="background-color','<span style="font-family']
 
     def _get_text(self, soup):
@@ -345,7 +345,7 @@ def main():
     from constant import week_htmls
     CURRENT_WEEK = False
     global DEBUG
-    DEBUG = False
+    DEBUG = True
     fm = FirebaseManager()
     for week_html in week_htmls.values():
         run_section(week_html, fm, current_week=CURRENT_WEEK)
