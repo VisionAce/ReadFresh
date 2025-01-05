@@ -4,6 +4,7 @@ import pandas as pd
 import string
 import requests
 import datetime
+import random
 from bs4 import BeautifulSoup
 from firebase import FirebaseManager
 
@@ -32,11 +33,25 @@ OUTLINE_REPLACE_RULES = {
         '週六': ['週　六', '週  六']
 }
 
+HEADERS = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:98.0) Gecko/20100101 Firefox/98.0",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.5",
+        "Accept-Encoding": "gzip, deflate",
+        "Connection": "keep-alive",
+        "Upgrade-Insecure-Requests": "1",
+        "Sec-Fetch-Dest": "document",
+        "Sec-Fetch-Mode": "navigate",
+        "Sec-Fetch-Site": "none",
+        "Sec-Fetch-User": "?1",
+        "Cache-Control": "max-age=0",
+    }
+
 
 class HtmlParser():
 
     def __init__(self, html, _type):
-        self.page = requests.get(html).text
+        self.page = requests.get(html, headers=HEADERS).text
         self.type = _type
         self.outline_check = OUTLINE_REPLACE_RULES.keys()
         self.day_message_check = ['晨興餧養', 'WEEK', '信息選讀']
