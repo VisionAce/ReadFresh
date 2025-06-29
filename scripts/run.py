@@ -5,6 +5,7 @@ import string
 import requests
 import datetime
 import random
+import re
 from bs4 import BeautifulSoup
 from firebase import FirebaseManager
 
@@ -55,9 +56,50 @@ class HtmlParser():
         self.type = _type
         self.outline_check = OUTLINE_REPLACE_RULES.keys()
         self.day_message_check = ['晨興餧養', 'WEEK', '信息選讀']
-        self.training_check = ['感恩節國際相調特會', '國際長老及負責弟兄訓練', '冬季', '國際華語特會', '春季國際長老及負責弟兄訓練', '國殤節特會', '七月半年度訓練','感恩節特會']
+        self.training_check = ['感恩節國際相調特會', '國際長老及負責弟兄訓練', '冬季', '國際華語特會', '春季國際長老及負責弟兄訓練', '國殤節特會', '七月半年度訓練','感恩節特會','2024年十二月 半年度訓練']
         self.prefixs = ['<span style="font-size:', '<span style="background-color','<span style="font-family']
+    
+    @staticmethod
+    def number_to_chinese(num):
+        digits = "零一二三四五六七八九"
+        if num == 0:
+            return "零"
+        if num < 10:
+            return digits[num]
+        elif num < 20:
+            return "十" + (digits[num % 10] if num % 10 != 0 else "")
+        else:
+            ten = num // 10
+            one = num % 10
+            return digits[ten] + "十" + (digits[one] if one != 0 else "")
+            
+    @staticmethod
+    def parse_schedule(code):
+        pattern = r"^w(\d{2})-d(\d)-([a-zA-Z]+)$"
+        match = re.match(pattern, code)
+        if match:
+            week_num = int(match.group(1))  # 數字週
+            weekday_num = int(match.group(2))  # 數字星期
+            code_suffix = match.group(3)
 
+            weekday_map = {
+               1: "週一", 2: "週二", 3: "週三", 4: "週四", 5: "週五", 6: "週六", 7: "週日"
+            }
+            weekday_str = weekday_map.get(weekday_num, f"週{weekday_num}")
+            week_str = f"第{HtmlParser.number_to_chinese(week_num)}週"
+
+            return {
+                "valid": True,
+                "week": week_str,
+                "weekday": weekday_str,
+                "code": code_suffix
+            }
+        else:
+            return {
+                "valid": False,
+                "message": "格式不符"
+            }
+            
     def _get_text(self, soup):
         if soup.p:
             return soup.p.text
@@ -185,6 +227,21 @@ class HtmlParser():
             res['week'], res['day'] = day_message_data[0].split(' · ')
         elif '．' in day_message_data[0]:
             res['week'], res['day'] = day_message_data[0].split('．')
+        elif '．' in day_message_data[0]:
+            res['week'], res['day'] = day_message_data[0].split('．')
+        elif '．' in day_message_data[0]:
+            res['week'], res['day'] = day_message_data[0].split('．')
+        # Fix 2025 國殤節特會 新婦的豫備 第一週  週二
+        elif ' ' in day_message_data[0]:
+            text_split = day_message_data[0].split(' ')
+            res['week'] = text_split[0]
+            res['day'] = text_split[1]
+        # Fix 2025 國殤節特會 新婦的豫備 的day_message_data[0]為w01-d3-ch
+        elif 'w' in day_message_data[0]:
+            get_week_and_day = self.parse_schedule(day_message_data[0])
+            print(get_week_and_day)
+            res['week'] = get_week_and_day['week']
+            res['day'] = get_week_and_day['weekday']
         else:
             print(day_message_data[0])
             raise Exception('[ERROR] Cannot get day message week and day.')
@@ -252,7 +309,11 @@ class HtmlParser():
         if not _outline_data:
             raise Exception('[ERROR] Cannot get outline data.')
         if '•' in _outline_data:
-            _section_number, _section_name = _outline_data.split('•')
+            if '綱目' in _outline_data:
+                _section_number = _outline_data.split('•')[0].strip()
+                _section_name = outline_data[1].strip()
+            else:
+               _section_number, _section_name = _outline_data.split('•')
         if ' ' in _outline_data:
             _outline_data_split = _outline_data.split(' ')
             if len(_outline_data_split) == 2:
