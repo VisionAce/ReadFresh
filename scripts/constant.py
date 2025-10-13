@@ -1,14 +1,14 @@
 week_htmls = {
-    'w32': {
+    'w36': {
         'Training': ['https://churchintamsui.wixsite.com/index/morning-revival'],
-        'Outline': ['https://classic-blog.udn.com/ymch130/183298284'],
+        'Outline': ['https://classic-blog.udn.com/ymch130/183384468'],
         'DayMessage': [
-            'https://classic-blog.udn.com/ymch130/183298923',
-            'https://classic-blog.udn.com/ymch130/183299045',
-            'https://classic-blog.udn.com/ymch130/183299186',
-            'https://classic-blog.udn.com/ymch130/183299291',
-            'https://classic-blog.udn.com/ymch130/183299336',
-            'https://classic-blog.udn.com/ymch130/183299397'
+            'https://classic-blog.udn.com/ymch130/183384593',
+            'https://classic-blog.udn.com/ymch130/183384635',
+            'https://classic-blog.udn.com/ymch130/183384687',
+            'https://classic-blog.udn.com/ymch130/183384750',
+            'https://classic-blog.udn.com/ymch130/183384802',
+            'https://classic-blog.udn.com/ymch130/183384852'
         ]
     }
 }
@@ -97,6 +97,54 @@ week_htmls_2025_Semi_Annual_Training = {
             'https://classic-blog.udn.com/ymch130/183277824',
             'https://classic-blog.udn.com/ymch130/183277936',
             'https://classic-blog.udn.com/ymch130/183278041'
+        ]
+    },
+    'w32': {
+        'Training': ['https://churchintamsui.wixsite.com/index/morning-revival'],
+        'Outline': ['https://classic-blog.udn.com/ymch130/183298284'],
+        'DayMessage': [
+            'https://classic-blog.udn.com/ymch130/183298923',
+            'https://classic-blog.udn.com/ymch130/183299045',
+            'https://classic-blog.udn.com/ymch130/183299186',
+            'https://classic-blog.udn.com/ymch130/183299291',
+            'https://classic-blog.udn.com/ymch130/183299336',
+            'https://classic-blog.udn.com/ymch130/183299397'
+        ]
+    },
+    'w33': {
+        'Training': ['https://churchintamsui.wixsite.com/index/morning-revival'],
+        'Outline': ['https://classic-blog.udn.com/ymch130/183357142'],
+        'DayMessage': [
+            'https://classic-blog.udn.com/ymch130/183357272',
+            'https://classic-blog.udn.com/ymch130/183357315',
+            'https://classic-blog.udn.com/ymch130/183357349',
+            'https://classic-blog.udn.com/ymch130/183357384',
+            'https://classic-blog.udn.com/ymch130/183357409',
+            'https://classic-blog.udn.com/ymch130/183357455'
+        ]
+    },
+    'w34': {
+        'Training': ['https://churchintamsui.wixsite.com/index/morning-revival'],
+        'Outline': ['https://classic-blog.udn.com/ymch130/183357731'],
+        'DayMessage': [
+            'https://classic-blog.udn.com/ymch130/183357816',
+            'https://classic-blog.udn.com/ymch130/183357844',
+            'https://classic-blog.udn.com/ymch130/183357873',
+            'https://classic-blog.udn.com/ymch130/183357919',
+            'https://classic-blog.udn.com/ymch130/183357943',
+            'https://classic-blog.udn.com/ymch130/183357969'
+        ]
+    },
+    'w35': {
+        'Training': ['https://churchintamsui.wixsite.com/index/morning-revival'],
+        'Outline': ['https://classic-blog.udn.com/ymch130/183383404'],
+        'DayMessage': [
+            'https://classic-blog.udn.com/ymch130/183383595',
+            'https://classic-blog.udn.com/ymch130/183383656',
+            'https://classic-blog.udn.com/ymch130/183383716',
+            'https://classic-blog.udn.com/ymch130/183383797',
+            'https://classic-blog.udn.com/ymch130/183383911',
+            'https://classic-blog.udn.com/ymch130/183383983'
         ]
     }
     
