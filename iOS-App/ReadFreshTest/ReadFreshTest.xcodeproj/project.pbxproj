@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2714DBCB2F6BDF6D0060EDC3 /* CustomSelectableText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2714DBCA2F6BDF6D0060EDC3 /* CustomSelectableText.swift */; };
 		272A696F2B3BE5C5009A1090 /* DayMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 272A696E2B3BE5C5009A1090 /* DayMessageView.swift */; };
 		272A69732B3C20E8009A1090 /* TitleIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 272A69722B3C20E8009A1090 /* TitleIView.swift */; };
 		274DAB582B4D98A70088A9A9 /* FirebaseKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 274DAB572B4D98A70088A9A9 /* FirebaseKey.swift */; };
@@ -80,6 +81,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2714DBCA2F6BDF6D0060EDC3 /* CustomSelectableText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSelectableText.swift; sourceTree = "<group>"; };
 		272A696E2B3BE5C5009A1090 /* DayMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayMessageView.swift; sourceTree = "<group>"; };
 		272A69722B3C20E8009A1090 /* TitleIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleIView.swift; sourceTree = "<group>"; };
 		274DAB572B4D98A70088A9A9 /* FirebaseKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseKey.swift; sourceTree = "<group>"; };
@@ -224,6 +226,7 @@
 				276DFA5E2B1DB1110035274B /* DataManager.swift */,
 				276C789E2BF27E0600758E64 /* AppStoreData.swift */,
 				278E4DD52B666EB000A8F394 /* ColorData.swift */,
+				2714DBCA2F6BDF6D0060EDC3 /* CustomSelectableText.swift */,
 				27735F1F2B8A5F75003064DA /* EmailSupport */,
 				27B5408B2B4E9FC200333785 /* CustomTabBar */,
 				274DAB592B4D9CE40088A9A9 /* Helper */,
@@ -382,7 +385,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1500;
-				LastUpgradeCheck = 1500;
+				LastUpgradeCheck = 2600;
 				TargetAttributes = {
 					276DFA072B1DA0170035274B = {
 						CreatedOnToolsVersion = 15.0.1;
@@ -478,6 +481,7 @@
 				276C78A32BF39B6200758E64 /* StringExtension.swift in Sources */,
 				27A0F21F2B23272D00242AAA /* FileManager-DocumentsDirectory.swift in Sources */,
 				276C789F2BF27E0600758E64 /* AppStoreData.swift in Sources */,
+				2714DBCB2F6BDF6D0060EDC3 /* CustomSelectableText.swift in Sources */,
 				276C78A52BF39B9D00758E64 /* AppStoreVersionView.swift in Sources */,
 				27735F242B8A5FC0003064DA /* MailView.swift in Sources */,
 				272A696F2B3BE5C5009A1090 /* DayMessageView.swift in Sources */,
@@ -530,6 +534,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 2N99K4SE77;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -553,6 +558,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -593,6 +599,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 2N99K4SE77;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -609,6 +616,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -623,7 +631,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"ReadFreshTest/Preview Content\"";
-				DEVELOPMENT_TEAM = 2N99K4SE77;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ReadFreshTest/Info.plist;
@@ -638,7 +645,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.8.1;
+				MARKETING_VERSION = 1.8.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.CXD.ReadFreshTest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -656,7 +663,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"ReadFreshTest/Preview Content\"";
-				DEVELOPMENT_TEAM = 2N99K4SE77;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ReadFreshTest/Info.plist;
@@ -671,7 +677,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.8.1;
+				MARKETING_VERSION = 1.8.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.CXD.ReadFreshTest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

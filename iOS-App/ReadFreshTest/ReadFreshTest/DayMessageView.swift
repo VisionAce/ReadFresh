@@ -37,56 +37,69 @@ struct DayMessageView: View {
     init(read: ReadData_v2, dayPicker: String) {
         self.read = read
         self.dayPicker = dayPicker
-     //This changes the "thumb" that selects between items
+        //This changes the "thumb" that selects between items
         UISegmentedControl.appearance().selectedSegmentTintColor = colorData.uiColor
-      
-     //This changes the color for the whole "bar" background
+        
+        //This changes the color for the whole "bar" background
         UISegmentedControl.appearance().backgroundColor = .lightText
-
-      
-     //This will change the font size
+        
+        
+        //This will change the font size
         UISegmentedControl.appearance().setTitleTextAttributes([.font: UIFont.systemFont(ofSize: 17) ], for: .highlighted)
         UISegmentedControl.appearance().setTitleTextAttributes([.font: UIFont.systemFont(ofSize: 15) ], for: .normal)
-      
-     //these lines change the text color for various states
-     UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor : UIColor.cyan], for: .highlighted)
+        
+        //these lines change the text color for various states
+        UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor : UIColor.cyan], for: .highlighted)
         UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor : UIColor.white], for: .selected)
-   }
+    }
     
     var body: some View {
-                VStack(alignment: .leading) {
-                    if dayPicker == "綱要" {
-                        ForEach(read.outline, id: \.self) { data in
-                            if let firstIndex = data.context.firstIndex(where: { $0.contains("詩歌：") }) {
-                                ForEach(firstIndex..<data.context.count, id: \.self) { index in
-                                    Text("\(data.context[index])\n")
-                                }
-                            } else {
-                                ForEach(0..<data.context.count, id: \.self) { index in
-                                    Text("\(data.context[index])\n")
-                                }
-                            }
-                             
+        VStack(alignment: .leading) {
+            if dayPicker == "綱要" {
+                ForEach(read.outline, id: \.self) { data in
+                    if let firstIndex = data.context.firstIndex(where: { $0.contains("詩歌：") }) {
+                        ForEach(firstIndex..<data.context.count, id: \.self) { index in
+                            SelectableText(
+                                text: "\(data.context[index])\n",
+                                fontSize: fontSize,
+                                lineSpacing: lineSpacingSize
+                            )
                         }
                     } else {
-                        ForEach(read.day_messages, id: \.self) { day_message in
-                            if dayPicker == day_message.day  {
-                                ForEach(day_message.data, id: \.self) { page in
-                                    if let firstIndex = page.context.firstIndex(where: { $0.contains("晨興餧養") }) {
-                                        ForEach(firstIndex..<page.context.count, id: \.self) { index in
-                                            Text("\(page.context[index])\n")
-                                        }
-                                    }
-                                }
-                            }
-                            
+                        ForEach(0..<data.context.count, id: \.self) { index in
+                            SelectableText(
+                                text: "\(data.context[index])\n",
+                                fontSize: fontSize,
+                                lineSpacing: lineSpacingSize
+                            )
                         }
                     }
+                    
                 }
-            .lineSpacing(lineSpacingSize)
-            .font(.system(size: fontSize))
-            .contentShape(Rectangle())
-            .gesture(magnification)
+            } else {
+                ForEach(read.day_messages, id: \.self) { day_message in
+                    if dayPicker == day_message.day  {
+                        ForEach(day_message.data, id: \.self) { page in
+                            if let firstIndex = page.context.firstIndex(where: { $0.contains("晨興餧養") }) {
+                                ForEach(firstIndex..<page.context.count, id: \.self) { index in
+                                    SelectableText(
+                                        text: "\(page.context[index])\n",
+                                        fontSize: fontSize,
+                                        lineSpacing: lineSpacingSize
+                                    )
+                                    .fixedSize(horizontal: false, vertical: true)
+                                }
+                            }
+                        }
+                    }
+                    
+                }
+            }
+        }
+        .lineSpacing(lineSpacingSize)
+        .font(.system(size: fontSize))
+        .contentShape(Rectangle())
+        .gesture(magnification)
     }
 }
 

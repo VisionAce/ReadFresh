@@ -63,14 +63,16 @@ struct SettingView: View {
                 
                 
                 Section("顯示") {
-                    Text("""
-哥林多前書 10:23-24 RCUV
-
-「凡事都可行」，但不都有益處。「凡事都可行」，但不都造就人。 無論甚麼人，不要求自己的益處，而要求別人的益處。
-""")
-                    .font(.system(size: fontSize))
-                    .foregroundStyle(colorData.themeColor)
-                    .lineSpacing(lineSpacingSize)
+                    SelectableText(
+                        text: """
+                        哥林多前書 10:23-24 RCUV
+                        
+                        「凡事都可行」，但不都有益處。「凡事都可行」，但不都造就人。 無論甚麼人，不要求自己的益處，而要求別人的益處。
+                        """,
+                        fontSize: fontSize,
+                        lineSpacing: lineSpacingSize
+                    )
+                    .fixedSize(horizontal: false, vertical: true)
                     .padding(.horizontal)
                     .containerShape(Rectangle())
                     .gesture(
@@ -86,16 +88,16 @@ struct SettingView: View {
                         DeveloperView(modelContext: _modelContext, showdata: $showdata, reads: reads)
                     }
                 }
-        
+                
             }
             .navigationTitle("設定")
             .onAppear {
                 color = colorData.loadColor()
             }
-            }
-        
         }
+        
     }
+}
 
 
 //#Preview {
