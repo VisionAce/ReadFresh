@@ -12,17 +12,19 @@ import SwiftUI
 enum Tab: String, CaseIterable {
     case thisWeek = "本週"
     case pastWeek = "已過"
+    case hymn = "詩歌"
     case setting = "設定"
-    
+
     var systemImage: String {
         switch self {
         case .thisWeek:
             return "book.pages"
         case .pastWeek:
             return "book.fill"
+        case .hymn:
+            return "music.note.list"
         case .setting:
             return "gear"
- 
         }
     }
     
