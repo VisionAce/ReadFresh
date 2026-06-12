@@ -68,7 +68,7 @@ struct ContentView: View {
                             PastMessage()
                                 .tag(Tab.pastWeek)
 
-                            HymnView()
+                            HymnView(isActive: activeTab == .hymn)
                                 .tag(Tab.hymn)
 
                             SettingView(reads: reads)
