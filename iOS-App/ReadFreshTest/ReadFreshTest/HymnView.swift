@@ -773,11 +773,15 @@ private struct VerseView: View {
                 .foregroundStyle(.primary)
                 .padding(.horizontal)
 
-            Text(text)
-                .font(.system(size: fontSize))
-                .lineSpacing(lineSpacingSize)
-                .foregroundStyle(.primary)
-                .padding(.horizontal)
+            SelectableText(
+                text: text,
+                fontSize: fontSize,
+                lineSpacing: lineSpacingSize
+            )
+            .fixedSize(horizontal: false, vertical: true)
+            .foregroundStyle(.primary)
+            .padding(.horizontal)
+                
         }
     }
 }
