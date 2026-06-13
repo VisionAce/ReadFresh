@@ -64,14 +64,16 @@ struct ContentView: View {
                         TabView(selection: $activeTab) {
                             MessageView()
                                 .tag(Tab.thisWeek)
-                            
+
                             PastMessage()
                                 .tag(Tab.pastWeek)
-                            
-                            
+
+                            HymnView(isActive: activeTab == .hymn)
+                                .tag(Tab.hymn)
+
                             SettingView(reads: reads)
                                 .tag(Tab.setting)
-                            
+
                         }
                         .safeAreaInset(edge: .bottom, spacing: 0) {
                             customTabBar()
