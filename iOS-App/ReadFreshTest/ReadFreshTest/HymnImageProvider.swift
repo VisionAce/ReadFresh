@@ -2,10 +2,58 @@
 //  HymnImageProvider.swift
 //  ReadFreshTest
 //
+//  Created by Gemini on 2026/6/14.
+//
 
 import Foundation
 
 struct HymnImageProvider {
+    
+    // =========================================================================
+    // 🌟 例外頁面終點對照表 (解決圖片增加、編號未增加，或兩首詩歌共享同一頁實體歌譜的問題)
+    // Key: 詩歌編號 (Int), Value: 強制指定的實體圖片結束序號 (Int)
+    // =========================================================================
+    
+    // 如果未來測試發現大本詩歌有共享圖片或漏頁狀況，在此直接追加即可
+    // 例如：30: 46 (代表大本30首強制結束在 d46)
+    private static let mainEndOverrides: [Int: Int] = [:]
+    
+    private static let supplementEndOverrides: [Int: Int] = [
+        31: 52, // 🌟 補充本 31 首：常規公式算出來是 51，我們強制讓它結束在 52，使其包含 b51, b52（完美與32首共享b52）
+        34: 56,
+        144: 103,
+        251: 161,
+        253: 163,
+        330: 200,
+        332: 202,
+        334: 204,
+        336: 206,
+        432: 251,
+        438: 257,
+        445: 265,
+        448: 268,
+        450: 271,
+        454: 277,
+        462: 285,
+        466: 289,
+        537: 333,
+        540: 337,
+        542: 340,
+        621: 362,
+        857: 491,
+        861: 495,
+        865: 499,
+        867: 501,
+        871: 505,
+        917: 534,
+        920: 537,
+        922: 540,
+        925: 543
+    ]
+    
+    // =========================================================================
+    // 核心入口方法
+    // =========================================================================
     static func imageNames(for summary: HymnDB.HymnSummary) -> [String] {
         switch HymnCatalog(rawValue: summary.catalog) {
         case .main:
@@ -19,19 +67,27 @@ struct HymnImageProvider {
         }
     }
 
+    /// 取得檔案實際的專案 Bundle URL
     static func url(for imageName: String) -> URL? {
         let parts = imageName.split(separator: ".", maxSplits: 1).map(String.init)
         guard parts.count == 2 else { return nil }
         return Bundle.main.url(forResource: parts[0], withExtension: parts[1], subdirectory: "HymnImages")
     }
 
+    // =========================================================================
+    // 大本詩歌圖片處理邏輯
+    // =========================================================================
     private static func mainImageNames(number rawNumber: String) -> [String] {
         guard let number = mainImageNumber(rawNumber),
               let start = mainStartIndex(for: number) else {
             return []
         }
+        
         let end: Int
-        if number < 786, let nextStart = mainStartIndex(for: number + 1) {
+        // 🌟 優先檢查大本詩歌有沒有手動指定的例外終點
+        if let overrideEnd = mainEndOverrides[number] {
+            end = overrideEnd
+        } else if number < 786, let nextStart = mainStartIndex(for: number + 1) {
             end = nextStart - 1
         } else {
             end = 818
@@ -39,14 +95,21 @@ struct HymnImageProvider {
         return imageNames(prefix: "d", start: start, end: end)
     }
 
+    // =========================================================================
+    // 補充本詩歌圖片處理邏輯
+    // =========================================================================
     private static func supplementImageNames(number rawNumber: String) -> [String] {
         guard let number = Int(rawNumber),
               let start = supplementStartIndex(for: number) else {
             return []
         }
+        
         let end: Int
-        if let nextNumber = nextSupplementNumber(after: number),
-           let nextStart = supplementStartIndex(for: nextNumber) {
+        // 🌟 優先檢查補充本有沒有手動指定的例外終點
+        if let overrideEnd = supplementEndOverrides[number] {
+            end = overrideEnd
+        } else if let nextNumber = nextSupplementNumber(after: number),
+                  let nextStart = supplementStartIndex(for: nextNumber) {
             end = max(start, nextStart - 1)
         } else {
             end = 566
@@ -54,6 +117,9 @@ struct HymnImageProvider {
         return imageNames(prefix: "b", start: start, end: end)
     }
 
+    // =========================================================================
+    // 兒童詩歌圖片處理邏輯
+    // =========================================================================
     private static func childrenImageNames(number rawNumber: String) -> [String] {
         guard let number = Int(rawNumber) else { return [] }
         let index = number + 4
@@ -61,6 +127,9 @@ struct HymnImageProvider {
         return imageName(prefix: "n", index: index).map { [$0] } ?? []
     }
 
+    // =========================================================================
+    // 工具輔助與索引補償對照方法 (由原 APK 邏輯移植)
+    // =========================================================================
     private static func mainImageNumber(_ number: String) -> Int? {
         if number.hasPrefix("附"), let appendix = Int(number.dropFirst()), (1...6).contains(appendix) {
             return 780 + appendix
@@ -72,37 +141,22 @@ struct HymnImageProvider {
     private static func mainStartIndex(for number: Int) -> Int? {
         guard (1...786).contains(number) else { return nil }
         switch number {
-        case 1...128:
-            return number + 16
-        case 129...152:
-            return number + 17
-        case 153...188:
-            return number + 21
-        case 189...310:
-            return number + 22
-        case 311...316:
-            return number + 23
-        case 317...388:
-            return number + 24
-        case 389...465:
-            return number + 26
-        case 466...469:
-            return number + 28
-        case 470...717:
-            return number + 29
-        case 718...758:
-            return number + 30
-        case 759...776:
-            return number + 31
-        case 777...786:
-            return number + 32
-        default:
-            return nil
+        case 1...128: return number + 16
+        case 129...152: return number + 17
+        case 153...188: return number + 21
+        case 189...310: return number + 22
+        case 311...316: return number + 23
+        case 317...388: return number + 24
+        case 389...465: return number + 26
+        case 466...469: return number + 28
+        case 470...717: return number + 29
+        case 718...758: return number + 30
+        case 759...776: return number + 31
+        case 777...786: return number + 32
+        default: return nil
         }
     }
 
-    // Ported from new.apk com.example.song.maintouch:
-    // sel="xb", skip=19, then setSelection(nui) after these number corrections.
     private static func supplementStartIndex(for number: Int) -> Int? {
         let skip = 19
         switch number {
@@ -151,28 +205,17 @@ struct HymnImageProvider {
              501..<543, 601..<629, 701..<762, 801..<880, 901..<930,
              1001..<1005:
             return number + 1
-        case 37:
-            return 101
-        case 150:
-            return 201
-        case 258:
-            return 301
-        case 349:
-            return 401
-        case 470:
-            return 501
-        case 543:
-            return 601
-        case 629:
-            return 701
-        case 762:
-            return 801
-        case 880:
-            return 901
-        case 930:
-            return 1001
-        default:
-            return nil
+        case 37: return 101
+        case 150: return 201
+        case 258: return 301
+        case 349: return 401
+        case 470: return 501
+        case 543: return 601
+        case 629: return 701
+        case 762: return 801
+        case 880: return 901
+        case 930: return 1001
+        default: return nil
         }
     }
 

@@ -442,7 +442,6 @@ struct HymnView: View {
         guard let value = Int(number) else { return false }
         return value > 0 && value <= catalog.maxNumber
     }
-
 }
 
 private struct DirectoryGroupView: View {
@@ -593,99 +592,45 @@ private struct HymnDetailView: View {
     }
 }
 
+// 🌟 已修正：整合 3D 翻頁特效、並使用 CustomPagingSlider 的 UIPageControl 圓點指示器
 private struct HymnImageScrollView: View {
     let imageNames: [String]
+    
+    @State private var scrollProgress: CGFloat = 0 // 翻頁 Shader 進度
+    @State private var currentPage: Int? = 0       // 🌟 0-based 可選型頁碼（精準對接 iOS 18 原生滾動與圓點控制）
 
     var body: some View {
-        ScrollView {
-            LazyVStack(spacing: 16) {
+        VStack(spacing: 12) {
+            // 呼叫翻頁特效輪播器
+            PageCurlCarousel(
+                config: .init(curlRadius: 80),
+                scrollProgress: $scrollProgress,
+                currentPage: $currentPage
+            ) { size in
                 ForEach(imageNames, id: \.self) { imageName in
                     if let url = HymnImageProvider.url(for: imageName),
                        let image = UIImage(contentsOfFile: url.path) {
-                        ZoomableHymnImage(image: image)
+                        Image(uiImage: image)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: size.width, height: size.height)
+                            .background(Color.white)
                     }
                 }
             }
-            .padding()
+            
+            // 🌟 圓點頁碼指示：完美套用 CustomPagingSlider 移植過來的點點
+            if imageNames.count > 1 {
+                PagingControl(numberOfPages: imageNames.count, activePage: currentPage ?? 0) { value in
+                    // 點擊圓點時，觸發 iOS 18 靈敏的原生彈性切換
+                    withAnimation(.snappy(duration: 0.35, extraBounce: 0)) {
+                        currentPage = value
+                    }
+                }
+                .padding(.bottom, 12)
+            }
         }
         .background(Color(.secondarySystemBackground))
-    }
-}
-
-private struct ZoomableHymnImage: View {
-    let image: UIImage
-    @State private var scale: CGFloat = 1
-    @State private var baseScale: CGFloat = 1
-    @State private var offset: CGSize = .zero
-    @State private var baseOffset: CGSize = .zero
-
-    var body: some View {
-        Image(uiImage: image)
-            .resizable()
-            .scaledToFit()
-            .scaleEffect(scale)
-            .offset(offset)
-            .frame(maxWidth: .infinity)
-            .background(Color.white)
-            .clipShape(Rectangle())
-            .contentShape(Rectangle())
-            .gesture(zoomGesture)
-            .simultaneousGesture(panGesture)
-            .onTapGesture(count: 2, perform: toggleZoom)
-    }
-
-    private var zoomGesture: some Gesture {
-        MagnificationGesture()
-            .onChanged { value in
-                scale = min(max(baseScale * value, 1), 5)
-                if scale == 1 {
-                    offset = .zero
-                }
-            }
-            .onEnded { _ in
-                if scale <= 1.05 {
-                    resetZoom()
-                } else {
-                    baseScale = scale
-                }
-            }
-    }
-
-    private var panGesture: some Gesture {
-        DragGesture()
-            .onChanged { value in
-                guard scale > 1 else { return }
-                offset = CGSize(
-                    width: baseOffset.width + value.translation.width,
-                    height: baseOffset.height + value.translation.height
-                )
-            }
-            .onEnded { _ in
-                guard scale > 1 else { return }
-                baseOffset = offset
-            }
-    }
-
-    private func toggleZoom() {
-        if scale > 1 {
-            resetZoom()
-        } else {
-            withAnimation(.easeInOut(duration: 0.2)) {
-                scale = 2
-                baseScale = 2
-                offset = .zero
-                baseOffset = .zero
-            }
-        }
-    }
-
-    private func resetZoom() {
-        withAnimation(.easeInOut(duration: 0.2)) {
-            scale = 1
-            baseScale = 1
-            offset = .zero
-            baseOffset = .zero
-        }
     }
 }
 
@@ -781,7 +726,6 @@ private struct VerseView: View {
             .fixedSize(horizontal: false, vertical: true)
             .foregroundStyle(.primary)
             .padding(.horizontal)
-                
         }
     }
 }
