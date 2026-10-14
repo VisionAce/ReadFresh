@@ -7,7 +7,7 @@ from firebase_admin import credentials, firestore
 
 class FirebaseManager:
     def __init__(self):
-        cred = credentials.Certificate('readfresh-3c7d8-firebase-adminsdk-gf1jy-b1d4cff46d.json')
+        cred = credentials.Certificate('')  # 上傳前填入本機 Firebase 憑證檔路徑
         # 避免重複初始化 Firebase
         if not firebase_admin._apps:
             firebase_admin.initialize_app(cred)
