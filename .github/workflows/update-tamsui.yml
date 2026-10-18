@@ -1,0 +1,57 @@
+name: Update Tamsui Morning Revival
+
+on:
+  schedule:
+    # Every 3 hours, UTC; Taiwan time is UTC+8.
+    - cron: '17 */3 * * *'
+  workflow_dispatch:
+    inputs:
+      write:
+        description: 'Write to Firebase? (false = dry run)'
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: readfresh-tamsui-firestore
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout selected branch
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: python -m pip install beautifulsoup4 curl_cffi firebase-admin
+
+      - name: Run update
+        env:
+          FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
+          MANUAL_WRITE: ${{ inputs.write }}
+          EVENT_NAME: ${{ github.event_name }}
+          REF_NAME: ${{ github.ref_name }}
+        shell: bash
+        run: |
+          if [ "$EVENT_NAME" = "schedule" ]; then
+            if [ "$REF_NAME" != "main" ]; then
+              echo 'Scheduled writes are only permitted on main.'
+              exit 1
+            fi
+            python scripts/run_tamsui.py --write
+          elif [ "$MANUAL_WRITE" = "true" ]; then
+            echo "Manual write requested on branch: $REF_NAME"
+            python scripts/run_tamsui.py --write
+          else
+            python scripts/run_tamsui.py
+          fi
