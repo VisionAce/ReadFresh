@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""ReadFresh 淡水召會晨興資料同步。預設 dry-run；--write 才更新 Firestore。"""
+"""ReadFresh 淡水召會晨興資料同步。只比較目前版本，內容不同就追加新版本。"""
 import argparse
 import datetime
 import json
@@ -129,15 +129,16 @@ def comparable(data):
     return {key: data.get(key) for key in CONTENT_FIELDS}
 
 
-def check_existing(documents, incoming):
-    """Return status and matching document IDs, never compare volatile date fields."""
-    matches = [(doc_id, data) for doc_id, data in documents.items()
-               if identity(data) == identity(incoming)]
-    if not matches:
-        return 'new', []
-    if all(comparable(data) == comparable(incoming) for _, data in matches):
-        return 'same', [doc_id for doc_id, _ in matches]
-    raise ValueError('同一訓練與週次的內容不同，拒絕自動覆蓋，請人工確認。')
+def check_latest(latest_id, latest_data, incoming):
+    """Compare only the current version's substantive content.
+
+    Historical documents are immutable and intentionally ignored. A correction to
+    the same week becomes a new version; a return to older content also becomes
+    a new version if the current version differs.
+    """
+    if comparable(latest_data) == comparable(incoming):
+        return 'same', latest_id
+    return 'changed', latest_id
 
 
 def validate_identity(data):
@@ -145,7 +146,55 @@ def validate_identity(data):
         raise ValueError('缺少訓練名稱、年份或週次，拒絕更新。')
 
 
-def run_section(url=SOURCE_URL, fm=None, current_week=False, write=False):
+def firebase_json(data):
+    """JSON-friendly view of the Firestore payload (timestamps in ISO 8601)."""
+    return json.dumps(data, ensure_ascii=False, indent=2, default=lambda obj:
+                      obj.isoformat() if isinstance(obj, (datetime.datetime, datetime.date))
+                      else (_ for _ in ()).throw(TypeError(f'Unsupported type: {type(obj).__name__}')))
+
+
+def print_readable(data):
+    """Print the parsed content without altering what is written to Firestore."""
+    print('\n' + '=' * 64)
+    print('晨興聖言｜網頁解析預覽')
+    print('=' * 64)
+    for key, label in (('training_year', '年份'), ('training_name', '訓練'),
+                       ('training_topic', '主題'), ('section_number', '週次'),
+                       ('section_name', '篇名')):
+        print(f'{label}：{data.get(key, "")}')
+    print('\n【綱目】')
+    for item in data.get('outline', []):
+        for line in item.get('context', []):
+            print(line)
+    for item in data.get('day_messages', []):
+        print(f'\n【{item.get("day", "每日信息")}】')
+        for page in item.get('data', []):
+            for line in page.get('context', []):
+                print(line)
+    print('\n【Firestore 欄位】')
+    for key in ('started_day', 'ended_day', 'created_day', 'db_version'):
+        value = data.get(key)
+        print(f'{key}: {value.isoformat() if isinstance(value, datetime.datetime) else value}')
+    print('=' * 64 + '\n')
+
+
+def preview_payload(data, show_readable=False, show_json=False, export_json=None):
+    if show_readable:
+        print_readable(data)
+    if show_json or export_json:
+        payload = firebase_json(data)
+        if show_json:
+            print('\n【完整 Firestore JSON 預覽】\n' + payload)
+        if export_json:
+            from pathlib import Path
+            path = Path(export_json).expanduser()
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(payload + '\n', encoding='utf-8')
+            print(f'JSON 已匯出：{path.resolve()}')
+
+
+def run_section(url=SOURCE_URL, fm=None, current_week=False, write=False,
+                show_readable=True, show_json=False, export_json=None):
     response = requests.get(url, impersonate='chrome', timeout=60)
     response.raise_for_status()
     result = TamsuiParser(response.text).run()
@@ -159,6 +208,7 @@ def run_section(url=SOURCE_URL, fm=None, current_week=False, write=False):
                    'created_day': now, 'db_version': DB_VERSION})
     print('Parsed:', json.dumps({key: result[key] for key in IDENTITY_FIELDS}, ensure_ascii=False))
     validate_identity(result)
+    preview_payload(result, show_readable, show_json, export_json)
     if fm is None:
         if not write and not (os.environ.get('FIREBASE_SERVICE_ACCOUNT_JSON') or os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')):
             print('DRY RUN: 已解析網站內容；未提供 Firebase 憑證，因此尚未比對資料庫。')
@@ -166,10 +216,11 @@ def run_section(url=SOURCE_URL, fm=None, current_week=False, write=False):
         from firebase import FirebaseManager
         fm = FirebaseManager()
     if not write:
-        status, ids = check_existing(fm.get_all_documents('stg-data'), result)
-        print(f'DRY RUN: Firestore comparison={status}; existing IDs={ids}; no writes.')
+        latest_id, latest_data = fm.get_latest_section()
+        status, previous_id = check_latest(latest_id, latest_data, result)
+        print(f'DRY RUN: Firestore comparison={status}; latest ID={previous_id}; no writes.')
         return result
-    status, version = fm.sync_tamsui(result, identity, comparable)
+    status, version = fm.sync_tamsui(result, comparable)
     if status == 'skipped':
         print(f'SKIP: existing stg-data/{version}; metadata unchanged')
     else:
@@ -182,9 +233,14 @@ def main():
     parser.add_argument('--write', action='store_true', help='正式寫入 Firebase（預設不寫入）')
     parser.add_argument('--current-week', action='store_true', help='沿用本週 UTC 日期（預設下週）')
     parser.add_argument('--url', default=SOURCE_URL)
+    parser.add_argument('--show-json', action='store_true', help='終端機顯示完整 Firestore JSON')
+    parser.add_argument('--export-json', metavar='PATH', help='將完整 Firestore JSON 儲存至指定檔案')
+    parser.add_argument('--no-preview', action='store_true', help='關閉預設的人類易讀內容預覽（適合排程）')
     args = parser.parse_args()
     try:
-        run_section(url=args.url, current_week=args.current_week, write=args.write)
+        run_section(url=args.url, current_week=args.current_week, write=args.write,
+                    show_readable=not args.no_preview, show_json=args.show_json,
+                    export_json=args.export_json)
     except Exception as exc:
         print(f'ERROR: {type(exc).__name__}: {exc}', file=sys.stderr)
         raise SystemExit(1) from exc

@@ -54,37 +54,54 @@ class FirebaseManager:
     def delete_document(self, collection, doc_id):
         self.db.collection(collection).document(str(doc_id)).delete()
 
-    def sync_tamsui(self, incoming, identity, comparable):
-        """Compare existing weeks; atomically create next numbered document and bump version.
+    @staticmethod
+    def _version_number(raw_version):
+        if isinstance(raw_version, bool) or not str(raw_version).isdigit():
+            raise ValueError(f'Invalid metadata version: {raw_version!r}')
+        return int(raw_version)
 
-        Use GitHub Actions concurrency to serialize runs. For independent writers,
-        coordinate through a shared lock or an additional deterministic document.
+    def get_latest_section(self):
+        """Return (metadata.version as document ID, latest stg-data document)."""
+        raw_version = self.get_metadata_version('stg-metadata', 'metadata')
+        version = str(self._version_number(raw_version))
+        return version, self._get('stg-data', version)
+
+    def sync_tamsui(self, incoming, comparable):
+        """Atomically compare latest version and append only if content changed.
+
+        All Firestore reads happen before writes inside the transaction. A
+        concurrent writer changing metadata triggers a transaction retry.
+        Existing stg-data documents are never overwritten or deleted.
         """
-        matches = [(doc_id, data) for doc_id, data in self.get_all_documents('stg-data').items()
-                   if identity(data) == identity(incoming)]
-        if matches:
-            if all(comparable(data) == comparable(incoming) for _, data in matches):
-                return 'skipped', matches[0][0]
-            raise ValueError('Same training/week exists with different content; manual review required')
-
         meta_ref = self.db.collection('stg-metadata').document('metadata')
-        transaction = self.db.transaction()
+        data_collection = self.db.collection('stg-data')
 
         @firestore.transactional
         def commit(tx):
-            meta = meta_ref.get(transaction=tx)
-            if not meta.exists:
+            meta_snap = meta_ref.get(transaction=tx)
+            if not meta_snap.exists:
                 raise ValueError('Missing stg-metadata/metadata')
-            raw_version = (meta.to_dict() or {}).get('version')
-            if isinstance(raw_version, bool) or not str(raw_version).isdigit():
-                raise ValueError(f'Invalid metadata version: {raw_version!r}')
-            next_version = str(int(raw_version) + 1)
-            next_ref = self.db.collection('stg-data').document(next_version)
+            metadata = meta_snap.to_dict() or {}
+            raw_version = metadata.get('version')
+            current_version = self._version_number(raw_version)
+            current_ref = data_collection.document(str(current_version))
+            current_snap = current_ref.get(transaction=tx)
+            if not current_snap.exists:
+                raise ValueError(f'Missing stg-data/{current_version}')
+
+            if comparable(current_snap.to_dict() or {}) == comparable(incoming):
+                return 'skipped', str(current_version)
+
+            next_version = current_version + 1
+            next_ref = data_collection.document(str(next_version))
+            # Must read before any writes within Firestore transactions.
             if next_ref.get(transaction=tx).exists:
                 raise ValueError(f'stg-data/{next_version} already exists; refusing overwrite')
-            tx.create(next_ref, incoming)
-            tx.update(meta_ref, {'version': next_version})
-            return next_version
 
-        version = commit(transaction)
-        return 'created', version
+            tx.create(next_ref, incoming)
+            # Keep the existing version field's type (string or integer).
+            new_value = str(next_version) if isinstance(raw_version, str) else next_version
+            tx.update(meta_ref, {'version': new_value})
+            return 'created', str(next_version)
+
+        return commit(self.db.transaction())

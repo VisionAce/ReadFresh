@@ -1,0 +1,11 @@
+# ReadFresh - Tamsui Morning Revival Auto Updater
+# Python 3.11
+
+# HTML parsing
+beautifulsoup4>=4.12,<5
+
+# HTTP requests with browser impersonation
+curl_cffi>=0.7,<1
+
+# Firebase Admin SDK / Cloud Firestore
+firebase-admin>=6.5,<8
