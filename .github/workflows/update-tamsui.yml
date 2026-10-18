@@ -1,0 +1,152 @@
+
+name: Update Tamsui Morning Revival
+
+on:
+  # All cron expressions use UTC (Taiwan = UTC+8).
+  schedule:
+    # Sunday 19:30 Taiwan
+    - cron: '30 11 * * 0'
+
+    # Sunday 20:15, 20:45 Taiwan
+    - cron: '15,45 12 * * 0'
+
+    # Sunday 21:15 Taiwan
+    - cron: '15 13 * * 0'
+
+    # Sunday 22:15, 23:15 Taiwan
+    - cron: '15 14,15 * * 0'
+
+    # Monday 00:15 Taiwan
+    - cron: '15 16 * * 0'
+
+    # Monday 08:15, 12:15, 20:15 Taiwan
+    - cron: '15 0,4,12 * * 1'
+
+    # Tuesday to Saturday 12:15 Taiwan
+    - cron: '15 4 * * 2-6'
+
+  # Manual execution (Dry Run by default).
+  workflow_dispatch:
+    inputs:
+      write:
+        description: 'Write new content to Firestore?'
+        type: boolean
+        required: true
+        default: false
+
+permissions:
+  contents: read
+
+# Prevent overlapping executions of this workflow.
+concurrency:
+  group: readfresh-tamsui-firestore
+  cancel-in-progress: false
+
+jobs:
+  update-tamsui:
+    name: Check and update Firestore
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    env:
+      TZ: Asia/Taipei
+      PYTHONUNBUFFERED: '1'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: scripts/requirements.txt
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r scripts/requirements.txt
+
+      - name: Configure Firebase credentials
+        env:
+          FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          raw = os.environ.get("FIREBASE_SERVICE_ACCOUNT_JSON")
+          if not raw:
+              raise SystemExit(
+                  "ERROR: FIREBASE_SERVICE_ACCOUNT_JSON is missing."
+              )
+
+          data = json.loads(raw)
+
+          required = ("project_id", "client_email", "private_key")
+          missing = [key for key in required if not data.get(key)]
+
+          if missing:
+              raise SystemExit(
+                  "ERROR: Invalid Firebase credentials: "
+                  + ", ".join(missing)
+              )
+
+          path = Path(os.environ["RUNNER_TEMP"]) / "firebase-sa.json"
+          path.write_text(
+              json.dumps(data),
+              encoding="utf-8"
+          )
+          path.chmod(0o600)
+
+          with open(
+              os.environ["GITHUB_ENV"],
+              "a",
+              encoding="utf-8"
+          ) as f:
+              f.write(f"GOOGLE_APPLICATION_CREDENTIALS={path}\n")
+
+          print("Firebase credentials configured.")
+          PY
+
+      - name: Check execution mode
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          WRITE_INPUT: ${{ inputs.write }}
+        shell: bash
+        run: |
+          if [[ "$EVENT_NAME" == "schedule" ]]; then
+            echo "Execution: SCHEDULED"
+            echo "Mode: WRITE"
+          elif [[ "$WRITE_INPUT" == "true" ]]; then
+            echo "Execution: MANUAL"
+            echo "Mode: WRITE"
+          else
+            echo "Execution: MANUAL"
+            echo "Mode: DRY RUN"
+          fi
+
+      - name: Run Tamsui updater
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          WRITE_INPUT: ${{ inputs.write }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ "$EVENT_NAME" == "schedule" || "$WRITE_INPUT" == "true" ]]; then
+            python scripts/run_tamsui.py --no-preview --write
+          else
+            python scripts/run_tamsui.py --no-preview
+          fi
+
+      - name: Clean up Firebase credentials
+        if: always()
+        shell: bash
+        run: |
+          rm -f "${RUNNER_TEMP}/firebase-sa.json"
