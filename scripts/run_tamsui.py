@@ -16,8 +16,41 @@ SOURCE_URL = 'https://churchintamsui.wixsite.com/index/morning-revival'
 DB_VERSION = '1'
 TAIPEI_TZ = ZoneInfo('Asia/Taipei')
 WEEK = r'第[零〇一二三四五六七八九十百兩\d]+週'
-TRAINING_TITLE = re.compile(r'^(\d{4})\s*年\s*(.+?)\s*『(.+?)』$')
-OUTLINE_TITLE = re.compile(rf'^({WEEK})\s*[：:　 ]\s*(.+)$')
+# 年份支援阿拉伯數字及中文數字（含 ○、〇、零、Ｏ）。
+YEAR_TOKEN = r'(?:20\d{2}|[二兩貳贰２2][零〇○Ｏ０0][二兩貳贰２2][零〇○Ｏ０0一二三四五六七八九１２３４５６７８９0-9])'
+YEAR_PREFIX = rf'(?P<year>{YEAR_TOKEN})\s*年?\s*[,，、．.：:－-]?\s*'
+TRAINING_TITLE = re.compile(
+    rf'^{YEAR_PREFIX}(?P<name>.+?)\s*[『「](?P<topic>[^』」]+)[』」]\s*$'
+)
+TRAINING_NAME_ONLY = re.compile(
+    rf'^{YEAR_PREFIX}(?P<name>.+?(?:訓練|特會|相調|聚會))\s*$'
+)
+YEAR_DIGITS = str.maketrans({
+    '零': '0', '〇': '0', '○': '0', 'Ｏ': '0', '０': '0',
+    '一': '1', '壹': '1', '１': '1', '二': '2', '兩': '2', '貳': '2', '贰': '2', '２': '2',
+    '三': '3', '３': '3', '四': '4', '４': '4', '五': '5', '５': '5',
+    '六': '6', '６': '6', '七': '7', '７': '7', '八': '8', '８': '8',
+    '九': '9', '９': '9',
+})
+
+
+def normalize_year(value):
+    year = value.translate(YEAR_DIGITS)
+    if not re.fullmatch(r'20\d{2}', year):
+        raise ValueError(f'無法辨識訓練年份：{value!r}')
+    return year
+
+
+def normalize_training_name(value):
+    # 保留名稱內有意義的標點，只去除網站排版造成的多餘空白。
+    return clean_text(value).strip(' 、，,')
+
+
+def normalize_topic(value):
+    return clean_text(value).strip('『』「」 ')
+
+
+OUTLINE_TITLE = re.compile(rf'^({WEEK})\s*[：:、，,•．·■\s]+\s*(.+)$')
 DAY_TITLE = re.compile(rf'^({WEEK})\s*[•．·■]\s*(週[一二三四五六])$')
 DAYS = [f'週{day}' for day in '一二三四五六']
 IDENTITY_FIELDS = ('training_year', 'training_name', 'section_number')
@@ -70,7 +103,19 @@ def content_lines(root):
 
     walk(root)
     flush()
-    return lines
+    # Wix 會把標點拆成獨立文字節點，例如「第一週」「、」「篇名」
+    # 或「壹」「、」「綱目」。重新接合，以保留既有 Firestore 文字格式。
+    merged = []
+    i = 0
+    while i < len(lines):
+        line = lines[i]
+        if line in {'、', '，', ',', '：', ':'} and merged and i + 1 < len(lines):
+            merged[-1] += line + lines[i + 1]
+            i += 2
+            continue
+        merged.append(line)
+        i += 1
+    return merged
 
 
 class TamsuiParser:
@@ -78,14 +123,55 @@ class TamsuiParser:
         self.soup = BeautifulSoup(html, 'html.parser')
 
     def run(self):
-        title = next((tag for tag in self.soup.find_all('h2')
-                      if TRAINING_TITLE.fullmatch(clean_text(tag.get_text()))), None)
-        if title is None:
-            raise ValueError('找不到特會年份、名稱與主題。')
-        body = title.find_parent(class_='wixui-rich-text')
-        if body is None:
-            raise ValueError('找不到淡水召會的正文區塊。')
-        year, name, topic = TRAINING_TITLE.fullmatch(clean_text(title.get_text())).groups()
+        # 網站新主題可能改用 h1/h3、不同引號，或將主題另起一行。
+        # 僅在同一個 wixui-rich-text 正文區塊中尋找標題，避免抓到導覽列。
+        candidates = []
+        for body in self.soup.select('.wixui-rich-text'):
+            for tag in body.find_all(['h1', 'h2', 'h3', 'h4', 'p']):
+                value = clean_text(tag.get_text(' ', strip=True))
+                match = TRAINING_TITLE.fullmatch(value)
+                if match:
+                    candidates.append((body, normalize_year(match.group('year')),
+                                       normalize_training_name(match.group('name')),
+                                       normalize_topic(match.group('topic'))))
+        if not candidates:
+            # 允許沒有書名號的訓練標題；主題需在相鄰標題文字中明確提供。
+            for body in self.soup.select('.wixui-rich-text'):
+                headings = [
+                    clean_text(t.get_text(' ', strip=True))
+                    for t in body.find_all(['h1', 'h2', 'h3', 'h4', 'p'])
+                ]
+                for i, value in enumerate(headings):
+                    match = TRAINING_NAME_ONLY.fullmatch(value)
+                    if not match:
+                        continue
+                    nearby = headings[i + 1:i + 4]
+                    topic = next(
+                        (t.strip('『』「」 ') for t in nearby
+                         if t.startswith(('主題：', '主題:', '『', '「'))),
+                        ''
+                    )
+                    if topic.startswith(('主題：', '主題:')):
+                        topic = re.split(r'[：:]', topic, maxsplit=1)[-1].strip()
+                    if topic:
+                        candidates.append((body, normalize_year(match.group('year')),
+                                           normalize_training_name(match.group('name')),
+                                           normalize_topic(topic)))
+        if not candidates:
+            sample = [
+                clean_text(t.get_text(' ', strip=True))
+                for t in self.soup.find_all(['h1', 'h2', 'h3'])
+            ]
+            raise ValueError(
+                '找不到符合格式的訓練標題。網站可能使用新的標題格式。'
+                f' 候選標題（前 12 筆）：{sample[:12]!r}'
+            )
+        # 優先選擇具有完整週一至週六資料的正文區塊。
+        body, year, name, topic = next(
+            ((b, y, n, t) for b, y, n, t in candidates
+             if any(OUTLINE_TITLE.fullmatch(line) for line in content_lines(b))),
+            candidates[0]
+        )
         lines = content_lines(body)
         outline_start = next((i for i, line in enumerate(lines)
                               if OUTLINE_TITLE.fullmatch(line)), None)
