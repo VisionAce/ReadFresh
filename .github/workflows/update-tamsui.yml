@@ -1,29 +1,24 @@
-
 name: Update Tamsui Morning Revival
 
 on:
   # All cron expressions use UTC (Taiwan = UTC+8).
   schedule:
-    # Sunday 19:30 Taiwan
-    - cron: '30 11 * * 0'
+    # Sunday (Taiwan time, UTC+8)
+    - cron: '30 11 * * 0'  # Sunday 19:30
+    - cron: '15 12 * * 0'  # Sunday 20:15
+    - cron: '45 12 * * 0'  # Sunday 20:45
+    - cron: '15 13 * * 0'  # Sunday 21:15
+    - cron: '15 14 * * 0'  # Sunday 22:15
+    - cron: '15 15 * * 0'  # Sunday 23:15
+    - cron: '15 16 * * 0'  # Monday 00:15 (Sunday 16:15 UTC)
 
-    # Sunday 20:15, 20:45 Taiwan
-    - cron: '15,45 12 * * 0'
+    # Monday (Taiwan time)
+    - cron: '15 0 * * 1'   # Monday 08:15
+    - cron: '15 4 * * 1'   # Monday 12:15
+    - cron: '15 12 * * 1'  # Monday 20:15
 
-    # Sunday 21:15 Taiwan
-    - cron: '15 13 * * 0'
-
-    # Sunday 22:15, 23:15 Taiwan
-    - cron: '15 14,15 * * 0'
-
-    # Monday 00:15 Taiwan
-    - cron: '15 16 * * 0'
-
-    # Monday 08:15, 12:15, 20:15 Taiwan
-    - cron: '15 0,4,12 * * 1'
-
-    # Tuesday to Saturday 12:15 Taiwan
-    - cron: '15 4 * * 2-6'
+    # Tuesday through Saturday (Taiwan time)
+    - cron: '15 4 * * 2-6' # Tuesday-Saturday 12:15
 
   # Manual execution (Dry Run by default).
   workflow_dispatch:
@@ -53,6 +48,24 @@ jobs:
       PYTHONUNBUFFERED: '1'
 
     steps:
+      - name: Show schedule diagnostics
+        shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          SCHEDULE_CRON: ${{ github.event.schedule }}
+          RUN_ID: ${{ github.run_id }}
+          RUN_ATTEMPT: ${{ github.run_attempt }}
+        run: |
+          echo "======================================"
+          echo "ReadFresh Schedule Diagnostics"
+          echo "======================================"
+          echo "Event: $EVENT_NAME"
+          echo "Cron: ${SCHEDULE_CRON:-N/A}"
+          echo "Run ID: $RUN_ID"
+          echo "Run Attempt: $RUN_ATTEMPT"
+          echo "UTC: $(date -u '+%Y-%m-%d %H:%M:%S')"
+          echo "Taiwan: $(TZ=Asia/Taipei date '+%Y-%m-%d %H:%M:%S %Z')"
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -79,7 +92,6 @@ jobs:
           import json
           import os
           from pathlib import Path
-
           raw = os.environ.get("FIREBASE_SERVICE_ACCOUNT_JSON")
           if not raw:
               raise SystemExit(
@@ -90,7 +102,6 @@ jobs:
 
           required = ("project_id", "client_email", "private_key")
           missing = [key for key in required if not data.get(key)]
-
           if missing:
               raise SystemExit(
                   "ERROR: Invalid Firebase credentials: "
@@ -103,7 +114,6 @@ jobs:
               encoding="utf-8"
           )
           path.chmod(0o600)
-
           with open(
               os.environ["GITHUB_ENV"],
               "a",
