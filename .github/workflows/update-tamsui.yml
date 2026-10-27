@@ -1,24 +1,23 @@
 name: Update Tamsui Morning Revival
 
 on:
-  # All cron expressions use UTC (Taiwan = UTC+8).
   schedule:
-    # Sunday (Taiwan time, UTC+8)
-    - cron: '30 11 * * 0'  # Sunday 19:30
-    - cron: '15 12 * * 0'  # Sunday 20:15
-    - cron: '45 12 * * 0'  # Sunday 20:45
-    - cron: '15 13 * * 0'  # Sunday 21:15
-    - cron: '15 14 * * 0'  # Sunday 22:15
-    - cron: '15 15 * * 0'  # Sunday 23:15
-    - cron: '15 16 * * 0'  # Monday 00:15 (Sunday 16:15 UTC)
+    # Sunday (Taiwan Time, UTC+8)
+    - cron: '15 7 * * 0'    # Sunday 15:15
+    - cron: '45 7 * * 0'    # Sunday 15:45
+    - cron: '15 10 * * 0'   # Sunday 18:15
+    - cron: '15 11 * * 0'   # Sunday 19:15
+    - cron: '15 12 * * 0'   # Sunday 20:15
+    - cron: '15 13 * * 0'   # Sunday 21:15
 
-    # Monday (Taiwan time)
-    - cron: '15 0 * * 1'   # Monday 08:15
-    - cron: '15 4 * * 1'   # Monday 12:15
-    - cron: '15 12 * * 1'  # Monday 20:15
+    # Monday (Taiwan Time, UTC+8) — unchanged
+    - cron: '15 16 * * 0'   # Monday 00:15
+    - cron: '15 0 * * 1'    # Monday 08:15
+    - cron: '15 4 * * 1'    # Monday 12:15
+    - cron: '15 12 * * 1'   # Monday 20:15
 
-    # Tuesday through Saturday (Taiwan time)
-    - cron: '15 4 * * 2-6' # Tuesday-Saturday 12:15
+    # Tuesday–Saturday (Taiwan Time, UTC+8) — unchanged
+    - cron: '15 4 * * 2-6'  # Tuesday–Saturday 12:15
 
   # Manual execution (Dry Run by default).
   workflow_dispatch:
